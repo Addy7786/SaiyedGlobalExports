@@ -7,6 +7,7 @@
 
 .app {
   width: 100%;
+  min-height: 100vh;
   overflow-x: hidden;
 }
 
@@ -19,19 +20,11 @@ section {
   overflow: hidden;
 }
 
-section:nth-child(even) {
-  background: #ffffff;
-}
-
-section:nth-child(odd) {
-  background: #f7f8fa;
-}
-
 .gradient-bg {
   position: absolute;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
 }
 
 .gradient-bg::before,
@@ -53,8 +46,8 @@ section:nth-child(odd) {
 .gradient-bg::after {
   width: 280px;
   height: 280px;
-  bottom: -120px;
   right: -120px;
+  bottom: -120px;
   background: rgba(75, 109, 255, 0.12);
 }
 

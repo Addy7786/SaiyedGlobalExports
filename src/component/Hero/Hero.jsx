@@ -1,5 +1,6 @@
 import { ArrowRight, Globe2, MessageCircle } from "lucide-react";
 import { useLanguage } from "../../Context/LanguageContext";
+import heroImage from "../../assets/hero-futuristic.png";
 import "./Hero.css";
 
 function Hero() {
@@ -51,11 +52,9 @@ function Hero() {
             data-aos-delay="100"
           >
             <Globe2 size={17} />
+
             <span>
-              {getText(
-                "hero.badge",
-                "India • Global Trade • 2026"
-              )}
+              {getText("hero.badge", "India • Global Trade • 2026")}
             </span>
           </div>
 
@@ -120,30 +119,21 @@ function Hero() {
           >
             <div className="hero-trust-item">
               <strong>100%</strong>
-
-              <span>
-                {getText("hero.trustQuality", "Quality Focus")}
-              </span>
+              <span>{getText("hero.trustQuality", "Quality Focus")}</span>
             </div>
 
             <div className="hero-trust-divider" />
 
             <div className="hero-trust-item">
               <strong>Global</strong>
-
-              <span>
-                {getText("hero.trustMarkets", "Market Reach")}
-              </span>
+              <span>{getText("hero.trustMarkets", "Market Reach")}</span>
             </div>
 
             <div className="hero-trust-divider" />
 
             <div className="hero-trust-item">
               <strong>Trusted</strong>
-
-              <span>
-                {getText("hero.trustService", "Export Service")}
-              </span>
+              <span>{getText("hero.trustService", "Export Service")}</span>
             </div>
           </div>
         </div>
@@ -156,69 +146,11 @@ function Hero() {
           <div className="hero-visual-ring hero-ring-one" />
           <div className="hero-visual-ring hero-ring-two" />
 
-          <div className="hero-main-card">
-            <div className="hero-logo-mark">
-              <span>S</span>
-              <span>G</span>
-            </div>
-
-            <div className="hero-card-content">
-              <span className="hero-card-small-text">
-                {getText("hero.companySmall", "Saiyed Global")}
-              </span>
-
-              <h2>
-                {getText("hero.companyMain", "Exports")}
-              </h2>
-
-              <p>
-                {getText(
-                  "hero.companyTagline",
-                  "Quality Products. Global Connections."
-                )}
-              </p>
-            </div>
-
-            <div className="hero-card-globe">
-              <Globe2 size={42} />
-            </div>
-          </div>
-
-          <div
-            className="hero-floating-card hero-floating-card-one"
-            data-aos="fade-right"
-            data-aos-delay="700"
-          >
-            <Globe2 size={20} />
-
-            <div>
-              <strong>
-                {getText("hero.worldwideTitle", "Worldwide")}
-              </strong>
-
-              <span>
-                {getText("hero.worldwideText", "Export Solutions")}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className="hero-floating-card hero-floating-card-two"
-            data-aos="fade-left"
-            data-aos-delay="850"
-          >
-            <span className="hero-status-dot" />
-
-            <div>
-              <strong>
-                {getText("hero.businessTitle", "Business Ready")}
-              </strong>
-
-              <span>
-                {getText("hero.businessText", "Reliable Supply")}
-              </span>
-            </div>
-          </div>
+          <img
+            src={heroImage}
+            alt="Saiyed Global Exports international trade"
+            className="hero-main-image"
+          />
         </div>
       </div>
 
