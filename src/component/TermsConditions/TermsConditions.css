@@ -1,0 +1,155 @@
+.terms-section {
+  padding: 100px 0;
+  background: #f8fbff;
+}
+
+.terms-section .container {
+  width: min(1200px, 92%);
+  margin: auto;
+}
+
+.terms-heading {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 60px;
+}
+
+.terms-tag {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(90, 200, 255, .12);
+  color: #0f4d92;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.terms-heading h2 {
+  margin: 20px 0;
+  font-size: clamp(2rem,5vw,3.2rem);
+  color: #07182e;
+}
+
+.terms-heading p {
+  color: #5d6778;
+  line-height: 1.8;
+}
+
+.terms-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 25px;
+}
+
+.terms-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 22px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.08);
+  transition: .35s;
+}
+
+.terms-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 45px rgba(0,0,0,.14);
+}
+
+.terms-icon {
+  width: 60px;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  color: #fff;
+
+  background: linear-gradient(
+    135deg,
+    #aa3bff,
+    #5ac8ff
+  );
+
+  margin-bottom: 22px;
+}
+
+.terms-card h3 {
+  color: #07182e;
+  margin-bottom: 12px;
+}
+
+.terms-card p {
+  color: #5d6778;
+  line-height: 1.8;
+}
+
+.terms-footer {
+  margin-top: 50px;
+
+  padding: 40px;
+
+  text-align: center;
+
+  border-radius: 24px;
+
+  background: linear-gradient(
+    135deg,
+    #07182e,
+    #10345d
+  );
+}
+
+.terms-footer p {
+  color: rgba(255,255,255,.8);
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+
+.terms-footer a {
+  display: inline-block;
+
+  padding: 14px 28px;
+
+  border-radius: 999px;
+
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+
+  background: linear-gradient(
+    135deg,
+    #aa3bff,
+    #5ac8ff
+  );
+}
+
+@media (max-width:992px){
+
+.terms-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media (max-width:768px){
+
+.terms-section{
+padding:80px 0;
+}
+
+.terms-grid{
+grid-template-columns:1fr;
+}
+
+.terms-card{
+padding:24px;
+}
+
+.terms-footer{
+padding:28px 20px;
+}
+
+}

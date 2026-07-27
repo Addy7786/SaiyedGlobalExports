@@ -1,0 +1,13 @@
+User-agent: *
+
+Allow: /
+
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /src/
+Disallow: /node_modules/
+
+Host: https://www.saiyedglobalexports.com
+
+Sitemap: https://www.saiyedglobalexports.com/sitemap.xml

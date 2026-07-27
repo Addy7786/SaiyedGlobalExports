@@ -1,0 +1,105 @@
+.counter-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #07182e 0%, #10345d 100%);
+}
+
+.counter-section .container {
+  width: min(1200px, 92%);
+  margin: 0 auto;
+}
+
+.counter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.counter-card {
+  text-align: center;
+  padding: 35px 25px;
+
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  transition: all .35s ease;
+
+  box-shadow: 0 15px 40px rgba(0,0,0,.18);
+}
+
+.counter-card:hover {
+  transform: translateY(-12px);
+
+  border-color: rgba(90,200,255,.45);
+
+  box-shadow:
+    0 25px 60px rgba(90,200,255,.18),
+    0 15px 30px rgba(0,0,0,.22);
+}
+
+.counter-icon {
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 22px;
+
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+
+  background: linear-gradient(
+    135deg,
+    #aa3bff,
+    #5ac8ff
+  );
+}
+
+.counter-card h2 {
+  color: #ffffff;
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+  font-weight: 800;
+}
+
+.counter-card p {
+  color: rgba(255,255,255,.75);
+  font-size: 1rem;
+}
+
+@media (max-width: 1100px) {
+  .counter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .counter-section {
+    padding: 80px 0;
+  }
+
+  .counter-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .counter-card {
+    padding: 28px;
+  }
+
+  .counter-card h2 {
+    font-size: 2.2rem;
+  }
+
+  .counter-icon {
+    width: 64px;
+    height: 64px;
+  }
+}

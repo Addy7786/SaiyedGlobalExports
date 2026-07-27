@@ -1,0 +1,89 @@
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page-transition-panel {
+  position: absolute;
+  top: 0;
+  width: 34%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    #020914 0%,
+    #06182d 55%,
+    #08243f 100%
+  );
+
+  transform: translateY(0);
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.page-transition-panel-one {
+  left: 0;
+  transition-delay: 0s;
+}
+
+.page-transition-panel-two {
+  left: 33.33%;
+  transition-delay: 0.08s;
+}
+
+.page-transition-panel-three {
+  right: 0;
+  transition-delay: 0.16s;
+}
+
+.page-transition-hidden .page-transition-panel {
+  transform: translateY(-105%);
+}
+
+.page-transition-visible .page-transition-panel {
+  transform: translateY(0);
+}
+
+.page-transition::after {
+  content: "SGE";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+
+  color: rgba(255, 255, 255, 0.12);
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.65s ease;
+}
+
+.page-transition-hidden::after {
+  opacity: 0;
+  transform: translate(-50%, -70%) scale(1.08);
+}
+
+[data-theme="light"] .page-transition-panel {
+  background: linear-gradient(
+    180deg,
+    #eaf7ff 0%,
+    #d4efff 55%,
+    #bde5ff 100%
+  );
+}
+
+[data-theme="light"] .page-transition::after {
+  color: rgba(7, 24, 46, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    display: none;
+  }
+}

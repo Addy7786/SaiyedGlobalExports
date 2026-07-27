@@ -1,0 +1,353 @@
+.footer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(170, 59, 255, 0.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(26, 122, 255, 0.15),
+      transparent 32%
+    ),
+    #061426;
+  color: #ffffff;
+}
+
+.footer::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+.footer-container {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 1.45fr 0.75fr 0.9fr 1.05fr;
+  gap: 55px;
+  padding: 85px 0 60px;
+}
+
+.footer-brand {
+  max-width: 390px;
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.footer-logo-icon {
+  display: flex;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(170, 59, 255, 0.95),
+    rgba(75, 109, 255, 0.95)
+  );
+  box-shadow: 0 12px 30px rgba(100, 55, 255, 0.28);
+}
+
+.footer-logo strong {
+  display: block;
+  font-family: "Playfair Display", serif;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+}
+
+.footer-logo span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.footer-description {
+  max-width: 370px;
+  margin: 25px 0 22px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.footer-global-note {
+  display: flex;
+  max-width: 360px;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 15px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.footer-global-note svg {
+  margin-top: 1px;
+  flex-shrink: 0;
+  color: #c68cff;
+}
+
+.footer-column h3 {
+  position: relative;
+  margin: 5px 0 25px;
+  padding-bottom: 14px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.footer-column h3::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 34px;
+  height: 2px;
+  border-radius: 999px;
+  content: "";
+  background: linear-gradient(90deg, #aa3bff, #4b6dff);
+}
+
+.footer-links,
+.footer-product-list,
+.footer-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-links a {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 14px;
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.footer-links a svg {
+  opacity: 0;
+  transform: translate(-5px, 4px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.footer-links a:hover svg {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.footer-product-list span {
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 14px;
+  line-height: 1.45;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.footer-product-list span:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.footer-contact-list a,
+.footer-contact-list > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  color: rgba(255, 255, 255, 0.69);
+  font-size: 14px;
+  line-height: 1.6;
+  text-decoration: none;
+  word-break: break-word;
+  transition: color 0.25s ease;
+}
+
+.footer-contact-list a:hover {
+  color: #ffffff;
+}
+
+.footer-contact-list svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: #c68cff;
+}
+
+.footer-bottom {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.footer-bottom p:last-child {
+  text-align: right;
+}
+
+html[dir="rtl"] .footer-column h3::after {
+  right: 0;
+  left: auto;
+}
+
+html[dir="rtl"] .footer-links a:hover,
+html[dir="rtl"] .footer-product-list span:hover {
+  transform: translateX(-4px);
+}
+
+html[dir="rtl"] .footer-bottom p:last-child {
+  text-align: left;
+}
+
+@media (max-width: 1100px) {
+  .footer-main {
+    grid-template-columns: 1.25fr 0.75fr 1fr;
+    gap: 45px 35px;
+  }
+
+  .footer-brand {
+    grid-column: span 3;
+    max-width: 620px;
+  }
+
+  .footer-description,
+  .footer-global-note {
+    max-width: 580px;
+  }
+}
+
+@media (max-width: 760px) {
+  .footer-container {
+    width: min(100% - 30px, 1180px);
+  }
+
+  .footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 42px 28px;
+    padding: 65px 0 48px;
+  }
+
+  .footer-brand {
+    grid-column: span 2;
+  }
+
+  .footer-bottom {
+    min-height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 0;
+  }
+
+  .footer-bottom p:last-child {
+    text-align: left;
+  }
+
+  html[dir="rtl"] .footer-bottom {
+    align-items: flex-end;
+  }
+
+  html[dir="rtl"] .footer-bottom p:last-child {
+    text-align: right;
+  }
+}
+
+@media (max-width: 520px) {
+  .footer-container {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 38px;
+    padding: 55px 0 42px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-logo {
+    align-items: flex-start;
+  }
+
+  .footer-logo-icon {
+    width: 47px;
+    height: 47px;
+    border-radius: 14px;
+  }
+
+  .footer-logo strong {
+    font-size: 18px;
+  }
+
+  .footer-logo span {
+    font-size: 10px;
+    letter-spacing: 1.1px;
+  }
+
+  .footer-description {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .footer-global-note {
+    padding: 13px 14px;
+  }
+
+  .footer-column h3 {
+    margin-bottom: 21px;
+  }
+}

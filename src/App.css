@@ -1,0 +1,113 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #f7f8fa;
+}
+
+.app {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+main {
+  width: 100%;
+}
+
+section {
+  position: relative;
+  overflow: hidden;
+}
+
+section:nth-child(even) {
+  background: #ffffff;
+}
+
+section:nth-child(odd) {
+  background: #f7f8fa;
+}
+
+.gradient-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gradient-bg::before,
+.gradient-bg::after {
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.gradient-bg::before {
+  width: 320px;
+  height: 320px;
+  top: -120px;
+  left: -120px;
+  background: rgba(170, 59, 255, 0.12);
+}
+
+.gradient-bg::after {
+  width: 280px;
+  height: 280px;
+  bottom: -120px;
+  right: -120px;
+  background: rgba(75, 109, 255, 0.12);
+}
+
+.section-content {
+  position: relative;
+  z-index: 2;
+}
+
+.fade-up {
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .gradient-bg::before {
+    width: 220px;
+    height: 220px;
+  }
+
+  .gradient-bg::after {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .fade-in {
+    animation: none;
+  }
+}
