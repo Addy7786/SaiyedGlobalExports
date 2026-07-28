@@ -1,4 +1,12 @@
-import { ArrowRight, Globe2, MessageCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Globe2,
+  MessageCircle,
+  PackageCheck,
+  Plane,
+  ShieldCheck,
+  Ship,
+} from "lucide-react";
 import { useLanguage } from "../../Context/LanguageContext";
 import heroImage from "../../assets/hero-futuristic.png";
 import "./Hero.css";
@@ -38,10 +46,16 @@ function Hero() {
 
   return (
     <section className="hero-section" id="home">
-      <div className="hero-background">
+      <div className="hero-background" aria-hidden="true">
+        <div className="hero-grid" />
+        <div className="hero-noise" />
+
         <div className="hero-glow hero-glow-one" />
         <div className="hero-glow hero-glow-two" />
-        <div className="hero-grid" />
+        <div className="hero-glow hero-glow-three" />
+
+        <div className="hero-orbit hero-orbit-large" />
+        <div className="hero-orbit hero-orbit-small" />
       </div>
 
       <div className="hero-container">
@@ -51,7 +65,9 @@ function Hero() {
             data-aos="fade-down"
             data-aos-delay="100"
           >
-            <Globe2 size={17} />
+            <span className="hero-badge-icon">
+              <Globe2 size={16} />
+            </span>
 
             <span>
               {getText("hero.badge", "India • Global Trade • 2026")}
@@ -103,6 +119,7 @@ function Hero() {
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Contact Saiyed Global Exports on WhatsApp"
             >
               <MessageCircle size={19} />
 
@@ -113,9 +130,35 @@ function Hero() {
           </div>
 
           <div
+            className="hero-feature-row"
+            data-aos="fade-up"
+            data-aos-delay="600"
+          >
+            <div className="hero-feature-item">
+              <span className="hero-feature-icon">
+                <ShieldCheck size={18} />
+              </span>
+
+              <span>
+                {getText("hero.featureTrusted", "Trusted Export Support")}
+              </span>
+            </div>
+
+            <div className="hero-feature-item">
+              <span className="hero-feature-icon">
+                <PackageCheck size={18} />
+              </span>
+
+              <span>
+                {getText("hero.featureQuality", "Quality Product Sourcing")}
+              </span>
+            </div>
+          </div>
+
+          <div
             className="hero-trust-row"
             data-aos="fade-up"
-            data-aos-delay="650"
+            data-aos-delay="700"
           >
             <div className="hero-trust-item">
               <strong>100%</strong>
@@ -143,24 +186,77 @@ function Hero() {
           data-aos="zoom-in-left"
           data-aos-delay="300"
         >
+          <div className="hero-visual-glow" />
+
           <div className="hero-visual-ring hero-ring-one" />
           <div className="hero-visual-ring hero-ring-two" />
+          <div className="hero-visual-ring hero-ring-three" />
 
-          <img
-            src={heroImage}
-            alt="Saiyed Global Exports international trade"
-            className="hero-main-image"
-          />
+          <div className="hero-image-wrapper">
+            <div className="hero-image-shine" />
+
+            <img
+              src={heroImage}
+              alt="International export network connecting India with global markets"
+              className="hero-main-image"
+              fetchPriority="high"
+            />
+          </div>
+
+          <div className="hero-floating-card hero-card-shipping">
+            <span className="hero-floating-icon">
+              <Ship size={21} />
+            </span>
+
+            <div>
+              <strong>
+                {getText("hero.shippingTitle", "Sea Freight")}
+              </strong>
+
+              <span>
+                {getText("hero.shippingText", "Global Cargo Network")}
+              </span>
+            </div>
+          </div>
+
+          <div className="hero-floating-card hero-card-air">
+            <span className="hero-floating-icon">
+              <Plane size={21} />
+            </span>
+
+            <div>
+              <strong>{getText("hero.airTitle", "Air Cargo")}</strong>
+
+              <span>{getText("hero.airText", "Fast Worldwide Reach")}</span>
+            </div>
+          </div>
+
+          <div className="hero-floating-card hero-card-export">
+            <span className="hero-live-dot" />
+
+            <div>
+              <strong>
+                {getText("hero.exportTitle", "Export Ready")}
+              </strong>
+
+              <span>
+                {getText("hero.exportText", "India to Global Markets")}
+              </span>
+            </div>
+          </div>
+
+          <div className="hero-route hero-route-one" />
+          <div className="hero-route hero-route-two" />
         </div>
       </div>
+
+      <div className="hero-bottom-fade" />
 
       <button
         type="button"
         className="hero-scroll-indicator"
         onClick={scrollToProducts}
         aria-label="Scroll to products"
-        data-aos="fade-up"
-        data-aos-delay="1000"
       >
         <span />
       </button>
