@@ -1,118 +1,186 @@
 import {
-  Award,
   BadgeCheck,
+  Boxes,
   Globe2,
-  Handshake,
+  Headphones,
+  IndianRupee,
+  PackageCheck,
   ShieldCheck,
+  Ship,
   Truck,
 } from "lucide-react";
-import { useLanguage } from "../../Context/LanguageContext";
+
 import "./WhyChooseUs.css";
 
+import whyChooseMap from "../../assets/gallery/world-network-india.webp";
+import indiaFlag from "../../assets/icons/india-flag-gold.webp";
+
+const highlightItems = [
+  { title: "Quality Assured", description: "Premium quality products", icon: BadgeCheck },
+  { title: "Global Network", description: "Strong network across the world", icon: Globe2 },
+  { title: "Export Ready", description: "All products ready for global export", icon: Ship },
+];
+
+const featureItems = [
+  {
+    title: "Premium Quality",
+    description: "We ensure strong quality standards in every product we export.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Worldwide Shipping",
+    description: "Delivering Indian products to global markets through reliable channels.",
+    icon: Globe2,
+  },
+  {
+    title: "Competitive Pricing",
+    description: "Fair pricing and practical value for buyers across international markets.",
+    icon: IndianRupee,
+  },
+  {
+    title: "Secure Packaging",
+    description: "Safe and suitable packaging support for every export requirement.",
+    icon: Boxes,
+  },
+  {
+    title: "Reliable Logistics",
+    description: "Dependable coordination from product sourcing to final shipment.",
+    icon: Truck,
+  },
+  {
+    title: "Dedicated Support",
+    description: "Responsive assistance throughout your sourcing and export journey.",
+    icon: Headphones,
+  },
+];
+
+const trustItems = [
+  {
+    title: "India Based",
+    description: "Proudly based in India, connecting products with the world.",
+    flag: true,
+  },
+  {
+    title: "Global Network",
+    description: "Connecting Indian products with international markets.",
+    icon: Globe2,
+  },
+  {
+    title: "Quality Assured",
+    description: "Focused product checks for global buyer requirements.",
+    icon: PackageCheck,
+  },
+  {
+    title: "Export Ready",
+    description: "Products and coordination prepared for global shipment.",
+    icon: Ship,
+  },
+];
+
 function WhyChooseUs() {
-  const { t } = useLanguage();
-
-  const getText = (key, fallback) => {
-    const value = t(key);
-    return value && value !== key ? value : fallback;
-  };
-
-  const reasons = [
-    {
-      icon: <ShieldCheck size={32} />,
-      title: getText("why.qualityTitle", "Quality Assurance"),
-      description: getText(
-        "why.qualityDesc",
-        "Every product is sourced from trusted suppliers and checked before export."
-      ),
-    },
-    {
-      icon: <Handshake size={32} />,
-      title: getText("why.trustTitle", "Trusted Partnership"),
-      description: getText(
-        "why.trustDesc",
-        "We believe in long-term business relationships built on honesty and transparency."
-      ),
-    },
-    {
-      icon: <Truck size={32} />,
-      title: getText("why.deliveryTitle", "Reliable Delivery"),
-      description: getText(
-        "why.deliveryDesc",
-        "Efficient logistics and timely shipments for international buyers."
-      ),
-    },
-    {
-      icon: <Globe2 size={32} />,
-      title: getText("why.globalTitle", "Global Reach"),
-      description: getText(
-        "why.globalDesc",
-        "Serving importers, wholesalers and distributors across multiple countries."
-      ),
-    },
-    {
-      icon: <Award size={32} />,
-      title: getText("why.professionalTitle", "Professional Service"),
-      description: getText(
-        "why.professionalDesc",
-        "Dedicated support from enquiry to shipment with complete export guidance."
-      ),
-    },
-    {
-      icon: <BadgeCheck size={32} />,
-      title: getText("why.commitmentTitle", "Commitment"),
-      description: getText(
-        "why.commitmentDesc",
-        "Committed to quality products, competitive pricing and customer satisfaction."
-      ),
-    },
-  ];
-
   return (
-    <section
-      className="why-section"
-      id="why-choose-us"
-    >
-      <div className="container">
-        <div
-          className="section-heading"
-          data-aos="fade-up"
-        >
-          <span className="section-tag">
-            {getText("why.tag", "WHY CHOOSE US")}
-          </span>
+    <section id="why-us" className="why-choose">
+      <div className="why-choose__glow why-choose__glow--one" aria-hidden="true" />
+      <div className="why-choose__glow why-choose__glow--two" aria-hidden="true" />
 
-          <h2>
-            {getText(
-              "why.heading",
-              "Why Businesses Choose Saiyed Global Exports"
-            )}
-          </h2>
+      <div className="why-choose__container">
+        <div className="why-choose__top">
+          <div className="why-choose__content">
+            <div className="why-choose__eyebrow">
+              <span className="why-choose__eyebrow-dot" aria-hidden="true" />
+              <span>Why Choose Us</span>
+            </div>
 
-          <p>
-            {getText(
-              "why.description",
-              "We combine quality, reliability and global trade expertise to deliver value for every international customer."
-            )}
-          </p>
+            <h2 className="why-choose__title">
+              Trusted Export Partner
+              <span>
+                For <strong>Global Business</strong>
+              </span>
+            </h2>
+
+            <div className="why-choose__title-line" aria-hidden="true" />
+
+            <p className="why-choose__description">
+              Saiyed Global Exports is focused on connecting dependable Indian
+              products with global markets through transparency, professional
+              coordination and customer-focused service at every step.
+            </p>
+
+            <div className="why-choose__highlights">
+              {highlightItems.map(({ title, description, icon: Icon }) => (
+                <article className="why-choose__highlight" key={title}>
+                  <div className="why-choose__highlight-icon">
+                    <Icon size={29} strokeWidth={1.6} />
+                  </div>
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="why-choose__map-panel">
+            <img
+              src={whyChooseMap}
+              alt="Global export routes from India"
+              className="why-choose__map-image"
+            />
+
+            <div className="why-choose__map-overlay" aria-hidden="true" />
+
+            <div className="why-choose__map-badge">
+              <Globe2 size={20} strokeWidth={1.7} />
+              <div>
+                <strong>India To Global Markets</strong>
+                <span>Air • Sea • Land</span>
+              </div>
+            </div>
+
+            <div className="why-choose__route why-choose__route--one" aria-hidden="true" />
+            <div className="why-choose__route why-choose__route--two" aria-hidden="true" />
+            <div className="why-choose__route why-choose__route--three" aria-hidden="true" />
+          </div>
         </div>
 
-        <div className="why-grid">
-          {reasons.map((item, index) => (
-            <div
-              key={index}
-              className="why-card"
-              data-aos="zoom-in"
-              data-aos-delay={index * 100}
-            >
-              <div className="why-icon">
-                {item.icon}
+        <div className="why-choose__features">
+          {featureItems.map(({ title, description, icon: Icon }) => (
+            <article className="why-choose__feature" key={title}>
+              <div className="why-choose__feature-icon">
+                <Icon size={44} strokeWidth={1.45} />
+              </div>
+              <h3>{title}</h3>
+              <span className="why-choose__feature-line" aria-hidden="true" />
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="why-choose__trust-bar">
+          {trustItems.map(({ title, description, icon: Icon, flag }) => (
+            <article className="why-choose__trust-item" key={title}>
+              <div
+                className={`why-choose__trust-icon ${
+                  flag ? "why-choose__trust-icon--flag" : ""
+                }`}
+              >
+                {flag ? (
+                  <img
+                    src={indiaFlag}
+                    alt="India flag"
+                    className="why-choose__india-flag"
+                  />
+                ) : (
+                  <Icon size={34} strokeWidth={1.5} />
+                )}
               </div>
 
-              <h3>{item.title}</h3>
-
-              <p>{item.description}</p>
-            </div>
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            </article>
           ))}
         </div>
       </div>

@@ -1,599 +1,335 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import {
-  AlertCircle,
-  ArrowUpRight,
-  Building2,
-  CheckCircle2,
-  Clock3,
+  ChevronRight,
   Globe2,
+  Headphones,
+  LockKeyhole,
   Mail,
   MapPin,
   MessageCircle,
-  PackageSearch,
   Phone,
   Send,
-  ShieldCheck,
-  Sparkles,
+  UserRound,
 } from "lucide-react";
 
-import { useLanguage } from "../../Context/LanguageContext";
 import "./Contact.css";
 
-function Contact() {
-  const formRef = useRef(null);
-  const { t } = useLanguage();
+const initialForm = {
+  name: "",
+  email: "",
+  phone: "",
+  country: "",
+  product: "",
+  message: "",
+};
 
-  const [loading, setLoading] = useState(false);
+function Contact() {
+  const [formData, setFormData] = useState(initialForm);
   const [status, setStatus] = useState({
     type: "",
     message: "",
   });
+  const [isSending, setIsSending] = useState(false);
 
-  const getText = (key, fallback) => {
-    const value = t(key);
-    return value && value !== key ? value : fallback;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((current) => ({
+      ...current,
+      [name]: value,
+    }));
+
+    if (status.message) {
+      setStatus({ type: "", message: "" });
+    }
   };
 
-  const whatsappNumber = "917867869243";
-
-  const contactCards = [
-    {
-      icon: Mail,
-      label: getText("contact.emailLabel", "Business Email"),
-      value: "saiyedglobalexport@gmail.com",
-      href: "mailto:saiyedglobalexport@gmail.com",
-      description: getText(
-        "contact.emailDescription",
-        "Send product details, quotations and business proposals."
-      ),
-    },
-    {
-      icon: Phone,
-      label: getText("contact.phoneLabel", "Phone & WhatsApp"),
-      value: "+91 78678 69243",
-      href: "tel:+917867869243",
-      description: getText(
-        "contact.phoneDescription",
-        "Connect directly for export and sourcing enquiries."
-      ),
-    },
-    {
-      icon: MapPin,
-      label: getText("contact.locationLabel", "Business Location"),
-      value: getText(
-        "contact.locationValue",
-        "Petlad, Anand, Gujarat, India"
-      ),
-      description: getText(
-        "contact.locationDescription",
-        "Operating from Gujarat with a global export vision."
-      ),
-    },
-  ];
-
-  const trustPoints = [
-    {
-      icon: ShieldCheck,
-      title: getText("contact.trust1Title", "Secure Enquiry"),
-      text: getText(
-        "contact.trust1Text",
-        "Your business information is handled professionally."
-      ),
-    },
-    {
-      icon: Clock3,
-      title: getText("contact.trust2Title", "Quick Response"),
-      text: getText(
-        "contact.trust2Text",
-        "Our team aims to respond as quickly as possible."
-      ),
-    },
-    {
-      icon: Globe2,
-      title: getText("contact.trust3Title", "Global Support"),
-      text: getText(
-        "contact.trust3Text",
-        "International buyers and business enquiries are welcome."
-      ),
-    },
-  ];
-
-  const openWhatsApp = () => {
-    const message =
-      "Hello Saiyed Global Exports, I would like to enquire about your products, pricing, MOQ, documentation and shipping options.";
-
-    const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-      message
-    )}`;
-
-    window.open(link, "_blank", "noopener,noreferrer");
-  };
-
-  const sendEmail = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (loading) return;
-
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
-    if (!serviceId || !templateId || !publicKey) {
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.phone.trim() ||
+      !formData.country.trim() ||
+      !formData.product.trim() ||
+      !formData.message.trim()
+    ) {
       setStatus({
         type: "error",
-        message: getText(
-          "contact.configurationError",
-          "The contact form is not configured yet. Please contact us by email, phone or WhatsApp."
-        ),
+        message: "Please complete all required fields.",
       });
-
       return;
     }
 
-    if (!formRef.current) {
-      setStatus({
-        type: "error",
-        message: getText(
-          "contact.formError",
-          "The enquiry form could not be loaded. Please refresh the page and try again."
-        ),
-      });
-
-      return;
-    }
-
-    setLoading(true);
-    setStatus({
-      type: "",
-      message: "",
-    });
+    setIsSending(true);
+    setStatus({ type: "", message: "" });
 
     try {
-      await emailjs.sendForm(
-        serviceId,
-        templateId,
-        formRef.current,
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         {
-          publicKey,
-        }
+          from_name: formData.name,
+          from_email: formData.email,
+          phone: formData.phone,
+          country: formData.country,
+          product_requirement: formData.product,
+          message: formData.message,
+        },
+        {
+          publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        },
       );
 
       setStatus({
         type: "success",
-        message: getText(
-          "contact.successMessage",
-          "Your enquiry has been sent successfully. Our team will contact you shortly."
-        ),
+        message: "Your enquiry has been sent successfully.",
       });
 
-      formRef.current.reset();
+      setFormData(initialForm);
     } catch (error) {
       console.error("EmailJS error:", error);
 
       setStatus({
         type: "error",
-        message: getText(
-          "contact.errorMessage",
-          "Your enquiry could not be sent. Please try again or contact us directly."
-        ),
+        message:
+          "Enquiry could not be sent. Please try again or contact us on WhatsApp.",
       });
     } finally {
-      setLoading(false);
+      setIsSending(false);
     }
   };
 
+  const openWhatsApp = () => {
+    const message = encodeURIComponent(
+      "Hello Saiyed Global Exports, I would like to discuss a product requirement.",
+    );
+
+    window.open(`https://wa.me/919876543210?text=${message}`, "_blank");
+  };
+
   return (
-    <section className="contact-section" id="contact">
-      <div className="contact-background" aria-hidden="true">
-        <div className="contact-grid-pattern" />
-        <div className="contact-glow contact-glow-one" />
-        <div className="contact-glow contact-glow-two" />
-        <div className="contact-orbit contact-orbit-one" />
-        <div className="contact-orbit contact-orbit-two" />
-      </div>
+    <section id="contact" className="contact-luxury">
+      <div className="contact-luxury__glow contact-luxury__glow--one" />
+      <div className="contact-luxury__glow contact-luxury__glow--two" />
 
-      <div className="contact-container">
-        <div
-          className="contact-info"
-          data-aos="fade-right"
-          data-aos-duration="900"
-        >
-          <span className="contact-label">
-            <Sparkles size={15} />
-            {getText("contact.label", "GET IN TOUCH")}
-          </span>
+      <div className="contact-luxury__container">
+        <div className="contact-luxury__info">
+          <div className="contact-luxury__eyebrow">
+            <span className="contact-luxury__eyebrow-dot" />
+            <span>Let&apos;s Connect</span>
+          </div>
 
-          <h2>
-            {getText(
-              "contact.heading",
-              "Let’s Build a Strong Global Business Connection"
-            )}
+          <h2 className="contact-luxury__title">
+            Get In Touch With
+            <span>Saiyed Global Exports</span>
           </h2>
 
-          <p className="contact-description">
-            {getText(
-              "contact.description",
-              "Contact Saiyed Global Exports for product sourcing, quotation requests, bulk orders, export documentation, shipping information and international business opportunities."
-            )}
+          <div className="contact-luxury__title-line" />
+
+          <p className="contact-luxury__description">
+            We are here to help with product requirements, export enquiries and
+            business collaboration. Share your requirement and our team will
+            guide you through the next steps.
           </p>
 
-          <div className="contact-highlight-card">
-            <div className="contact-highlight-icon">
-              <Building2 size={28} />
+          <div className="contact-luxury__cards">
+            <article className="contact-luxury__card">
+              <div className="contact-luxury__card-icon">
+                <Phone size={27} strokeWidth={1.7} />
+              </div>
+
+              <div>
+                <span>Phone</span>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+                <small>Monday–Saturday, 10 AM–7 PM</small>
+              </div>
+            </article>
+
+            <article className="contact-luxury__card">
+              <div className="contact-luxury__card-icon">
+                <Mail size={27} strokeWidth={1.7} />
+              </div>
+
+              <div>
+                <span>Email</span>
+                <a href="mailto:info@saiyed-global-exports.com">
+                  info@saiyed-global-exports.com
+                </a>
+                <small>We usually reply within 24 hours</small>
+              </div>
+            </article>
+
+            <article className="contact-luxury__card">
+              <div className="contact-luxury__card-icon">
+                <MapPin size={28} strokeWidth={1.7} />
+              </div>
+
+              <div>
+                <span>Location</span>
+                <strong>Petlad, Anand, Gujarat</strong>
+                <small>India</small>
+              </div>
+            </article>
+
+            <article className="contact-luxury__card">
+              <div className="contact-luxury__card-icon">
+                <MessageCircle size={28} strokeWidth={1.7} />
+              </div>
+
+              <div>
+                <span>WhatsApp</span>
+                <button type="button" onClick={openWhatsApp}>
+                  Start a quick conversation
+                </button>
+                <small>Fast enquiry support</small>
+              </div>
+            </article>
+          </div>
+
+          <div className="contact-luxury__world-card">
+            <div className="contact-luxury__world-icon">
+              <Globe2 size={31} strokeWidth={1.6} />
             </div>
 
             <div>
+              <strong>India Based. Globally Focused.</strong>
               <span>
-                {getText(
-                  "contact.companyLabel",
-                  "SAIYED GLOBAL EXPORTS"
-                )}
+                Connecting quality Indian products with international buyers.
               </span>
-
-              <h3>
-                {getText(
-                  "contact.companyHeading",
-                  "Professional Export Support From India"
-                )}
-              </h3>
-
-              <p>
-                {getText(
-                  "contact.companyText",
-                  "Share your requirement and receive guidance regarding product availability, pricing, MOQ, packaging and shipping."
-                )}
-              </p>
             </div>
-          </div>
-
-          <div className="contact-details-list">
-            {contactCards.map((item) => {
-              const Icon = item.icon;
-
-              const content = (
-                <>
-                  <span className="info-icon">
-                    <Icon size={21} />
-                  </span>
-
-                  <span className="info-content">
-                    <span className="info-label">
-                      {item.label}
-                    </span>
-
-                    <strong>{item.value}</strong>
-                    <small>{item.description}</small>
-                  </span>
-
-                  {item.href && (
-                    <span className="info-arrow">
-                      <ArrowUpRight size={18} />
-                    </span>
-                  )}
-                </>
-              );
-
-              if (item.href) {
-                return (
-                  <a
-                    className="info-box"
-                    href={item.href}
-                    key={item.label}
-                    aria-label={`${item.label}: ${item.value}`}
-                  >
-                    {content}
-                  </a>
-                );
-              }
-
-              return (
-                <div className="info-box" key={item.label}>
-                  {content}
-                </div>
-              );
-            })}
-          </div>
-
-          <button
-            type="button"
-            className="contact-whatsapp-button"
-            onClick={openWhatsApp}
-          >
-            <span className="contact-whatsapp-icon">
-              <MessageCircle size={21} />
-            </span>
-
-            <span>
-              <small>
-                {getText(
-                  "contact.whatsappLabel",
-                  "QUICK WHATSAPP ENQUIRY"
-                )}
-              </small>
-
-              <strong>
-                {getText(
-                  "contact.whatsappText",
-                  "Chat With Our Export Team"
-                )}
-              </strong>
-            </span>
-
-            <ArrowUpRight size={19} />
-          </button>
-
-          <div className="contact-trust-grid">
-            {trustPoints.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <div
-                  className="contact-trust-item"
-                  key={item.title}
-                >
-                  <Icon size={18} />
-
-                  <span>
-                    <strong>{item.title}</strong>
-                    <small>{item.text}</small>
-                  </span>
-                </div>
-              );
-            })}
           </div>
         </div>
 
-        <div
-          className="contact-form-wrapper"
-          data-aos="fade-left"
-          data-aos-duration="900"
-        >
-          <form
-            ref={formRef}
-            onSubmit={sendEmail}
-            className="contact-form"
-          >
-            <div className="contact-form-topbar">
-              <div className="contact-form-status-badge">
-                <span />
-                {getText(
-                  "contact.enquiriesOpen",
-                  "ENQUIRIES OPEN"
-                )}
-              </div>
+        <div className="contact-luxury__form-panel">
+          <div className="contact-luxury__form-eyebrow">
+            <Send size={17} strokeWidth={1.8} />
+            <span>Send Your Requirement</span>
+          </div>
 
-              <div className="contact-form-code">
-                SGE / 2026
-              </div>
-            </div>
+          <h3>Send Us Your Enquiry</h3>
 
-            <div className="contact-form-heading">
-              <span>
-                {getText(
-                  "contact.formLabel",
-                  "SEND A BUSINESS ENQUIRY"
-                )}
-              </span>
+          <span className="contact-luxury__form-line" />
 
-              <h3>
-                {getText(
-                  "contact.formHeading",
-                  "Tell Us About Your Requirement"
-                )}
-              </h3>
+          <p className="contact-luxury__form-intro">
+            Fill in the form and our team will respond with the best available
+            sourcing and export support.
+          </p>
 
-              <p>
-                {getText(
-                  "contact.formDescription",
-                  "Provide your product, quantity and destination details so our team can understand your requirement."
-                )}
-              </p>
-            </div>
+          <form className="contact-luxury__form" onSubmit={handleSubmit}>
+            <label className="contact-luxury__field">
+              <UserRound size={19} strokeWidth={1.7} />
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name *"
+                value={formData.name}
+                onChange={handleChange}
+                autoComplete="name"
+              />
+            </label>
 
-            <div className="contact-form-grid">
-              <div className="form-group">
-                <label htmlFor="contact-name">
-                  {getText("contact.nameLabel", "Full Name")}
-                  <span>*</span>
-                </label>
+            <label className="contact-luxury__field">
+              <Mail size={19} strokeWidth={1.7} />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email *"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
+              />
+            </label>
 
-                <input
-                  id="contact-name"
-                  type="text"
-                  name="user_name"
-                  placeholder={getText(
-                    "contact.namePlaceholder",
-                    "Enter your full name"
-                  )}
-                  autoComplete="name"
-                  required
-                />
-              </div>
+            <label className="contact-luxury__field">
+              <Phone size={19} strokeWidth={1.7} />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Phone Number *"
+                value={formData.phone}
+                onChange={handleChange}
+                autoComplete="tel"
+              />
+            </label>
 
-              <div className="form-group">
-                <label htmlFor="contact-email">
-                  {getText(
-                    "contact.emailFieldLabel",
-                    "Email Address"
-                  )}
-                  <span>*</span>
-                </label>
+            <label className="contact-luxury__field">
+              <Globe2 size={19} strokeWidth={1.7} />
+              <input
+                type="text"
+                name="country"
+                placeholder="Country *"
+                value={formData.country}
+                onChange={handleChange}
+                autoComplete="country-name"
+              />
+            </label>
 
-                <input
-                  id="contact-email"
-                  type="email"
-                  name="user_email"
-                  placeholder={getText(
-                    "contact.emailPlaceholder",
-                    "Enter your email address"
-                  )}
-                  autoComplete="email"
-                  required
-                />
-              </div>
+            <label className="contact-luxury__field contact-luxury__field--full">
+              <Headphones size={19} strokeWidth={1.7} />
+              <input
+                type="text"
+                name="product"
+                placeholder="Product Requirement *"
+                value={formData.product}
+                onChange={handleChange}
+              />
+            </label>
 
-              <div className="form-group">
-                <label htmlFor="contact-phone">
-                  {getText(
-                    "contact.phoneFieldLabel",
-                    "Phone Number"
-                  )}
-                </label>
-
-                <input
-                  id="contact-phone"
-                  type="tel"
-                  name="user_phone"
-                  placeholder={getText(
-                    "contact.phonePlaceholder",
-                    "Include country code"
-                  )}
-                  autoComplete="tel"
-                  inputMode="tel"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="contact-country">
-                  {getText(
-                    "contact.countryLabel",
-                    "Country"
-                  )}
-                </label>
-
-                <input
-                  id="contact-country"
-                  type="text"
-                  name="user_country"
-                  placeholder={getText(
-                    "contact.countryPlaceholder",
-                    "Enter destination country"
-                  )}
-                  autoComplete="country-name"
-                />
-              </div>
-
-              <div className="form-group form-group-full">
-                <label htmlFor="contact-product">
-                  {getText(
-                    "contact.productLabel",
-                    "Product Requirement"
-                  )}
-                </label>
-
-                <div className="form-input-icon-wrapper">
-                  <PackageSearch size={18} />
-
-                  <input
-                    id="contact-product"
-                    type="text"
-                    name="product_requirement"
-                    placeholder={getText(
-                      "contact.productPlaceholder",
-                      "Which product are you interested in?"
-                    )}
-                  />
-                </div>
-              </div>
-
-              <div className="form-group form-group-full">
-                <label htmlFor="contact-message">
-                  {getText(
-                    "contact.messageLabel",
-                    "Requirement Details"
-                  )}
-                  <span>*</span>
-                </label>
-
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  rows="6"
-                  placeholder={getText(
-                    "contact.messagePlaceholder",
-                    "Tell us about quantity, packaging, destination, expected delivery and other requirements..."
-                  )}
-                  required
-                />
-              </div>
-            </div>
-
-            <input
-              type="hidden"
-              name="website"
-              value="Saiyed Global Exports"
-            />
-
-            <input
-              type="hidden"
-              name="reply_to"
-              value="saiyedglobalexport@gmail.com"
-            />
-
-            <input
-              type="hidden"
-              name="business_location"
-              value="Petlad, Anand, Gujarat, India"
-            />
+            <label className="contact-luxury__field contact-luxury__field--message">
+              <MessageCircle size={19} strokeWidth={1.7} />
+              <textarea
+                name="message"
+                rows="5"
+                placeholder="Your Message *"
+                value={formData.message}
+                onChange={handleChange}
+              />
+            </label>
 
             {status.message && (
               <div
-                className={`form-status ${status.type}`}
+                className={`contact-luxury__status contact-luxury__status--${status.type}`}
                 role="status"
-                aria-live="polite"
               >
-                {status.type === "success" ? (
-                  <CheckCircle2 size={20} />
-                ) : (
-                  <AlertCircle size={20} />
-                )}
-
-                <span>{status.message}</span>
+                {status.message}
               </div>
             )}
 
             <button
               type="submit"
-              className="contact-submit-button"
-              disabled={loading}
+              className="contact-luxury__submit"
+              disabled={isSending}
             >
-              {loading ? (
-                <span
-                  className="contact-submit-loader"
-                  aria-hidden="true"
-                />
-              ) : (
-                <Send size={19} />
-              )}
-
-              <span>
-                {loading
-                  ? getText(
-                      "contact.sendingButton",
-                      "Sending Enquiry..."
-                    )
-                  : getText(
-                      "contact.submitButton",
-                      "Send Business Enquiry"
-                    )}
-              </span>
-
-              {!loading && <ArrowUpRight size={18} />}
+              <Send size={20} strokeWidth={1.9} />
+              <span>{isSending ? "Sending..." : "Send Enquiry"}</span>
+              <ChevronRight size={19} strokeWidth={1.9} />
             </button>
 
-            <div className="contact-form-footer">
-              <ShieldCheck size={15} />
-
-              <p>
-                {getText(
-                  "contact.privacyNote",
-                  "Your details will only be used to respond to your business enquiry."
-                )}
-              </p>
+            <div className="contact-luxury__privacy">
+              <LockKeyhole size={15} strokeWidth={1.8} />
+              <span>Your information is kept private and secure.</span>
             </div>
           </form>
         </div>
+      </div>
+
+      <div className="contact-luxury__quick">
+        <div className="contact-luxury__quick-icon">
+          <Headphones size={29} strokeWidth={1.7} />
+        </div>
+
+        <div>
+          <strong>Need Quick Assistance?</strong>
+          <span>Our team is ready to help with your requirement.</span>
+        </div>
+
+        <button type="button" onClick={openWhatsApp}>
+          <MessageCircle size={19} strokeWidth={1.8} />
+          Chat On WhatsApp
+        </button>
       </div>
     </section>
   );

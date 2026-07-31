@@ -103,4 +103,31 @@ section {
   .fade-in {
     animation: none;
   }
+}.about-image-placeholder {
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at center, rgba(242, 184, 75, 0.18), transparent 45%),
+    linear-gradient(145deg, #0b2034, #04101d);
+}
+
+.about-image-placeholder svg {
+  margin-bottom: 22px;
+  color: #f2b84b;
+}
+
+.about-image-placeholder h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: 2rem;
+}
+
+.about-image-placeholder p {
+  margin: 0;
+  color: #f2b84b;
 }

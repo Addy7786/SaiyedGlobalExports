@@ -4,16 +4,16 @@ import "./ScrollReveal.css";
 function ScrollReveal() {
   useEffect(() => {
     const elements = document.querySelectorAll(
-      "main section, body > #root > div section, #root > section, #root footer"
+      "main section, #root footer"
     );
 
-    elements.forEach((element, index) => {
-      element.classList.add("scroll-reveal");
-
-      if (index === 0) {
+    if (!("IntersectionObserver" in window)) {
+      elements.forEach((element) => {
         element.classList.add("scroll-reveal-visible");
-      }
-    });
+      });
+
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -25,13 +25,17 @@ function ScrollReveal() {
         });
       },
       {
-        threshold: 0.08,
-        rootMargin: "0px 0px -50px 0px",
+        threshold: 0.03,
+        rootMargin: "0px 0px 100px 0px",
       }
     );
 
-    elements.forEach((element) => {
-      if (!element.classList.contains("scroll-reveal-visible")) {
+    elements.forEach((element, index) => {
+      element.classList.add("scroll-reveal");
+
+      if (index === 0) {
+        element.classList.add("scroll-reveal-visible");
+      } else {
         observer.observe(element);
       }
     });

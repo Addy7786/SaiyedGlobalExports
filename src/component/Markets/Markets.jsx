@@ -12,6 +12,13 @@ import {
   Truck,
 } from "lucide-react";
 import { useLanguage } from "../../Context/LanguageContext";
+import middleEastImage from "../../assets/markets/01-middle-east.webp";
+import europeImage from "../../assets/markets/02-europe.webp";
+import africaImage from "../../assets/markets/03-africa.webp";
+import asiaImage from "../../assets/markets/04-asia.webp";
+import northAmericaImage from "../../assets/markets/05-north-america.webp";
+import networkHeroImage from "../../assets/markets/global-network-premium.webp";
+import globalMarketsImage from "../../assets/markets/06-global-markets.webp";
 import "./Markets.css";
 
 function Markets() {
@@ -28,6 +35,7 @@ function Markets() {
     {
       icon: Building2,
       code: "GCC",
+      image: middleEastImage,
       title: getText("markets.middleEastTitle", "Middle East"),
       description: getText(
         "markets.middleEastText",
@@ -41,6 +49,7 @@ function Markets() {
     {
       icon: Globe2,
       code: "EU",
+      image: europeImage,
       title: getText("markets.europeTitle", "Europe"),
       description: getText(
         "markets.europeText",
@@ -54,6 +63,7 @@ function Markets() {
     {
       icon: Ship,
       code: "AF",
+      image: africaImage,
       title: getText("markets.africaTitle", "Africa"),
       description: getText(
         "markets.africaText",
@@ -67,6 +77,7 @@ function Markets() {
     {
       icon: Plane,
       code: "AS",
+      image: asiaImage,
       title: getText("markets.asiaTitle", "Asia"),
       description: getText(
         "markets.asiaText",
@@ -75,6 +86,34 @@ function Markets() {
       countries: getText(
         "markets.asiaCountries",
         "Singapore • Malaysia • Indonesia • Sri Lanka"
+      ),
+    },
+    {
+      icon: Building2,
+      code: "NA",
+      image: northAmericaImage,
+      title: getText("markets.northAmericaTitle", "North America"),
+      description: getText(
+        "markets.northAmericaText",
+        "Supporting international buyers with Indian product sourcing, documentation and dependable shipment coordination."
+      ),
+      countries: getText(
+        "markets.northAmericaCountries",
+        "United States • Canada • Mexico"
+      ),
+    },
+    {
+      icon: Globe2,
+      code: "GL",
+      image: globalMarketsImage,
+      title: getText("markets.globalTitle", "Global Markets"),
+      description: getText(
+        "markets.globalText",
+        "Flexible export support for buyers across new and established destinations worldwide."
+      ),
+      countries: getText(
+        "markets.globalCountries",
+        "Worldwide Trade Opportunities"
       ),
     },
   ];
@@ -194,203 +233,132 @@ function Markets() {
           </p>
         </div>
 
-        <div className="markets-content">
-          <div
-            className="markets-map-area"
-            data-aos="fade-right"
-            data-aos-duration="900"
-          >
-            <div className="markets-map-card">
-              <div className="markets-map-header">
-                <div>
-                  <span>
-                    {getText("markets.networkLabel", "EXPORT NETWORK")}
-                  </span>
+        <div className="markets-visual" data-aos="fade-up" data-aos-duration="900">
+          <div className="markets-visual-image-wrap">
+            <img
+              src={networkHeroImage}
+              alt={getText(
+                "markets.globalVisualAlt",
+                "Saiyed Global Exports international trade network"
+              )}
+              className="markets-visual-image"
+            />
 
-                  <strong>
-                    {getText(
-                      "markets.networkStatus",
-                      "Global trade connections"
-                    )}
-                  </strong>
-                </div>
+            <div className="markets-visual-overlay" />
 
-                <div className="markets-live-status">
-                  <span />
-                  {getText("markets.activeStatus", "Active")}
-                </div>
+            <div className="markets-visual-topbar">
+              <div>
+                <span>{getText("markets.networkLabel", "EXPORT NETWORK")}</span>
+                <strong>
+                  {getText(
+                    "markets.networkStatus",
+                    "Global trade connections"
+                  )}
+                </strong>
               </div>
 
-              <div className="markets-map-globe">
-                <Globe2 size={280} strokeWidth={0.55} />
-              </div>
-
-              <div className="markets-orbit markets-orbit-one" />
-              <div className="markets-orbit markets-orbit-two" />
-              <div className="markets-orbit markets-orbit-three" />
-
-              <div className="markets-map-center">
-                <div className="markets-earth">
-                  <Globe2 size={78} strokeWidth={1.15} />
-
-                  <span className="markets-earth-glow" />
-                  <span className="markets-earth-ring markets-earth-ring-one" />
-                  <span className="markets-earth-ring markets-earth-ring-two" />
-
-                  <div className="markets-india-marker">
-                    <span className="markets-pulse" />
-                  </div>
-                </div>
-
-                <div className="markets-center-label">
-                  <strong>
-                    {getText("markets.indiaTitle", "India")}
-                  </strong>
-
-                  <span>
-                    {getText(
-                      "markets.indiaText",
-                      "Our Global Supply Hub"
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <span className="market-route market-route-one">
+              <div className="markets-live-status">
                 <span />
-              </span>
+                {getText("markets.activeStatus", "Active")}
+              </div>
+            </div>
 
-              <span className="market-route market-route-two">
-                <span />
-              </span>
-
-              <span className="market-route market-route-three">
-                <span />
-              </span>
-
-              <span className="market-route market-route-four">
-                <span />
-              </span>
-
-              <div className="market-location market-location-one">
-                <span className="market-location-dot" />
-
-                <div>
-                  <small>GCC</small>
-                  {getText("markets.middleEastShort", "Middle East")}
-                </div>
+            <div className="markets-visual-content">
+              <div className="markets-visual-badge">
+                <Globe2 size={19} />
+                {getText("markets.indiaTitle", "India")}
               </div>
 
-              <div className="market-location market-location-two">
-                <span className="market-location-dot" />
+              <h3>
+                {getText(
+                  "markets.visualTitle",
+                  "From India to Global Business Destinations"
+                )}
+              </h3>
 
-                <div>
-                  <small>EU</small>
-                  {getText("markets.europeShort", "Europe")}
-                </div>
+              <p>
+                {getText(
+                  "markets.visualText",
+                  "Professional sourcing, documentation and logistics support for international buyers."
+                )}
+              </p>
+            </div>
+
+            <div className="markets-visual-stats">
+              <div>
+                <strong>6+</strong>
+                <span>{getText("markets.regionsLabel", "Key Regions")}</span>
               </div>
-
-              <div className="market-location market-location-three">
-                <span className="market-location-dot" />
-
-                <div>
-                  <small>AF</small>
-                  {getText("markets.africaShort", "Africa")}
-                </div>
+              <div>
+                <strong>Sea</strong>
+                <span>{getText("markets.seaNetwork", "Sea Network")}</span>
               </div>
-
-              <div className="market-location market-location-four">
-                <span className="market-location-dot" />
-
-                <div>
-                  <small>AS</small>
-                  {getText("markets.asiaShort", "Asia")}
-                </div>
-              </div>
-
-              <div className="markets-map-footer">
-                <div>
-                  <Ship size={17} />
-                  <span>
-                    {getText("markets.seaNetwork", "Sea Network")}
-                  </span>
-                </div>
-
-                <div>
-                  <Plane size={17} />
-                  <span>
-                    {getText("markets.airNetwork", "Air Network")}
-                  </span>
-                </div>
-
-                <div>
-                  <Truck size={17} />
-                  <span>
-                    {getText("markets.landNetwork", "Land Support")}
-                  </span>
-                </div>
+              <div>
+                <strong>Air</strong>
+                <span>{getText("markets.airNetwork", "Air Network")}</span>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="markets-list">
-            {markets.map((market, index) => {
-              const Icon = market.icon;
+        <div className="markets-list markets-list-premium">
+          {markets.map((market, index) => {
+            const Icon = market.icon;
 
-              return (
-                <article
-                  className="market-card"
-                  key={market.title}
-                  data-aos="fade-left"
-                  data-aos-delay={index * 100}
-                >
-                  <div className="market-card-top">
+            return (
+              <article
+                className="market-card market-card-image"
+                key={market.code}
+                data-aos="fade-up"
+                data-aos-delay={index * 80}
+              >
+                <div className="market-card-media">
+                  <img src={market.image} alt={market.title} loading="lazy" />
+                  <div className="market-card-media-overlay" />
+
+                  <div className="market-card-media-top">
                     <div className="market-icon">
-                      <Icon size={28} strokeWidth={1.8} />
+                      <Icon size={24} strokeWidth={1.8} />
                     </div>
 
-                    <span className="market-code">
-                      {market.code}
-                    </span>
+                    <span className="market-code">{market.code}</span>
                   </div>
 
-                  <div className="market-card-content">
+                  <div className="market-card-media-title">
+                    <span>{getText("markets.destinationLabel", "DESTINATION")}</span>
                     <h3>{market.title}</h3>
-
-                    <p>{market.description}</p>
-
-                    <div className="market-countries">
-                      <MapPin size={15} />
-                      <span>{market.countries}</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="market-enquiry-button"
-                      onClick={() =>
-                        openMarketEnquiry(market.title)
-                      }
-                      aria-label={`Send enquiry for ${market.title}`}
-                    >
-                      <MessageCircle size={17} />
-
-                      <span>
-                        {getText(
-                          "markets.marketEnquiry",
-                          "Market Enquiry"
-                        )}
-                      </span>
-
-                      <ArrowUpRight
-                        className="market-enquiry-arrow"
-                        size={17}
-                      />
-                    </button>
                   </div>
-                </article>
-              );
-            })}
-          </div>
+                </div>
+
+                <div className="market-card-content">
+                  <p>{market.description}</p>
+
+                  <div className="market-countries">
+                    <MapPin size={15} />
+                    <span>{market.countries}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="market-enquiry-button"
+                    onClick={() => openMarketEnquiry(market.title)}
+                    aria-label={`Send enquiry for ${market.title}`}
+                  >
+                    <MessageCircle size={17} />
+
+                    <span>
+                      {getText("markets.marketEnquiry", "Market Enquiry")}
+                    </span>
+
+                    <ArrowUpRight
+                      className="market-enquiry-arrow"
+                      size={17}
+                    />
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <div className="markets-highlights">
@@ -420,10 +388,7 @@ function Markets() {
         <div className="markets-process" data-aos="fade-up">
           <div className="markets-process-heading">
             <span>
-              {getText(
-                "markets.processTag",
-                "HOW WE SUPPORT EXPORTS"
-              )}
+              {getText("markets.processTag", "HOW WE SUPPORT EXPORTS")}
             </span>
 
             <h3>
@@ -489,10 +454,7 @@ function Markets() {
             className="markets-cta-button"
             onClick={() =>
               openMarketEnquiry(
-                getText(
-                  "markets.internationalMarket",
-                  "international"
-                )
+                getText("markets.internationalMarket", "international")
               )
             }
           >

@@ -5,18 +5,16 @@ import {
   ClipboardCheck,
   FileCheck2,
   Globe2,
-  Handshake,
   Headphones,
-  MapPin,
   MessageCircle,
   PackageCheck,
-  Plane,
   ShieldCheck,
   Ship,
-  Sparkles,
   Truck,
 } from "lucide-react";
+
 import { useLanguage } from "../../Context/LanguageContext";
+import aboutImage from "../../assets/about-logistics.png";
 import "./About.css";
 
 function About() {
@@ -36,25 +34,25 @@ function About() {
       title: getText("about.feature1Title", "Global Trade Network"),
       text: getText(
         "about.feature1Text",
-        "Connecting trusted Indian suppliers with importers, wholesalers and businesses across international markets."
+        "Connecting trusted Indian suppliers with buyers and businesses across international markets."
       ),
     },
     {
       icon: PackageCheck,
       number: "02",
-      title: getText("about.feature2Title", "Quality-Focused Sourcing"),
+      title: getText("about.feature2Title", "Quality Sourcing"),
       text: getText(
         "about.feature2Text",
-        "Products are sourced according to buyer requirements with attention to quality, packaging and reliability."
+        "Products sourced according to buyer requirements with focus on quality, packaging and reliability."
       ),
     },
     {
       icon: Truck,
       number: "03",
-      title: getText("about.feature3Title", "Export Logistics Support"),
+      title: getText("about.feature3Title", "Export Logistics"),
       text: getText(
         "about.feature3Text",
-        "We coordinate transportation, documentation and shipment requirements for smooth international dispatch."
+        "Professional coordination of transportation, documentation and international shipment requirements."
       ),
     },
     {
@@ -63,28 +61,9 @@ function About() {
       title: getText("about.feature4Title", "Transparent Service"),
       text: getText(
         "about.feature4Text",
-        "Clear communication, honest coordination and long-term business relationships remain our priority."
+        "Clear communication, responsible coordination and dependable long-term business relationships."
       ),
     },
-  ];
-
-  const trustPoints = [
-    getText(
-      "about.trustPoint1",
-      "Trusted supplier coordination across India"
-    ),
-    getText(
-      "about.trustPoint2",
-      "Buyer-focused product sourcing support"
-    ),
-    getText(
-      "about.trustPoint3",
-      "Clear quotation, MOQ and export communication"
-    ),
-    getText(
-      "about.trustPoint4",
-      "Sea and air shipment coordination"
-    ),
   ];
 
   const stats = [
@@ -113,16 +92,16 @@ function About() {
       title: getText("about.workflow1Title", "Requirement Review"),
       text: getText(
         "about.workflow1Text",
-        "We understand your product, quantity, packaging and destination requirements."
+        "We understand your required product, quantity, packaging and destination."
       ),
     },
     {
       icon: PackageCheck,
       step: "02",
-      title: getText("about.workflow2Title", "Supplier Coordination"),
+      title: getText("about.workflow2Title", "Product Sourcing"),
       text: getText(
         "about.workflow2Text",
-        "Suitable suppliers are identified and product information is coordinated."
+        "Suitable suppliers and product options are coordinated according to your needs."
       ),
     },
     {
@@ -131,16 +110,16 @@ function About() {
       title: getText("about.workflow3Title", "Export Preparation"),
       text: getText(
         "about.workflow3Text",
-        "Commercial details, documentation and shipping requirements are prepared."
+        "Commercial details, documentation and shipment requirements are prepared."
       ),
     },
     {
       icon: Ship,
       step: "04",
-      title: getText("about.workflow4Title", "International Dispatch"),
+      title: getText("about.workflow4Title", "Global Dispatch"),
       text: getText(
         "about.workflow4Text",
-        "The shipment is coordinated through sea or air freight to the destination."
+        "The shipment is coordinated through sea or air freight to its destination."
       ),
     },
   ];
@@ -149,414 +128,252 @@ function About() {
     {
       icon: BadgeCheck,
       title: getText("about.support1Title", "Quality"),
-      text: getText(
-        "about.support1Text",
-        "Product-focused sourcing"
-      ),
+      text: getText("about.support1Text", "Buyer-focused sourcing"),
     },
     {
       icon: FileCheck2,
       title: getText("about.support2Title", "Documentation"),
-      text: getText(
-        "about.support2Text",
-        "Export process support"
-      ),
+      text: getText("about.support2Text", "Export process support"),
     },
     {
       icon: Truck,
       title: getText("about.support3Title", "Logistics"),
-      text: getText(
-        "about.support3Text",
-        "Shipment coordination"
-      ),
+      text: getText("about.support3Text", "Shipment coordination"),
     },
     {
       icon: Headphones,
       title: getText("about.support4Title", "Support"),
-      text: getText(
-        "about.support4Text",
-        "Responsive communication"
-      ),
+      text: getText("about.support4Text", "Responsive communication"),
     },
   ];
 
   const openWhatsApp = () => {
     const message =
-      "Hello Saiyed Global Exports, I would like to know more about your company, available products, pricing, MOQ and export services.";
+      "Hello Saiyed Global Exports, I would like to know more about your products, pricing, MOQ and export services.";
 
-    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
       message
     )}`;
 
-    window.open(whatsappLink, "_blank", "noopener,noreferrer");
+    window.open(link, "_blank", "noopener,noreferrer");
   };
 
   return (
     <section className="about-section" id="about">
-      <div className="about-background" aria-hidden="true">
-        <div className="about-grid-pattern" />
-        <div className="about-glow about-glow-one" />
-        <div className="about-glow about-glow-two" />
-        <div className="about-shape about-shape-one" />
-        <div className="about-shape about-shape-two" />
-      </div>
-
       <div className="about-container">
-        <div className="about-heading" data-aos="fade-up">
-          <span className="about-tag">
-            <Sparkles size={15} />
-            {getText("about.tag", "ABOUT SAIYED GLOBAL EXPORTS")}
-          </span>
-
-          <h2>
-            {getText(
-              "about.heading",
-              "Building Global Business Through Trust, Quality and Reliable Trade"
-            )}
-          </h2>
-
-          <p>
-            {getText(
-              "about.description",
-              "Saiyed Global Exports connects international buyers with quality Indian products through professional sourcing, transparent communication, export coordination and dependable logistics support."
-            )}
-          </p>
-        </div>
-
         <div className="about-main-grid">
           <div
-            className="about-company-panel"
+            className="about-content"
             data-aos="fade-right"
             data-aos-duration="900"
           >
-            <div className="about-company-card">
-              <div className="about-company-card-top">
-                <div className="about-company-icon">
-                  <Globe2 size={30} strokeWidth={1.8} />
-                </div>
+            <div className="about-kicker">
+              <span className="about-kicker-line" />
 
-                <div className="about-company-status">
-                  <span />
-                  {getText("about.activeStatus", "GLOBAL TRADE READY")}
-                </div>
-              </div>
+              <span>{getText("about.tag", "ABOUT US")}</span>
+            </div>
 
-              <span className="about-company-eyebrow">
-                {getText("about.companyEyebrow", "WHO WE ARE")}
+            <h2>
+              <span className="about-heading-dark">
+                {getText("about.headingLine1", "Connecting India")}
               </span>
 
-              <h3>
-                {getText(
-                  "about.cardTitle",
-                  "Your Trusted Partner for Indian Product Exports"
-                )}
-              </h3>
+              <span className="about-heading-gold">
+                {getText("about.headingLine2", "to Global Markets")}
+              </span>
+            </h2>
 
-              <p>
-                {getText(
-                  "about.cardText1",
-                  "We support businesses worldwide in sourcing quality products from India according to their market needs, commercial requirements and destination standards."
-                )}
-              </p>
+            <div className="about-title-line" />
 
-              <p>
-                {getText(
-                  "about.cardText2",
-                  "Our mission is to simplify international sourcing through responsible supplier coordination, transparent information and dependable export support."
-                )}
-              </p>
+            <p>
+              {getText(
+                "about.cardText1",
+                "Saiyed Global Exports connects international buyers with quality Indian products through responsible sourcing, transparent communication and dependable export coordination."
+              )}
+            </p>
 
-              <div className="about-trust-list">
-                {trustPoints.map((point) => (
-                  <div className="about-trust-item" key={point}>
-                    <span>
-                      <Check size={15} strokeWidth={2.5} />
-                    </span>
+            <p>
+              {getText(
+                "about.cardText2",
+                "From understanding your product requirement to coordinating documentation and shipment, we work to make international sourcing clear, professional and reliable."
+              )}
+            </p>
 
-                    <p>{point}</p>
-                  </div>
-                ))}
+            <div className="about-trust-list">
+              <div className="about-trust-item">
+                <span>
+                  <Check size={14} strokeWidth={3} />
+                </span>
+
+                <p>
+                  {getText(
+                    "about.trustPoint1",
+                    "Trusted supplier coordination across India"
+                  )}
+                </p>
               </div>
 
-              <div className="about-company-actions">
-                <button
-                  type="button"
-                  className="about-primary-button"
-                  onClick={openWhatsApp}
-                >
-                  <MessageCircle size={18} />
-                  <span>
-                    {getText(
-                      "about.companyEnquiry",
-                      "Discuss Your Requirement"
-                    )}
-                  </span>
-                  <ArrowUpRight size={18} />
-                </button>
+              <div className="about-trust-item">
+                <span>
+                  <Check size={14} strokeWidth={3} />
+                </span>
 
-                <a
-                  href="#products"
-                  className="about-secondary-button"
-                >
-                  <PackageCheck size={18} />
-                  <span>
-                    {getText(
-                      "about.viewProducts",
-                      "View Products"
-                    )}
-                  </span>
-                </a>
+                <p>
+                  {getText(
+                    "about.trustPoint2",
+                    "Clear quotation, MOQ and export communication"
+                  )}
+                </p>
               </div>
+            </div>
 
-              <div className="about-mini-footer">
-                <div>
-                  <MapPin size={16} />
-                  <span>
-                    {getText(
-                      "about.location",
-                      "Gujarat, India"
-                    )}
-                  </span>
-                </div>
+            <div className="about-actions">
+              <button
+                type="button"
+                className="about-primary-button"
+                onClick={openWhatsApp}
+              >
+                <MessageCircle size={18} />
 
-                <div>
-                  <Ship size={16} />
-                  <span>
-                    {getText(
-                      "about.exportSolutions",
-                      "Global Export Solutions"
-                    )}
-                  </span>
-                </div>
-              </div>
+                <span>
+                  {getText(
+                    "about.companyEnquiry",
+                    "Discuss Your Requirement"
+                  )}
+                </span>
+
+                <ArrowUpRight size={18} />
+              </button>
+
+              <a href="#products" className="about-secondary-button">
+                <PackageCheck size={18} />
+
+                <span>
+                  {getText("about.viewProducts", "View Products")}
+                </span>
+              </a>
             </div>
           </div>
 
           <div
-            className="about-visual-panel"
+            className="about-visual"
             data-aos="fade-left"
             data-aos-duration="900"
           >
-            <div className="about-visual-card">
-              <div className="about-visual-header">
-                <div>
+            <div className="about-image-frame">
+              <div className="about-image-gold-border" />
+
+              <div className="about-image-shape">
+                <img
+                  src={aboutImage}
+                  alt={getText(
+                    "about.imageAlt",
+                    "Saiyed Global Exports international logistics"
+                  )}
+                />
+
+                <div className="about-image-overlay" />
+
+                <div className="about-image-top-label">
+                  <Globe2 size={16} />
+
                   <span>
                     {getText(
-                      "about.supplyNetworkLabel",
-                      "SUPPLY NETWORK"
+                      "about.activeStatus",
+                      "INDIA TO THE WORLD"
                     )}
                   </span>
+                </div>
 
+              </div>
+
+              <div className="about-image-badge">
+                <BadgeCheck size={25} />
+
+                <div>
                   <strong>
                     {getText(
-                      "about.supplyNetworkTitle",
-                      "India to Global Markets"
+                      "about.imageBadgeTitle",
+                      "Trusted Export Partner"
                     )}
                   </strong>
-                </div>
 
-                <div className="about-verified">
-                  <BadgeCheck size={17} />
-                  {getText("about.verified", "Verified Process")}
-                </div>
-              </div>
-
-              <div className="about-world-visual">
-                <div className="about-world-ring about-world-ring-one" />
-                <div className="about-world-ring about-world-ring-two" />
-                <div className="about-world-ring about-world-ring-three" />
-
-                <div className="about-world-center">
-                  <Globe2 size={93} strokeWidth={1.05} />
-                  <span className="about-world-pulse" />
-                </div>
-
-                <span className="about-route about-route-one">
-                  <span />
-                </span>
-
-                <span className="about-route about-route-two">
-                  <span />
-                </span>
-
-                <span className="about-route about-route-three">
-                  <span />
-                </span>
-
-                <span className="about-route about-route-four">
-                  <span />
-                </span>
-
-                <div className="about-floating-card about-floating-card-one">
-                  <Plane size={19} />
-                  <div>
-                    <strong>
-                      {getText("about.airFreight", "Air Freight")}
-                    </strong>
-                    <span>
-                      {getText("about.fastDelivery", "Fast delivery")}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="about-floating-card about-floating-card-two">
-                  <Ship size={19} />
-                  <div>
-                    <strong>
-                      {getText("about.seaFreight", "Sea Freight")}
-                    </strong>
-                    <span>
-                      {getText("about.bulkShipping", "Bulk shipping")}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="about-floating-card about-floating-card-three">
-                  <PackageCheck size={19} />
-                  <div>
-                    <strong>
-                      {getText("about.productSupply", "Product Supply")}
-                    </strong>
-                    <span>
-                      {getText("about.indianSourcing", "Indian sourcing")}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="about-floating-card about-floating-card-four">
-                  <Handshake size={19} />
-                  <div>
-                    <strong>
-                      {getText("about.tradeSupport", "Trade Support")}
-                    </strong>
-                    <span>
-                      {getText(
-                        "about.buyerCoordination",
-                        "Buyer coordination"
-                      )}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="about-visual-bottom">
-                <div>
-                  <span className="about-dot about-dot-green" />
-                  <p>
+                  <span>
                     {getText(
-                      "about.status1",
-                      "Supplier coordination active"
+                      "about.imageBadgeText",
+                      "Quality • Reliability • Global Trade"
                     )}
-                  </p>
-                </div>
-
-                <div>
-                  <span className="about-dot about-dot-blue" />
-                  <p>
-                    {getText(
-                      "about.status2",
-                      "International enquiries open"
-                    )}
-                  </p>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="about-stats">
-          {stats.map((stat, index) => (
-            <article
-              className="about-stat-card"
-              key={stat.label}
-              data-aos="zoom-in"
-              data-aos-delay={index * 80}
-            >
-              <span className="about-stat-number">
-                0{index + 1}
-              </span>
+        <div className="about-feature-grid">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
 
+            return (
+              <article
+                className="about-feature-card"
+                key={feature.number}
+                data-aos="fade-up"
+                data-aos-delay={index * 80}
+              >
+                <div className="about-feature-top">
+                  <div className="about-feature-icon">
+                    <Icon size={25} strokeWidth={1.8} />
+                  </div>
+
+                  <span className="about-feature-number">
+                    {feature.number}
+                  </span>
+                </div>
+
+                <h3>{feature.title}</h3>
+
+                <p>{feature.text}</p>
+
+                <div className="about-feature-bottom-line" />
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="about-stats">
+          {stats.map((stat) => (
+            <div className="about-stat" key={stat.label}>
               <strong>{stat.value}</strong>
-              <p>{stat.label}</p>
-            </article>
+
+              <span>{stat.label}</span>
+            </div>
           ))}
         </div>
 
-        <div className="about-features-section">
-          <div className="about-subheading" data-aos="fade-up">
+        <div className="about-workflow">
+          <div
+            className="about-section-heading"
+            data-aos="fade-up"
+          >
             <span>
               {getText(
-                "about.featuresTag",
-                "WHY CHOOSE US"
+                "about.workflowTag",
+                "OUR EXPORT APPROACH"
               )}
             </span>
 
             <h3>
               {getText(
-                "about.featuresHeading",
-                "Professional Support at Every Stage of International Trade"
+                "about.workflowHeading",
+                "From Product Requirement to International Dispatch"
               )}
             </h3>
 
             <p>
               {getText(
-                "about.featuresDescription",
-                "From product sourcing to shipment coordination, our approach is built around clear communication, buyer requirements and dependable execution."
-              )}
-            </p>
-          </div>
-
-          <div className="about-features-grid">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-
-              return (
-                <article
-                  className="about-feature-card"
-                  key={feature.number}
-                  data-aos="fade-up"
-                  data-aos-delay={index * 90}
-                >
-                  <div className="about-feature-top">
-                    <div className="about-feature-icon">
-                      <Icon size={27} strokeWidth={1.8} />
-                    </div>
-
-                    <span>{feature.number}</span>
-                  </div>
-
-                  <h4>{feature.title}</h4>
-                  <p>{feature.text}</p>
-
-                  <div className="about-feature-line" />
-                </article>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="about-workflow">
-          <div className="about-workflow-heading" data-aos="fade-up">
-            <div>
-              <span>
-                {getText(
-                  "about.workflowTag",
-                  "OUR EXPORT APPROACH"
-                )}
-              </span>
-
-              <h3>
-                {getText(
-                  "about.workflowHeading",
-                  "A Clear Process From Enquiry to International Dispatch"
-                )}
-              </h3>
-            </div>
-
-            <p>
-              {getText(
                 "about.workflowDescription",
-                "Each requirement is handled step by step to keep the sourcing and export process organized, transparent and business-focused."
+                "A clear and professionally coordinated export process designed around your business requirements."
               )}
             </p>
           </div>
@@ -570,34 +387,29 @@ function About() {
                   className="about-workflow-card"
                   key={item.step}
                   data-aos="fade-up"
-                  data-aos-delay={index * 100}
+                  data-aos-delay={index * 90}
                 >
-                  <div className="about-workflow-card-top">
-                    <div className="about-workflow-icon">
-                      <Icon size={22} />
-                    </div>
-
-                    <span>{item.step}</span>
+                  <div className="about-workflow-icon">
+                    <Icon size={25} />
                   </div>
 
-                  <h4>{item.title}</h4>
-                  <p>{item.text}</p>
+                  <span className="about-workflow-number">
+                    {item.step}
+                  </span>
 
-                  {index < workflow.length - 1 && (
-                    <div
-                      className="about-workflow-connector"
-                      aria-hidden="true"
-                    >
-                      <ArrowUpRight size={17} />
-                    </div>
-                  )}
+                  <h4>{item.title}</h4>
+
+                  <p>{item.text}</p>
                 </article>
               );
             })}
           </div>
         </div>
 
-        <div className="about-support-strip" data-aos="fade-up">
+        <div
+          className="about-support-strip"
+          data-aos="fade-up"
+        >
           {supportItems.map((item) => {
             const Icon = item.icon;
 
@@ -606,36 +418,33 @@ function About() {
                 className="about-support-item"
                 key={item.title}
               >
-                <div>
-                  <Icon size={20} />
+                <div className="about-support-icon">
+                  <Icon size={21} />
                 </div>
 
-                <span>
+                <div>
                   <strong>{item.title}</strong>
-                  <small>{item.text}</small>
-                </span>
+
+                  <span>{item.text}</span>
+                </div>
               </div>
             );
           })}
         </div>
 
         <div className="about-cta" data-aos="fade-up">
-          <div className="about-cta-icon">
-            <Handshake size={31} />
-          </div>
-
           <div className="about-cta-content">
             <span>
               {getText(
                 "about.ctaLabel",
-                "LET'S BUILD A RELIABLE TRADE CONNECTION"
+                "START A GLOBAL TRADE CONNECTION"
               )}
             </span>
 
             <h3>
               {getText(
                 "about.ctaTitle",
-                "Looking for quality Indian products for your market?"
+                "Looking for quality Indian products?"
               )}
             </h3>
 
@@ -653,12 +462,14 @@ function About() {
             onClick={openWhatsApp}
           >
             <MessageCircle size={18} />
+
             <span>
               {getText(
                 "about.ctaButton",
-                "Start a Business Enquiry"
+                "Send Your Enquiry"
               )}
             </span>
+
             <ArrowUpRight size={18} />
           </button>
         </div>
