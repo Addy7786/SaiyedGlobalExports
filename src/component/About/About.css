@@ -476,7 +476,10 @@
 ========================================================= */
 
 .about-workflow {
+  position: relative;
   margin-top: 110px;
+  padding-top: 42px;
+  overflow: visible;
 }
 
 .about-section-heading {
@@ -526,6 +529,8 @@
   gap: 22px;
   width: min(1260px, 92%);
   margin: 0 auto;
+  padding-top: 38px;
+  overflow: visible;
 }
 
 .about-workflow-grid::before {
@@ -546,8 +551,9 @@
 
 .about-workflow-card {
   position: relative;
+  overflow: visible;
   min-height: 245px;
-  padding: 52px 26px 28px;
+  padding: 62px 26px 28px;
   border-radius: 10px;
   border: 1px solid rgba(7, 24, 46, 0.08);
   background: #ffffff;
@@ -562,18 +568,21 @@
 
 .about-workflow-icon {
   position: absolute;
-  top: -22px;
+  top: -34px;
   left: 50%;
+  z-index: 6;
   transform: translateX(-50%);
-  width: 62px;
-  height: 62px;
+  width: 72px;
+  height: 72px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   color: #c2953f;
   background: #ffffff;
-  border: 1px solid rgba(201, 151, 63, 0.25);
-  box-shadow: 0 14px 28px rgba(7, 24, 46, 0.12);
+  border: 2px solid rgba(201, 151, 63, 0.3);
+  box-shadow:
+    0 18px 36px rgba(7, 24, 46, 0.15),
+    0 0 0 8px rgba(220, 180, 90, 0.08);
 }
 
 .about-workflow-number {
@@ -1066,7 +1075,8 @@
 .about-workflow {
   position: relative;
   margin-top: 128px;
-  padding: 88px 0 18px;
+  padding: 118px 0 30px;
+  overflow: visible;
 }
 
 .about-workflow::before {
@@ -1105,7 +1115,8 @@
 
 .about-workflow-grid {
   gap: 26px;
-  padding: 0 28px 42px;
+  padding: 42px 28px 42px;
+  overflow: visible;
 }
 
 .about-workflow-grid::before {
@@ -1126,9 +1137,9 @@
 }
 
 .about-workflow-card {
-  overflow: hidden;
+  overflow: visible;
   min-height: 285px;
-  padding: 62px 30px 32px;
+  padding: 68px 30px 32px;
   border-color: rgba(180, 135, 49, 0.14);
   border-radius: 15px;
   background:
@@ -1158,14 +1169,15 @@
 }
 
 .about-workflow-icon {
-  top: -27px;
-  width: 70px;
-  height: 70px;
+  top: -36px;
+  z-index: 7;
+  width: 74px;
+  height: 74px;
   border: 2px solid rgba(201, 151, 63, 0.3);
   color: #b48731;
   background: linear-gradient(145deg, #ffffff, #faf4e6);
   box-shadow:
-    0 16px 32px rgba(7, 24, 46, 0.13),
+    0 18px 36px rgba(7, 24, 46, 0.15),
     0 0 0 8px rgba(220, 180, 90, 0.08);
 }
 
@@ -1361,5 +1373,63 @@
 
   .about-cta-content h3 {
     font-size: 2.05rem;
+  }
+}
+
+
+/* =========================================================
+   FINAL WORKFLOW ICON VISIBILITY FIX
+   Keeps all four circular workflow icons fully visible.
+========================================================= */
+
+.about-workflow,
+.about-workflow-grid,
+.about-workflow-card {
+  overflow: visible;
+}
+
+.about-workflow-card::before {
+  z-index: 1;
+  border-radius: 15px 15px 0 0;
+}
+
+.about-workflow-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.about-workflow-icon {
+  position: absolute;
+  z-index: 10;
+}
+
+@media (max-width: 1020px) {
+  .about-workflow {
+    padding-top: 104px;
+  }
+
+  .about-workflow-grid {
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 720px) {
+  .about-workflow {
+    padding-top: 92px;
+  }
+
+  .about-workflow-grid {
+    padding-top: 38px;
+  }
+
+  .about-workflow-card {
+    margin-top: 18px;
+    padding-top: 66px;
+  }
+
+  .about-workflow-icon {
+    top: -34px;
+    width: 70px;
+    height: 70px;
   }
 }
