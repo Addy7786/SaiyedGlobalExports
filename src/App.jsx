@@ -13,8 +13,6 @@ import Footer from "./component/Footer/Footer";
 
 import BackToTop from "./component/BackToTop/BackToTop";
 import CookieConsent from "./component/CookieConsent/CookieConsent";
-import CursorGlow from "./component/CursorGlow/CursorGlow";
-import CustomCursor from "./component/CustomCursor/CustomCursor";
 import FloatingSocial from "./component/FloatingSocial/FloatingSocial";
 import ScrollProgress from "./component/ScrollProgress/ScrollProgress";
 import ScrollReveal from "./component/ScrollReveal/ScrollReveal";
@@ -25,8 +23,6 @@ import "./App.css";
 function App() {
   return (
     <>
-      <CustomCursor />
-      <CursorGlow />
       <ScrollProgress />
       <ScrollReveal />
 
@@ -39,10 +35,6 @@ function App() {
         <Products />
         <Markets />
         <WhyChooseUs />
-
-        {/* Counter Removed */}
-        {/* Testimonials Removed */}
-
         <Gallery />
         <FAQ />
         <Contact />

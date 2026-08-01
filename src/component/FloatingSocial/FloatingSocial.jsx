@@ -1,6 +1,6 @@
 import {
-  FaInstagram,
   FaFacebookF,
+  FaInstagram,
   FaLinkedinIn,
   FaWhatsapp,
 } from "react-icons/fa";
@@ -12,50 +12,58 @@ import "./FloatingSocial.css";
 function FloatingSocial() {
   return (
     <div className="floating-social">
-
       <a
         href="https://instagram.com"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="social-btn instagram"
+        aria-label="Instagram"
+        title="Instagram"
       >
-        <FaInstagram />
+        <FaInstagram size={21} />
       </a>
 
       <a
         href="https://facebook.com"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="social-btn facebook"
+        aria-label="Facebook"
+        title="Facebook"
       >
-        <FaFacebookF />
+        <FaFacebookF size={20} />
       </a>
 
       <a
         href="https://linkedin.com"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="social-btn linkedin"
+        aria-label="LinkedIn"
+        title="LinkedIn"
       >
-        <FaLinkedinIn />
+        <FaLinkedinIn size={20} />
       </a>
 
       <a
         href="mailto:info@saiyedglobalexports.com"
         className="social-btn email"
+        aria-label="Email"
+        title="Email"
       >
-        <MdEmail />
+        <MdEmail size={22} />
       </a>
 
       <a
         href="https://wa.me/917867869243"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="social-btn whatsapp"
+        aria-label="WhatsApp"
+        title="WhatsApp"
       >
-        <FaWhatsapp />
+        <FaWhatsapp size={21} />
       </a>
-
     </div>
   );
 }

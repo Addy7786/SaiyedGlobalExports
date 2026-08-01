@@ -8,7 +8,19 @@ import {
 } from "lucide-react";
 
 import { useLanguage } from "../../Context/LanguageContext";
+
 import heroImage from "../../assets/hero-global-trade.png";
+
+import indiaFlag from "../../assets/flags/india.png";
+import uaeFlag from "../../assets/flags/uae.png";
+import saudiFlag from "../../assets/flags/saudi-arabia.png";
+import turkeyFlag from "../../assets/flags/turkey.png";
+import ukFlag from "../../assets/flags/united-kingdom.png";
+import usaFlag from "../../assets/flags/united-states.png";
+import malaysiaFlag from "../../assets/flags/malaysia.png";
+import singaporeFlag from "../../assets/flags/singapore.png";
+import southAfricaFlag from "../../assets/flags/south-africa.png";
+
 import "./Hero.css";
 
 function Hero() {
@@ -23,6 +35,11 @@ function Hero() {
 
     return translatedText;
   };
+
+  const heroBadgeText = getText(
+    "hero.badge",
+    "India • Global Trade"
+  ).replace(/\s*•\s*2026\s*$/i, "");
 
   const whatsappNumber = "917867869243";
 
@@ -44,6 +61,45 @@ function Hero() {
     }
   };
 
+  const countryFlags = [
+    {
+      name: "India",
+      image: indiaFlag,
+    },
+    {
+      name: "United Arab Emirates",
+      image: uaeFlag,
+    },
+    {
+      name: "Saudi Arabia",
+      image: saudiFlag,
+    },
+    {
+      name: "Turkey",
+      image: turkeyFlag,
+    },
+    {
+      name: "United Kingdom",
+      image: ukFlag,
+    },
+    {
+      name: "United States",
+      image: usaFlag,
+    },
+    {
+      name: "Malaysia",
+      image: malaysiaFlag,
+    },
+    {
+      name: "Singapore",
+      image: singaporeFlag,
+    },
+    {
+      name: "South Africa",
+      image: southAfricaFlag,
+    },
+  ];
+
   return (
     <section
       className="hero-section"
@@ -53,9 +109,7 @@ function Hero() {
       }}
     >
       <div className="hero-background-image" aria-hidden="true" />
-
       <div className="hero-dark-overlay" aria-hidden="true" />
-
       <div className="hero-top-glow" aria-hidden="true" />
 
       <div className="hero-container">
@@ -65,7 +119,7 @@ function Hero() {
             data-aos="fade-down"
             data-aos-delay="100"
           >
-            {getText("hero.badge", "India • Global Trade • 2026")}
+            {heroBadgeText}
           </div>
 
           <div className="hero-gold-line" aria-hidden="true" />
@@ -84,7 +138,10 @@ function Hero() {
             </span>
 
             <span>
-              {getText("hero.titleLineThree", "With Global Markets.")}
+              {getText(
+                "hero.titleLineThree",
+                "With Global Markets."
+              )}
             </span>
           </h1>
 
@@ -129,7 +186,10 @@ function Hero() {
               <MessageCircle size={20} />
 
               <span>
-                {getText("hero.contactButton", "Get In Touch")}
+                {getText(
+                  "hero.contactButton",
+                  "Get In Touch"
+                )}
               </span>
 
               <ArrowRight size={19} />
@@ -165,16 +225,28 @@ function Hero() {
             data-aos="fade-up"
             data-aos-delay="750"
           >
-            <span title="India">🇮🇳</span>
-            <span title="United Arab Emirates">🇦🇪</span>
-            <span title="Saudi Arabia">🇸🇦</span>
-            <span title="Turkey">🇹🇷</span>
-            <span title="United Kingdom">🇬🇧</span>
-            <span title="United States">🇺🇸</span>
-            <span title="Malaysia">🇲🇾</span>
-            <span title="Singapore">🇸🇬</span>
-            <span title="South Africa">🇿🇦</span>
-            <span className="hero-more-countries">+</span>
+            {countryFlags.map((country) => (
+              <div
+                className="hero-country-flag-item"
+                key={country.name}
+                title={country.name}
+              >
+                <img
+                  src={country.image}
+                  alt={`${country.name} flag`}
+                  loading="eager"
+                  draggable={false}
+                />
+              </div>
+            ))}
+
+            <div
+              className="hero-more-countries"
+              title="More Countries"
+              aria-label="More Countries"
+            >
+              +
+            </div>
           </div>
         </div>
       </div>

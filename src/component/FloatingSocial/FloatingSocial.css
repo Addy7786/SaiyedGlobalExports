@@ -1,48 +1,69 @@
-floating-social {
+.floating-social,
+.floating-social * {
+  box-sizing: border-box;
+}
+
+.floating-social {
   position: fixed;
   top: 50%;
-  left: 20px;
-  z-index: 9999;
+  left: 18px;
+  z-index: 900;
 
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 11px;
 
   transform: translateY(-50%);
 }
 
 .social-btn {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
 
   color: #ffffff;
   text-decoration: none;
 
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
 
   transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    filter 0.3s ease;
+}
+
+.social-btn svg {
+  display: block;
+  flex: 0 0 auto;
+  max-width: 22px;
+  max-height: 22px;
 }
 
 .social-btn:hover {
-  transform: translateX(8px) scale(1.08);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  transform: translateX(5px) scale(1.06);
+  filter: brightness(1.06);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.28),
+    0 0 18px rgba(255, 255, 255, 0.1);
 }
 
 .instagram {
-  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+  background: linear-gradient(
+    135deg,
+    #833ab4 0%,
+    #fd1d1d 52%,
+    #fcb045 100%
+  );
 }
 
 .facebook {
@@ -61,19 +82,23 @@ floating-social {
   background: #25d366;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .floating-social {
-    left: 15px;
+    left: 12px;
   }
 
   .social-btn {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .social-btn svg {
+    max-width: 20px;
+    max-height: 20px;
   }
 }
 
-/* Mobile: footer already contains social links.
-   Hide this fixed group so it never covers page content. */
 @media (max-width: 768px) {
   .floating-social {
     display: none !important;
