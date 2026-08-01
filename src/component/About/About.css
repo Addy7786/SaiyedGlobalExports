@@ -1433,3 +1433,179 @@
     height: 70px;
   }
 }
+
+/* =========================================================
+   FINAL MOBILE ABOUT FIX
+   Removes desktop overlap and prevents image/card cropping.
+========================================================= */
+
+@media (max-width: 720px) {
+  .about-section {
+    overflow: hidden;
+    padding: 82px 0 72px;
+  }
+
+  .about-container {
+    width: calc(100% - 24px);
+  }
+
+  .about-main-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  .about-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 4px;
+  }
+
+  .about-content h2 {
+    font-size: clamp(2.7rem, 12vw, 4rem);
+    line-height: 0.98;
+  }
+
+  .about-actions {
+    margin-bottom: 10px;
+  }
+
+  .about-visual {
+    width: 100%;
+  }
+
+  .about-image-frame {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding-top: 74px;
+    overflow: visible;
+  }
+
+  .about-image-gold-border {
+    inset: 68px -4px -4px -4px;
+    border: 2px solid rgba(196, 151, 63, 0.55);
+    border-radius: 24px;
+  }
+
+  .about-image-shape {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 22px;
+  }
+
+  .about-image-shape img {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    object-fit: contain;
+    object-position: center;
+    transform: none;
+    background: #07182e;
+  }
+
+  .about-image-shape:hover img {
+    transform: none;
+  }
+
+  .about-image-overlay {
+    border-radius: 22px;
+  }
+
+  .about-image-top-label {
+    top: 86px;
+    right: 14px;
+    padding: 9px 11px;
+    font-size: 0.58rem;
+  }
+
+  .about-image-badge {
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    max-width: 360px;
+    padding: 14px 16px;
+    border-radius: 12px;
+  }
+
+  .about-feature-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 28px auto 0;
+  }
+
+  .about-feature-card {
+    width: 100%;
+    min-height: 0;
+    padding: 28px 24px 30px;
+  }
+
+  .about-stats {
+    width: 100%;
+    margin-top: 18px;
+  }
+
+  .about-workflow {
+    margin-top: 70px;
+    padding-top: 64px;
+  }
+
+  .about-workflow-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 56px;
+    padding: 24px 14px 32px;
+  }
+
+  .about-workflow-grid::before {
+    display: none;
+  }
+
+  .about-workflow-card {
+    min-height: 0;
+    margin: 0;
+    padding: 58px 24px 28px;
+  }
+
+  .about-support-strip,
+  .about-cta {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .about-content h2 {
+    font-size: clamp(2.55rem, 11.6vw, 3.35rem);
+  }
+
+  .about-image-frame {
+    padding-top: 70px;
+  }
+
+  .about-image-badge {
+    top: 8px;
+    left: 8px;
+    width: calc(100% - 16px);
+  }
+
+  .about-image-top-label {
+    top: 80px;
+  }
+
+  .about-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-stat {
+    border-bottom: 1px solid rgba(7, 24, 46, 0.08);
+  }
+
+  .about-cta {
+    padding: 30px 20px;
+  }
+}

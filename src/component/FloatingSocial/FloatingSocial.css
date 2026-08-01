@@ -1,14 +1,14 @@
-.floating-social {
+floating-social {
   position: fixed;
   top: 50%;
   left: 20px;
-  transform: translateY(-50%);
+  z-index: 9999;
 
   display: flex;
   flex-direction: column;
   gap: 14px;
 
-  z-index: 9999;
+  transform: translateY(-50%);
 }
 
 .social-btn {
@@ -19,36 +19,30 @@
   align-items: center;
   justify-content: center;
 
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
 
-  color: #fff;
-
+  color: #ffffff;
   text-decoration: none;
 
-  backdrop-filter: blur(18px);
-
   background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
-  box-shadow: 0 10px 25px rgba(0, 0, 0, .15);
-
-  transition: .35s;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .social-btn:hover {
   transform: translateX(8px) scale(1.08);
-
-  box-shadow: 0 15px 35px rgba(0, 0, 0, .25);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
 }
 
 .instagram {
-  background: linear-gradient(
-    135deg,
-    #833ab4,
-    #fd1d1d,
-    #fcb045
-  );
+  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
 }
 
 .facebook {
@@ -78,20 +72,16 @@
   }
 }
 
+/* Mobile: footer already contains social links.
+   Hide this fixed group so it never covers page content. */
 @media (max-width: 768px) {
   .floating-social {
-    left: 0;
-    right: 0;
-    bottom: 15px;
-    top: auto;
-
-    transform: none;
-
-    flex-direction: row;
-    justify-content: center;
+    display: none !important;
   }
+}
 
-  .social-btn:hover {
-    transform: translateY(-6px) scale(1.08);
+@media (prefers-reduced-motion: reduce) {
+  .social-btn {
+    transition: none;
   }
 }

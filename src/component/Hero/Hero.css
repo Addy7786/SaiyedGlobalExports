@@ -703,3 +703,108 @@
     background-position: 72% center !important;
   }
 }
+
+
+/* =========================================================
+   FINAL MOBILE HERO FIX
+========================================================= */
+
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: auto;
+    overflow: hidden;
+  }
+
+  .hero-container {
+    width: calc(100% - 28px) !important;
+    padding: 102px 0 34px !important;
+  }
+
+  .hero-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .hero-title {
+    max-width: 100%;
+    margin-bottom: 20px;
+    font-size: clamp(2.45rem, 10.6vw, 3.65rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.045em;
+    overflow-wrap: normal;
+  }
+
+  .hero-description {
+    max-width: 100%;
+    font-size: 0.94rem;
+    line-height: 1.68;
+  }
+
+  .hero-actions {
+    margin-top: 26px;
+  }
+
+  .hero-primary-button,
+  .hero-secondary-button {
+    min-height: 54px;
+  }
+
+  .hero-feature-panel {
+    width: calc(100% - 28px);
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-background-image {
+    background-size: cover !important;
+    background-position: 68% center !important;
+  }
+
+  .hero-dark-overlay {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2, 10, 18, 0.58) 0%,
+        rgba(2, 10, 18, 0.72) 30%,
+        rgba(2, 10, 18, 0.93) 68%,
+        rgba(2, 10, 18, 0.99) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(2, 10, 18, 0.92) 0%,
+        rgba(2, 10, 18, 0.48) 100%
+      ) !important;
+  }
+
+  .hero-container {
+    padding-top: 96px !important;
+  }
+
+  .hero-badge {
+    max-width: 100%;
+    min-height: 34px;
+    padding: 0 13px;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .hero-title {
+    font-size: clamp(2.3rem, 10.4vw, 3.25rem) !important;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .hero-primary-button,
+  .hero-secondary-button {
+    width: 100%;
+  }
+
+  .hero-feature-panel {
+    grid-template-columns: 1fr;
+  }
+}
