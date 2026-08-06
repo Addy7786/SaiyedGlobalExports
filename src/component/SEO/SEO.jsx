@@ -4,15 +4,15 @@ function SEO({
   title = "Saiyed Global Exports | Import & Export Company India",
   description = "Saiyed Global Exports is an Indian import-export company connecting quality Indian products with global markets.",
   keywords = "Saiyed Global Exports, Indian exporter, import export company India, agricultural products export, spices export, textile export, global trade",
-  canonicalUrl = "https://www.saiyedglobalexports.com/",
-  image = "https://www.saiyedglobalexports.com/og-image.jpg",
+  canonicalUrl = "https://www.saiyed-global-exports.com/",
+  image = "https://www.saiyed-global-exports.com/og-image.jpg",
 }) {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Saiyed Global Exports",
-    url: "https://www.saiyedglobalexports.com/",
-    logo: "https://www.saiyedglobalexports.com/favicon-512.png",
+    url: "https://www.saiyed-global-exports.com/",
+    logo: "https://www.saiyed-global-exports.com/favicon-512.png",
     description:
       "Saiyed Global Exports connects quality Indian products with international markets.",
     email: "info@saiyedglobalexports.com",
@@ -36,7 +36,7 @@ function SEO({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Saiyed Global Exports",
-    url: "https://www.saiyedglobalexports.com/",
+    url: "https://www.saiyed-global-exports.com/",
     description,
     inLanguage: ["en", "hi", "gu", "ur"],
   };

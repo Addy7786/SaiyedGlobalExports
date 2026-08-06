@@ -8,6 +8,6 @@ Disallow: /temp/
 Disallow: /src/
 Disallow: /node_modules/
 
-Host: https://www.saiyedglobalexports.com
+Host: https://www.saiyed-global-exports.com
 
-Sitemap: https://www.saiyedglobalexports.com/sitemap.xml
+Sitemap: https://www.saiyed-global-exports.com/sitemap.xml
