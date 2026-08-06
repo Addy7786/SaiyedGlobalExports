@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 
-import "./Gallery.css"; // final gallery styles
+import "./Gallery.css";
 
 import deliveryBanner from "../../assets/gallery/delivery-banner.webp";
 import globalNetworkImage from "../../assets/gallery/gallery-global-network.webp";
@@ -20,7 +20,7 @@ import warehouseImage from "../../assets/gallery/gallery-warehouse-storage.webp"
 import qualityInspectionImage from "../../assets/gallery/gallery-quality-inspection.webp";
 import domesticTransportImage from "../../assets/gallery/gallery-domestic-transport.webp";
 import globalPartnershipImage from "../../assets/gallery/gallery-global-partnership.webp";
-import companyLogo from "../../assets/logo/saiyed-logo-no-tagline-transparent.png";
+import companyLogo from "../../assets/logo/saiyed-logo-no-tagline-transparent.webp";
 
 const galleryItems = [
   {
@@ -94,49 +94,71 @@ const trustItems = [
   },
 ];
 
-export default function Gallery() {
+function Gallery() {
   const [activeItem, setActiveItem] = useState(null);
 
-  const closeLightbox = () => setActiveItem(null);
+  const closeLightbox = () => {
+    setActiveItem(null);
+  };
 
   const showPreviousImage = () => {
-    if (!activeItem) return;
+    if (!activeItem) {
+      return;
+    }
 
     const currentIndex = galleryItems.findIndex(
       (item) => item.id === activeItem.id
     );
 
     const previousIndex =
-      currentIndex === 0 ? galleryItems.length - 1 : currentIndex - 1;
+      currentIndex === 0
+        ? galleryItems.length - 1
+        : currentIndex - 1;
 
     setActiveItem(galleryItems[previousIndex]);
   };
 
   const showNextImage = () => {
-    if (!activeItem) return;
+    if (!activeItem) {
+      return;
+    }
 
     const currentIndex = galleryItems.findIndex(
       (item) => item.id === activeItem.id
     );
 
     const nextIndex =
-      currentIndex === galleryItems.length - 1 ? 0 : currentIndex + 1;
+      currentIndex === galleryItems.length - 1
+        ? 0
+        : currentIndex + 1;
 
     setActiveItem(galleryItems[nextIndex]);
   };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (!activeItem) return;
+      if (!activeItem) {
+        return;
+      }
 
-      if (event.key === "Escape") closeLightbox();
-      if (event.key === "ArrowLeft") showPreviousImage();
-      if (event.key === "ArrowRight") showNextImage();
+      if (event.key === "Escape") {
+        closeLightbox();
+      }
+
+      if (event.key === "ArrowLeft") {
+        showPreviousImage();
+      }
+
+      if (event.key === "ArrowRight") {
+        showNextImage();
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [activeItem]);
 
   useEffect(() => {
@@ -158,6 +180,9 @@ export default function Gallery() {
                   className="gallery-final__logo"
                   src={companyLogo}
                   alt="Saiyed Global Exports"
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
                 />
 
                 <span className="gallery-final__eyebrow">
@@ -172,9 +197,9 @@ export default function Gallery() {
                 </h2>
 
                 <p className="gallery-final__intro">
-                  Delivering quality Indian products to global markets through
-                  reliable sourcing, professional coordination and trusted
-                  partnerships.
+                  Delivering quality Indian products to global markets
+                  through reliable sourcing, professional coordination
+                  and trusted partnerships.
                 </p>
 
                 <div className="gallery-final__left-bottom">
@@ -187,8 +212,9 @@ export default function Gallery() {
                     </h3>
 
                     <p>
-                      From sourcing and inspection to transport and international
-                      coordination, every stage is managed with care.
+                      From sourcing and inspection to transport and
+                      international coordination, every stage is managed
+                      with care.
                     </p>
                   </article>
 
@@ -197,9 +223,16 @@ export default function Gallery() {
                       const Icon = item.icon;
 
                       return (
-                        <div className="gallery-final__trust" key={item.id}>
+                        <div
+                          className="gallery-final__trust"
+                          key={item.id}
+                        >
                           <div className="gallery-final__trust-icon">
-                            <Icon size={18} strokeWidth={1.8} />
+                            <Icon
+                              size={18}
+                              strokeWidth={1.8}
+                              aria-hidden="true"
+                            />
                           </div>
 
                           <div>
@@ -212,14 +245,19 @@ export default function Gallery() {
 
                     <div className="gallery-final__mission">
                       <div className="gallery-final__mission-icon">
-                        <Ship size={20} strokeWidth={1.8} />
+                        <Ship
+                          size={20}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
                       </div>
 
                       <div>
                         <strong>Our Mission</strong>
+
                         <small>
-                          To connect dependable Indian suppliers with buyers
-                          across international markets.
+                          To connect dependable Indian suppliers with
+                          buyers across international markets.
                         </small>
                       </div>
                     </div>
@@ -230,13 +268,22 @@ export default function Gallery() {
 
             <div
               className="gallery-final__visual"
-              style={{ backgroundImage: `url(${deliveryBanner})` }}
+              style={{
+                backgroundImage: `url("${deliveryBanner}")`,
+              }}
             >
-              <div className="gallery-final__visual-overlay" />
+              <div
+                className="gallery-final__visual-overlay"
+                aria-hidden="true"
+              />
 
               <div className="gallery-final__badge">
                 <div className="gallery-final__badge-icon">
-                  <Globe2 size={18} strokeWidth={1.8} />
+                  <Globe2
+                    size={18}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <div>
@@ -255,8 +302,8 @@ export default function Gallery() {
               </div>
 
               <p>
-                Explore the services, systems and partnerships that support our
-                export operations.
+                Explore the services, systems and partnerships that
+                support our export operations.
               </p>
             </div>
 
@@ -265,7 +312,10 @@ export default function Gallery() {
                 const Icon = item.icon;
 
                 return (
-                  <article className="gallery-final__card" key={item.id}>
+                  <article
+                    className="gallery-final__card"
+                    key={item.id}
+                  >
                     <button
                       type="button"
                       onClick={() => setActiveItem(item)}
@@ -277,6 +327,8 @@ export default function Gallery() {
                           alt={item.title}
                           className="gallery-final__card-image"
                           loading="lazy"
+                          decoding="async"
+                          draggable="false"
                         />
 
                         <span className="gallery-final__number">
@@ -284,13 +336,20 @@ export default function Gallery() {
                         </span>
 
                         <span className="gallery-final__expand">
-                          <Expand size={15} />
+                          <Expand
+                            size={15}
+                            aria-hidden="true"
+                          />
                         </span>
                       </div>
 
                       <div className="gallery-final__card-content">
                         <div className="gallery-final__card-icon">
-                          <Icon size={19} strokeWidth={1.8} />
+                          <Icon
+                            size={19}
+                            strokeWidth={1.8}
+                            aria-hidden="true"
+                          />
                         </div>
 
                         <div>
@@ -312,15 +371,16 @@ export default function Gallery() {
           className="gallery-final-lightbox"
           role="dialog"
           aria-modal="true"
+          aria-label={`${activeItem.title} image preview`}
           onClick={closeLightbox}
         >
           <button
             type="button"
             className="gallery-final-lightbox__close"
             onClick={closeLightbox}
-            aria-label="Close"
+            aria-label="Close image preview"
           >
-            <X size={24} />
+            <X size={24} aria-hidden="true" />
           </button>
 
           <button
@@ -339,7 +399,12 @@ export default function Gallery() {
             className="gallery-final-lightbox__content"
             onClick={(event) => event.stopPropagation()}
           >
-            <img src={activeItem.image} alt={activeItem.title} />
+            <img
+              src={activeItem.image}
+              alt={activeItem.title}
+              decoding="async"
+              draggable="false"
+            />
 
             <div className="gallery-final-lightbox__caption">
               <span>{activeItem.number}</span>
@@ -367,3 +432,5 @@ export default function Gallery() {
     </>
   );
 }
+
+export default Gallery;

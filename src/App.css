@@ -130,4 +130,8 @@ section {
 .about-image-placeholder p {
   margin: 0;
   color: #f2b84b;
+}.section-loading-space {
+  width: 100%;
+  min-height: 160px;
+  background: #061426;
 }

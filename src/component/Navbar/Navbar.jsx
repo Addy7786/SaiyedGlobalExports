@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
 import { useLanguage } from "../../Context/LanguageContext.jsx";
-import logo from "../../assets/saiyed-logo.jpeg";
+
+// ✅ GOLD LOGO
+import logo from "../../assets/saiyed-logo.webp";
+
 import "./Navbar.css";
 
 const navigationLinks = [
@@ -95,9 +98,7 @@ function Navbar() {
   };
 
   return (
-    <header
-      className={`navbar ${isScrolled ? "navbar-scrolled" : ""}`}
-    >
+    <header className={`navbar ${isScrolled ? "navbar-scrolled" : ""}`}>
       <div className="navbar-shell">
         <div className="navbar-container">
           <a
@@ -107,14 +108,11 @@ function Navbar() {
             aria-label="Saiyed Global Exports Home"
           >
             <span className="navbar-logo-image-wrap">
-              <span
-                className="navbar-logo-glow"
-                aria-hidden="true"
-              />
+              <span className="navbar-logo-glow" aria-hidden="true" />
 
               <img
                 src={logo}
-                alt="Saiyed Global Exports logo"
+                alt="Saiyed Global Exports Logo"
                 className="navbar-logo-image"
                 draggable="false"
               />
@@ -191,9 +189,7 @@ function Navbar() {
               className={`navbar-toggle ${
                 isMenuOpen ? "navbar-toggle-active" : ""
               }`}
-              onClick={() =>
-                setIsMenuOpen((current) => !current)
-              }
+              onClick={() => setIsMenuOpen((current) => !current)}
               aria-label={
                 isMenuOpen
                   ? "Close navigation menu"

@@ -16,8 +16,7 @@ import {
 
 import "./Footer.css";
 
-import footerLogo from "../../assets/logo/saiyed-logo-no-tagline-transparent.png";
-
+import footerLogo from "../../assets/logo/saiyed-logo-no-tagline-transparent.webp";
 const quickLinks = [
   { label: "Home", href: "#home" },
   { label: "About Us", href: "#about" },

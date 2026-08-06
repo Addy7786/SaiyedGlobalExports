@@ -1,0 +1,32 @@
+[data-aos] {
+  visibility: visible;
+  will-change: opacity, transform;
+}
+
+.hero-section [data-aos="fade-up"] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+
+.hero-section [data-aos="fade-down"] {
+  opacity: 0;
+  transform: translate3d(0, -24px, 0);
+}
+
+.hero-section [data-aos="fade-right"] {
+  opacity: 0;
+  transform: translate3d(-28px, 0, 0);
+}
+
+.hero-section [data-aos].aos-animate {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

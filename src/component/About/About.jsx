@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { useLanguage } from "../../Context/LanguageContext";
-import aboutImage from "../../assets/about-logistics.png";
+import aboutImage from "../../assets/about-logistics.webp";
 import "./About.css";
 
 function About() {

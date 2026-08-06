@@ -11,7 +11,9 @@ import {
   Ship,
   Truck,
 } from "lucide-react";
+
 import { useLanguage } from "../../Context/LanguageContext";
+
 import middleEastImage from "../../assets/markets/01-middle-east.webp";
 import europeImage from "../../assets/markets/02-europe.webp";
 import africaImage from "../../assets/markets/03-africa.webp";
@@ -19,6 +21,7 @@ import asiaImage from "../../assets/markets/04-asia.webp";
 import northAmericaImage from "../../assets/markets/05-north-america.webp";
 import networkHeroImage from "../../assets/markets/global-network-premium.webp";
 import globalMarketsImage from "../../assets/markets/06-global-markets.webp";
+
 import "./Markets.css";
 
 function Markets() {
@@ -214,7 +217,7 @@ function Markets() {
       <div className="markets-container">
         <div className="markets-heading" data-aos="fade-up">
           <span className="markets-tag">
-            <Globe2 size={16} />
+            <Globe2 size={16} aria-hidden="true" />
             {getText("markets.tag", "GLOBAL MARKETS")}
           </span>
 
@@ -242,6 +245,10 @@ function Markets() {
                 "Saiyed Global Exports international trade network"
               )}
               className="markets-visual-image"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              draggable="false"
             />
 
             <div className="markets-visual-overlay" />
@@ -265,7 +272,7 @@ function Markets() {
 
             <div className="markets-visual-content">
               <div className="markets-visual-badge">
-                <Globe2 size={19} />
+                <Globe2 size={19} aria-hidden="true" />
                 {getText("markets.indiaTitle", "India")}
               </div>
 
@@ -289,10 +296,12 @@ function Markets() {
                 <strong>6+</strong>
                 <span>{getText("markets.regionsLabel", "Key Regions")}</span>
               </div>
+
               <div>
                 <strong>Sea</strong>
                 <span>{getText("markets.seaNetwork", "Sea Network")}</span>
               </div>
+
               <div>
                 <strong>Air</strong>
                 <span>{getText("markets.airNetwork", "Air Network")}</span>
@@ -313,19 +322,30 @@ function Markets() {
                 data-aos-delay={index * 80}
               >
                 <div className="market-card-media">
-                  <img src={market.image} alt={market.title} loading="lazy" />
+                  <img
+                    src={market.image}
+                    alt={market.title}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    draggable="false"
+                  />
+
                   <div className="market-card-media-overlay" />
 
                   <div className="market-card-media-top">
                     <div className="market-icon">
-                      <Icon size={24} strokeWidth={1.8} />
+                      <Icon size={24} strokeWidth={1.8} aria-hidden="true" />
                     </div>
 
                     <span className="market-code">{market.code}</span>
                   </div>
 
                   <div className="market-card-media-title">
-                    <span>{getText("markets.destinationLabel", "DESTINATION")}</span>
+                    <span>
+                      {getText("markets.destinationLabel", "DESTINATION")}
+                    </span>
+
                     <h3>{market.title}</h3>
                   </div>
                 </div>
@@ -334,7 +354,7 @@ function Markets() {
                   <p>{market.description}</p>
 
                   <div className="market-countries">
-                    <MapPin size={15} />
+                    <MapPin size={15} aria-hidden="true" />
                     <span>{market.countries}</span>
                   </div>
 
@@ -344,7 +364,7 @@ function Markets() {
                     onClick={() => openMarketEnquiry(market.title)}
                     aria-label={`Send enquiry for ${market.title}`}
                   >
-                    <MessageCircle size={17} />
+                    <MessageCircle size={17} aria-hidden="true" />
 
                     <span>
                       {getText("markets.marketEnquiry", "Market Enquiry")}
@@ -353,6 +373,7 @@ function Markets() {
                     <ArrowUpRight
                       className="market-enquiry-arrow"
                       size={17}
+                      aria-hidden="true"
                     />
                   </button>
                 </div>
@@ -373,7 +394,7 @@ function Markets() {
                 data-aos-delay={index * 80}
               >
                 <div className="market-highlight-icon">
-                  <Icon size={21} strokeWidth={1.9} />
+                  <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
                 </div>
 
                 <div>
@@ -410,7 +431,7 @@ function Markets() {
                 >
                   <div className="markets-process-card-top">
                     <div className="markets-process-icon">
-                      <Icon size={21} />
+                      <Icon size={21} aria-hidden="true" />
                     </div>
 
                     <span>{step.number}</span>
@@ -430,7 +451,7 @@ function Markets() {
           data-aos-delay="100"
         >
           <div className="markets-cta-icon">
-            <Globe2 size={31} />
+            <Globe2 size={31} aria-hidden="true" />
           </div>
 
           <div className="markets-cta-content">
@@ -458,7 +479,7 @@ function Markets() {
               )
             }
           >
-            <MessageCircle size={18} />
+            <MessageCircle size={18} aria-hidden="true" />
 
             <span>
               {getText(
@@ -467,7 +488,7 @@ function Markets() {
               )}
             </span>
 
-            <ArrowUpRight size={18} />
+            <ArrowUpRight size={18} aria-hidden="true" />
           </button>
         </div>
       </div>

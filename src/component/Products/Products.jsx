@@ -185,7 +185,7 @@ function Products() {
         <div className="products-heading-row">
           <div className="section-heading" data-aos="fade-up">
             <span className="section-tag">
-              <PackageCheck size={16} />
+              <PackageCheck size={16} aria-hidden="true" />
               {getText("products.tag", "OUR EXPORT PRODUCTS")}
             </span>
 
@@ -210,7 +210,7 @@ function Products() {
             data-aos-delay="150"
           >
             <div className="products-global-icon">
-              <Globe2 size={27} />
+              <Globe2 size={27} aria-hidden="true" />
             </div>
 
             <div>
@@ -242,6 +242,9 @@ function Products() {
                     src={product.image}
                     alt={product.title}
                     loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    draggable="false"
                   />
 
                   <div className="product-image-overlay" />
@@ -249,7 +252,7 @@ function Products() {
                   <span className="product-number">{product.number}</span>
 
                   <span className="product-export-badge">
-                    <Sparkles size={13} />
+                    <Sparkles size={13} aria-hidden="true" />
                     {getText("products.exportQuality", "Export Quality")}
                   </span>
                 </div>
@@ -257,7 +260,7 @@ function Products() {
                 <div className="product-card-content">
                   <div className="product-card-top">
                     <div className="product-icon">
-                      <Icon size={25} strokeWidth={1.9} />
+                      <Icon size={25} strokeWidth={1.9} aria-hidden="true" />
                     </div>
 
                     <div className="product-status">
@@ -276,14 +279,14 @@ function Products() {
                   <div className="product-highlights">
                     {product.highlights.map((highlight) => (
                       <div className="product-highlight" key={highlight}>
-                        <CheckCircle2 size={15} />
+                        <CheckCircle2 size={15} aria-hidden="true" />
                         <span>{highlight}</span>
                       </div>
                     ))}
                   </div>
 
                   <div className="product-shipping-row">
-                    <Ship size={17} />
+                    <Ship size={17} aria-hidden="true" />
                     <span>
                       {getText(
                         "products.globalShipping",
@@ -298,13 +301,16 @@ function Products() {
                     onClick={() => openWhatsAppEnquiry(product.title)}
                     aria-label={`Send enquiry for ${product.title}`}
                   >
-                    <MessageCircle size={18} />
+                    <MessageCircle size={18} aria-hidden="true" />
+
                     <span>
                       {getText("products.sendEnquiry", "Send Enquiry")}
                     </span>
+
                     <ArrowUpRight
                       className="product-btn-arrow"
                       size={18}
+                      aria-hidden="true"
                     />
                   </button>
                 </div>
@@ -319,7 +325,7 @@ function Products() {
           data-aos-delay="150"
         >
           <div className="products-bottom-icon">
-            <Package size={30} />
+            <Package size={30} aria-hidden="true" />
           </div>
 
           <div className="products-bottom-content">
@@ -353,7 +359,8 @@ function Products() {
             <span>
               {getText("products.requestProduct", "Request a Product")}
             </span>
-            <ArrowUpRight size={19} />
+
+            <ArrowUpRight size={19} aria-hidden="true" />
           </button>
         </div>
       </div>

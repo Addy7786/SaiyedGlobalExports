@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   ChevronRight,
@@ -55,7 +54,7 @@ function FAQ() {
 
   const handleToggle = (index) => {
     setActiveIndex((currentIndex) =>
-      currentIndex === index ? -1 : index,
+      currentIndex === index ? -1 : index
     );
   };
 
@@ -67,8 +66,14 @@ function FAQ() {
 
   return (
     <section id="faq" className="faq-luxury">
-      <div className="faq-luxury__glow faq-luxury__glow--one" />
-      <div className="faq-luxury__glow faq-luxury__glow--two" />
+      <div
+        className="faq-luxury__glow faq-luxury__glow--one"
+        aria-hidden="true"
+      />
+      <div
+        className="faq-luxury__glow faq-luxury__glow--two"
+        aria-hidden="true"
+      />
 
       <div className="faq-luxury__container">
         <div className="faq-luxury__intro">
@@ -161,6 +166,7 @@ function FAQ() {
                 <div
                   id={`faq-answer-${index}`}
                   className="faq-luxury__answer-wrap"
+                  aria-hidden={!isOpen}
                 >
                   <div className="faq-luxury__answer">
                     <span className="faq-luxury__answer-line" />

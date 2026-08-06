@@ -20,20 +20,39 @@ export default defineConfig({
     minify: "esbuild",
 
     cssCodeSplit: true,
-
-    chunkSizeWarningLimit: 1000,
+    assetsInlineLimit: 4096,
+    chunkSizeWarningLimit: 500,
 
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          vendor: [
-            "react-icons",
-            "@emailjs/browser",
-            "react-helmet-async",
-            "aos",
-          ],
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (
+              id.includes("react") ||
+              id.includes("react-dom")
+            ) {
+              return "react";
+            }
+
+            if (id.includes("lucide-react")) {
+              return "icons";
+            }
+
+            if (id.includes("@emailjs/browser")) {
+              return "emailjs";
+            }
+
+            if (id.includes("aos")) {
+              return "aos";
+            }
+
+            return "vendor";
+          }
         },
+
+        assetFileNames: "assets/[name]-[hash][extname]",
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
       },
     },
   },
