@@ -29,68 +29,37 @@ import southAfricaFlag from "../../assets/flags-optimized/south-africa.webp";
 import "./Hero.css";
 
 const countryFlags = [
-  {
-    name: "India",
-    image: indiaFlag,
-  },
-  {
-    name: "United Arab Emirates",
-    image: uaeFlag,
-  },
-  {
-    name: "Saudi Arabia",
-    image: saudiFlag,
-  },
-  {
-    name: "Turkey",
-    image: turkeyFlag,
-  },
-  {
-    name: "United Kingdom",
-    image: ukFlag,
-  },
-  {
-    name: "United States",
-    image: usaFlag,
-  },
-  {
-    name: "Malaysia",
-    image: malaysiaFlag,
-  },
-  {
-    name: "Singapore",
-    image: singaporeFlag,
-  },
-  {
-    name: "South Africa",
-    image: southAfricaFlag,
-  },
+  { name: "India", image: indiaFlag },
+  { name: "United Arab Emirates", image: uaeFlag },
+  { name: "Saudi Arabia", image: saudiFlag },
+  { name: "Turkey", image: turkeyFlag },
+  { name: "United Kingdom", image: ukFlag },
+  { name: "United States", image: usaFlag },
+  { name: "Malaysia", image: malaysiaFlag },
+  { name: "Singapore", image: singaporeFlag },
+  { name: "South Africa", image: southAfricaFlag },
 ];
 
 const featureItems = [
   {
     icon: Globe2,
-    lineOne: "Global",
-    lineTwo: "Sourcing",
-    small: "Premium Quality",
+    title: "Global Sourcing",
+    description: "Premium Quality",
   },
   {
     icon: Award,
-    lineOne: "Reliable",
-    lineTwo: "Partnership",
-    small: "Commitment to Trust",
+    title: "Reliable Partnership",
+    description: "Commitment To Trust",
   },
   {
     icon: Truck,
-    lineOne: "Efficient",
-    lineTwo: "Logistics",
-    small: "On-time, Every Time",
+    title: "Efficient Logistics",
+    description: "On-Time, Every Time",
   },
   {
     icon: ShieldCheck,
-    lineOne: "Ethical",
-    lineTwo: "Business",
-    small: "Integrity & Transparency",
+    title: "Ethical Business",
+    description: "Integrity & Transparency",
   },
 ];
 
@@ -101,38 +70,12 @@ function Hero() {
     useState(false);
 
   useEffect(() => {
-    let timeoutId;
-    let idleId;
-
-    const displayFeaturePanel = () => {
+    const timer = window.setTimeout(() => {
       setShowFeaturePanel(true);
-    };
-
-    if ("requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(
-        displayFeaturePanel,
-        {
-          timeout: 1100,
-        }
-      );
-    } else {
-      timeoutId = window.setTimeout(
-        displayFeaturePanel,
-        700
-      );
-    }
+    }, 450);
 
     return () => {
-      if (
-        idleId !== undefined &&
-        "cancelIdleCallback" in window
-      ) {
-        window.cancelIdleCallback(idleId);
-      }
-
-      if (timeoutId !== undefined) {
-        window.clearTimeout(timeoutId);
-      }
+      window.clearTimeout(timer);
     };
   }, []);
 
@@ -143,7 +86,7 @@ function Hero() {
 
     const refreshTimer = window.setTimeout(() => {
       AOS.refreshHard();
-    }, 100);
+    }, 120);
 
     return () => {
       window.clearTimeout(refreshTimer);
@@ -193,7 +136,10 @@ function Hero() {
   };
 
   return (
-    <section className="hero-section" id="home">
+    <section
+      className="hero-section"
+      id="home"
+    >
       <picture className="hero-picture">
         <source
           media="(max-width: 768px)"
@@ -220,31 +166,69 @@ function Hero() {
       />
 
       <div
+        className="hero-grid-overlay"
+        aria-hidden="true"
+      />
+
+      <div
         className="hero-top-glow"
         aria-hidden="true"
       />
+
+      <div
+        className="hero-bottom-glow"
+        aria-hidden="true"
+      />
+
+      <div
+        className="hero-motion-layer"
+        aria-hidden="true"
+      >
+        <span className="hero-light-ray hero-light-ray--one" />
+        <span className="hero-light-ray hero-light-ray--two" />
+        <span className="hero-light-ray hero-light-ray--three" />
+
+        <span className="hero-orb hero-orb--one" />
+        <span className="hero-orb hero-orb--two" />
+        <span className="hero-orb hero-orb--three" />
+
+        <span className="hero-particle hero-particle--one" />
+        <span className="hero-particle hero-particle--two" />
+        <span className="hero-particle hero-particle--three" />
+        <span className="hero-particle hero-particle--four" />
+        <span className="hero-particle hero-particle--five" />
+        <span className="hero-particle hero-particle--six" />
+
+        <span className="hero-route-line" />
+        <span className="hero-route-dot" />
+      </div>
 
       <div className="hero-container">
         <div className="hero-content">
           <div
             className="hero-badge"
             data-aos="fade-down"
-            data-aos-delay="60"
+            data-aos-delay="50"
           >
+            <span
+              className="hero-badge-dot"
+              aria-hidden="true"
+            />
+
             {heroBadgeText}
           </div>
 
           <div
             className="hero-gold-line"
             data-aos="fade-right"
-            data-aos-delay="100"
+            data-aos-delay="90"
             aria-hidden="true"
           />
 
           <h1
             className="hero-title"
             data-aos="fade-up"
-            data-aos-delay="140"
+            data-aos-delay="130"
           >
             <span>
               {getText(
@@ -271,18 +255,18 @@ function Hero() {
           <p
             className="hero-description"
             data-aos="fade-up"
-            data-aos-delay="220"
+            data-aos-delay="210"
           >
             {getText(
               "hero.description",
-              "Saiyed Global Exports is a trusted export partner delivering premium quality Indian products worldwide with integrity, reliability and commitment."
+              "Saiyed Global Exports connects trusted Indian suppliers with international buyers through reliable sourcing, quality assurance, secure packaging and dependable export support."
             )}
           </p>
 
           <div
             className="hero-actions"
             data-aos="fade-up"
-            data-aos-delay="300"
+            data-aos-delay="290"
           >
             <button
               type="button"
@@ -331,7 +315,7 @@ function Hero() {
           <div
             className="hero-trusted-block"
             data-aos="fade-up"
-            data-aos-delay="380"
+            data-aos-delay="360"
           >
             <div
               className="hero-trusted-line"
@@ -358,7 +342,7 @@ function Hero() {
           <div
             className="hero-country-flags"
             data-aos="fade-up"
-            data-aos-delay="440"
+            data-aos-delay="420"
           >
             {countryFlags.map((country) => (
               <div
@@ -373,7 +357,6 @@ function Hero() {
                   height="48"
                   loading="lazy"
                   decoding="async"
-                  fetchPriority="low"
                   draggable="false"
                 />
               </div>
@@ -394,47 +377,54 @@ function Hero() {
         <div
           className="hero-feature-panel"
           data-aos="fade-up"
-          data-aos-duration="650"
+          data-aos-duration="700"
+          data-aos-delay="100"
         >
           {featureItems.map(
             (
               {
                 icon: Icon,
-                lineOne,
-                lineTwo,
-                small,
+                title,
+                description,
               },
               index
             ) => (
-              <div
+              <article
                 className="hero-feature-panel-item"
-                key={lineOne}
+                key={title}
               >
                 <span className="hero-feature-panel-icon">
                   <Icon
-                    size={32}
+                    size={30}
                     aria-hidden="true"
                   />
                 </span>
 
-                <div>
-                  <strong>{lineOne}</strong>
-                  <span>{lineTwo}</span>
-                  <small>{small}</small>
+                <div className="hero-feature-panel-copy">
+                  <strong>{title}</strong>
+                  <small>{description}</small>
                 </div>
 
                 {index <
                   featureItems.length - 1 && (
-                  <div
+                  <span
                     className="hero-feature-panel-divider"
                     aria-hidden="true"
                   />
                 )}
-              </div>
+              </article>
             )
           )}
         </div>
       )}
+
+      <div
+        className="hero-scroll-indicator"
+        aria-hidden="true"
+      >
+        <span>Scroll</span>
+        <i />
+      </div>
     </section>
   );
 }

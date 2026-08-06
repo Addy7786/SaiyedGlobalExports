@@ -1,9 +1,11 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
+
 import {
   ChevronRight,
   Globe2,
   Headphones,
+  Instagram,
   LockKeyhole,
   Mail,
   MapPin,
@@ -24,13 +26,23 @@ const initialForm = {
   message: "",
 };
 
+const phoneNumber = "917867869243";
+const displayPhoneNumber = "+91 786786 9243";
+
+const instagramUrl =
+  "https://instagram.com/saiyed_global_exports";
+
 function Contact() {
-  const [formData, setFormData] = useState(initialForm);
+  const [formData, setFormData] =
+    useState(initialForm);
+
   const [status, setStatus] = useState({
     type: "",
     message: "",
   });
-  const [isSending, setIsSending] = useState(false);
+
+  const [isSending, setIsSending] =
+    useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -41,7 +53,10 @@ function Contact() {
     }));
 
     if (status.message) {
-      setStatus({ type: "", message: "" });
+      setStatus({
+        type: "",
+        message: "",
+      });
     }
   };
 
@@ -58,13 +73,19 @@ function Contact() {
     ) {
       setStatus({
         type: "error",
-        message: "Please complete all required fields.",
+        message:
+          "Please complete all required fields.",
       });
+
       return;
     }
 
     setIsSending(true);
-    setStatus({ type: "", message: "" });
+
+    setStatus({
+      type: "",
+      message: "",
+    });
 
     try {
       await emailjs.send(
@@ -79,13 +100,15 @@ function Contact() {
           message: formData.message,
         },
         {
-          publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
-        },
+          publicKey:
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        }
       );
 
       setStatus({
         type: "success",
-        message: "Your enquiry has been sent successfully.",
+        message:
+          "Your enquiry has been sent successfully.",
       });
 
       setFormData(initialForm);
@@ -104,21 +127,39 @@ function Contact() {
 
   const openWhatsApp = () => {
     const message = encodeURIComponent(
-      "Hello Saiyed Global Exports, I would like to discuss a product requirement.",
+      "Hello Saiyed Global Exports, I would like to discuss a product requirement."
     );
 
-    window.open(`https://wa.me/919876543210?text=${message}`, "_blank");
+    window.open(
+      `https://wa.me/${phoneNumber}?text=${message}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   return (
-    <section id="contact" className="contact-luxury">
-      <div className="contact-luxury__glow contact-luxury__glow--one" />
-      <div className="contact-luxury__glow contact-luxury__glow--two" />
+    <section
+      id="contact"
+      className="contact-luxury"
+    >
+      <div
+        className="contact-luxury__glow contact-luxury__glow--one"
+        aria-hidden="true"
+      />
+
+      <div
+        className="contact-luxury__glow contact-luxury__glow--two"
+        aria-hidden="true"
+      />
 
       <div className="contact-luxury__container">
         <div className="contact-luxury__info">
           <div className="contact-luxury__eyebrow">
-            <span className="contact-luxury__eyebrow-dot" />
+            <span
+              className="contact-luxury__eyebrow-dot"
+              aria-hidden="true"
+            />
+
             <span>Let&apos;s Connect</span>
           </div>
 
@@ -127,77 +168,146 @@ function Contact() {
             <span>Saiyed Global Exports</span>
           </h2>
 
-          <div className="contact-luxury__title-line" />
+          <div
+            className="contact-luxury__title-line"
+            aria-hidden="true"
+          />
 
           <p className="contact-luxury__description">
-            We are here to help with product requirements, export enquiries and
-            business collaboration. Share your requirement and our team will
-            guide you through the next steps.
+            We are here to help with product requirements,
+            export enquiries and business collaboration.
+            Share your requirement and our team will guide
+            you through the next steps.
           </p>
 
           <div className="contact-luxury__cards">
             <article className="contact-luxury__card">
               <div className="contact-luxury__card-icon">
-                <Phone size={27} strokeWidth={1.7} />
+                <Phone
+                  size={27}
+                  strokeWidth={1.7}
+                />
               </div>
 
               <div>
                 <span>Phone</span>
-                <a href="tel:+919876543210">+91 98765 43210</a>
-                <small>Monday–Saturday, 10 AM–7 PM</small>
+
+                <a href={`tel:+${phoneNumber}`}>
+                  {displayPhoneNumber}
+                </a>
+
+                <small>
+                  Monday–Saturday, 10 AM–7 PM
+                </small>
               </div>
             </article>
 
             <article className="contact-luxury__card">
               <div className="contact-luxury__card-icon">
-                <Mail size={27} strokeWidth={1.7} />
+                <Mail
+                  size={27}
+                  strokeWidth={1.7}
+                />
               </div>
 
               <div>
                 <span>Email</span>
+
                 <a href="mailto:info@saiyed-global-exports.com">
                   info@saiyed-global-exports.com
                 </a>
-                <small>We usually reply within 24 hours</small>
+
+                <small>
+                  We usually reply within 24 hours
+                </small>
               </div>
             </article>
 
             <article className="contact-luxury__card">
               <div className="contact-luxury__card-icon">
-                <MapPin size={28} strokeWidth={1.7} />
+                <MapPin
+                  size={28}
+                  strokeWidth={1.7}
+                />
               </div>
 
               <div>
                 <span>Location</span>
-                <strong>Petlad, Anand, Gujarat</strong>
+
+                <strong>
+                  Petlad, Anand, Gujarat
+                </strong>
+
                 <small>India</small>
               </div>
             </article>
 
             <article className="contact-luxury__card">
               <div className="contact-luxury__card-icon">
-                <MessageCircle size={28} strokeWidth={1.7} />
+                <MessageCircle
+                  size={28}
+                  strokeWidth={1.7}
+                />
               </div>
 
               <div>
                 <span>WhatsApp</span>
-                <button type="button" onClick={openWhatsApp}>
-                  Start a quick conversation
+
+                <button
+                  type="button"
+                  onClick={openWhatsApp}
+                >
+                  {displayPhoneNumber}
                 </button>
-                <small>Fast enquiry support</small>
+
+                <small>
+                  Fast enquiry support
+                </small>
+              </div>
+            </article>
+
+            <article className="contact-luxury__card">
+              <div className="contact-luxury__card-icon">
+                <Instagram
+                  size={28}
+                  strokeWidth={1.7}
+                />
+              </div>
+
+              <div>
+                <span>Instagram</span>
+
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @saiyed_global_exports
+                </a>
+
+                <small>
+                  Follow our export updates
+                </small>
               </div>
             </article>
           </div>
 
           <div className="contact-luxury__world-card">
             <div className="contact-luxury__world-icon">
-              <Globe2 size={31} strokeWidth={1.6} />
+              <Globe2
+                size={31}
+                strokeWidth={1.6}
+              />
             </div>
 
             <div>
-              <strong>India Based. Globally Focused.</strong>
+              <strong>
+                India Based. Globally Focused.
+              </strong>
+
               <span>
-                Connecting quality Indian products with international buyers.
+                Connecting quality Indian products with
+                international buyers.
               </span>
             </div>
           </div>
@@ -205,22 +315,37 @@ function Contact() {
 
         <div className="contact-luxury__form-panel">
           <div className="contact-luxury__form-eyebrow">
-            <Send size={17} strokeWidth={1.8} />
+            <Send
+              size={17}
+              strokeWidth={1.8}
+            />
+
             <span>Send Your Requirement</span>
           </div>
 
           <h3>Send Us Your Enquiry</h3>
 
-          <span className="contact-luxury__form-line" />
+          <span
+            className="contact-luxury__form-line"
+            aria-hidden="true"
+          />
 
           <p className="contact-luxury__form-intro">
-            Fill in the form and our team will respond with the best available
-            sourcing and export support.
+            Fill in the form and our team will respond
+            with the best available sourcing and export
+            support.
           </p>
 
-          <form className="contact-luxury__form" onSubmit={handleSubmit}>
+          <form
+            className="contact-luxury__form"
+            onSubmit={handleSubmit}
+          >
             <label className="contact-luxury__field">
-              <UserRound size={19} strokeWidth={1.7} />
+              <UserRound
+                size={19}
+                strokeWidth={1.7}
+              />
+
               <input
                 type="text"
                 name="name"
@@ -228,11 +353,16 @@ function Contact() {
                 value={formData.name}
                 onChange={handleChange}
                 autoComplete="name"
+                required
               />
             </label>
 
             <label className="contact-luxury__field">
-              <Mail size={19} strokeWidth={1.7} />
+              <Mail
+                size={19}
+                strokeWidth={1.7}
+              />
+
               <input
                 type="email"
                 name="email"
@@ -240,11 +370,16 @@ function Contact() {
                 value={formData.email}
                 onChange={handleChange}
                 autoComplete="email"
+                required
               />
             </label>
 
             <label className="contact-luxury__field">
-              <Phone size={19} strokeWidth={1.7} />
+              <Phone
+                size={19}
+                strokeWidth={1.7}
+              />
+
               <input
                 type="tel"
                 name="phone"
@@ -252,11 +387,16 @@ function Contact() {
                 value={formData.phone}
                 onChange={handleChange}
                 autoComplete="tel"
+                required
               />
             </label>
 
             <label className="contact-luxury__field">
-              <Globe2 size={19} strokeWidth={1.7} />
+              <Globe2
+                size={19}
+                strokeWidth={1.7}
+              />
+
               <input
                 type="text"
                 name="country"
@@ -264,28 +404,39 @@ function Contact() {
                 value={formData.country}
                 onChange={handleChange}
                 autoComplete="country-name"
+                required
               />
             </label>
 
             <label className="contact-luxury__field contact-luxury__field--full">
-              <Headphones size={19} strokeWidth={1.7} />
+              <Headphones
+                size={19}
+                strokeWidth={1.7}
+              />
+
               <input
                 type="text"
                 name="product"
                 placeholder="Product Requirement *"
                 value={formData.product}
                 onChange={handleChange}
+                required
               />
             </label>
 
             <label className="contact-luxury__field contact-luxury__field--message">
-              <MessageCircle size={19} strokeWidth={1.7} />
+              <MessageCircle
+                size={19}
+                strokeWidth={1.7}
+              />
+
               <textarea
                 name="message"
                 rows="5"
                 placeholder="Your Message *"
                 value={formData.message}
                 onChange={handleChange}
+                required
               />
             </label>
 
@@ -293,6 +444,7 @@ function Contact() {
               <div
                 className={`contact-luxury__status contact-luxury__status--${status.type}`}
                 role="status"
+                aria-live="polite"
               >
                 {status.message}
               </div>
@@ -303,14 +455,33 @@ function Contact() {
               className="contact-luxury__submit"
               disabled={isSending}
             >
-              <Send size={20} strokeWidth={1.9} />
-              <span>{isSending ? "Sending..." : "Send Enquiry"}</span>
-              <ChevronRight size={19} strokeWidth={1.9} />
+              <Send
+                size={20}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                {isSending
+                  ? "Sending..."
+                  : "Send Enquiry"}
+              </span>
+
+              <ChevronRight
+                size={19}
+                strokeWidth={1.9}
+              />
             </button>
 
             <div className="contact-luxury__privacy">
-              <LockKeyhole size={15} strokeWidth={1.8} />
-              <span>Your information is kept private and secure.</span>
+              <LockKeyhole
+                size={15}
+                strokeWidth={1.8}
+              />
+
+              <span>
+                Your information is kept private and
+                secure.
+              </span>
             </div>
           </form>
         </div>
@@ -318,16 +489,32 @@ function Contact() {
 
       <div className="contact-luxury__quick">
         <div className="contact-luxury__quick-icon">
-          <Headphones size={29} strokeWidth={1.7} />
+          <Headphones
+            size={29}
+            strokeWidth={1.7}
+          />
         </div>
 
         <div>
-          <strong>Need Quick Assistance?</strong>
-          <span>Our team is ready to help with your requirement.</span>
+          <strong>
+            Need Quick Assistance?
+          </strong>
+
+          <span>
+            Our team is ready to help with your
+            requirement.
+          </span>
         </div>
 
-        <button type="button" onClick={openWhatsApp}>
-          <MessageCircle size={19} strokeWidth={1.8} />
+        <button
+          type="button"
+          onClick={openWhatsApp}
+        >
+          <MessageCircle
+            size={19}
+            strokeWidth={1.8}
+          />
+
           Chat On WhatsApp
         </button>
       </div>

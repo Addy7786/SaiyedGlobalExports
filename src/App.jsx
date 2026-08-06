@@ -8,6 +8,7 @@ import {
 
 import AOS from "aos";
 
+import PageLoader from "./component/PageLoader/PageLoader";
 import Navbar from "./component/Navbar/Navbar";
 import Hero from "./component/Hero/Hero";
 
@@ -85,7 +86,6 @@ function DeferredSection({
   rootMargin = "850px 0px",
 }) {
   const sectionRef = useRef(null);
-
   const [shouldRender, setShouldRender] =
     useState(false);
 
@@ -215,6 +215,8 @@ function App() {
 
   return (
     <>
+      <PageLoader />
+
       <CustomCursor />
       <CursorGlow />
       <ScrollProgress />

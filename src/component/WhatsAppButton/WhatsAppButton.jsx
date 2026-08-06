@@ -1,4 +1,5 @@
 import { MessageCircle } from "lucide-react";
+
 import "./WhatsAppButton.css";
 
 function WhatsAppButton() {
@@ -17,11 +18,17 @@ function WhatsAppButton() {
       href={whatsappLink}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with Saiyed Global Exports on WhatsApp"
-      title="Chat on WhatsApp"
+      aria-label="Chat with Saiyed Global Exports on WhatsApp at +91 786786 9243"
+      title="WhatsApp: +91 786786 9243"
     >
-      <MessageCircle size={25} />
-      <span className="whatsapp-tooltip">WhatsApp</span>
+      <MessageCircle
+        size={25}
+        aria-hidden="true"
+      />
+
+      <span className="whatsapp-tooltip">
+        WhatsApp
+      </span>
     </a>
   );
 }

@@ -9,16 +9,31 @@ import { MdEmail } from "react-icons/md";
 
 import "./FloatingSocial.css";
 
+const instagramUrl =
+  "https://instagram.com/saiyed_global_exports";
+
+const whatsappNumber = "917867869243";
+
+const whatsappMessage =
+  "Hello Saiyed Global Exports, I would like to enquire about your products and export services.";
+
 function FloatingSocial() {
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    whatsappMessage
+  )}`;
+
   return (
-    <div className="floating-social">
+    <div
+      className="floating-social"
+      aria-label="Social media links"
+    >
       <a
-        href="https://instagram.com"
+        href={instagramUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="social-btn instagram"
-        aria-label="Instagram"
-        title="Instagram"
+        aria-label="Follow Saiyed Global Exports on Instagram"
+        title="@saiyed_global_exports"
       >
         <FaInstagram size={21} />
       </a>
@@ -48,19 +63,19 @@ function FloatingSocial() {
       <a
         href="mailto:info@saiyedglobalexports.com"
         className="social-btn email"
-        aria-label="Email"
+        aria-label="Email Saiyed Global Exports"
         title="Email"
       >
         <MdEmail size={22} />
       </a>
 
       <a
-        href="https://wa.me/917867869243"
+        href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
         className="social-btn whatsapp"
-        aria-label="WhatsApp"
-        title="WhatsApp"
+        aria-label="Chat with Saiyed Global Exports on WhatsApp"
+        title="+91 786786 9243"
       >
         <FaWhatsapp size={21} />
       </a>
