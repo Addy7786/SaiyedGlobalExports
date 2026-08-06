@@ -9,20 +9,17 @@ function PageLoader() {
   const [isLeaving, setIsLeaving] = useState(false);
 
   useEffect(() => {
-    const minimumLoaderTime = window.setTimeout(() => {
+    const leaveTimer = window.setTimeout(() => {
       setIsLeaving(true);
+    }, 2400);
 
-      const removeLoaderTimer = window.setTimeout(() => {
-        setIsVisible(false);
-      }, 650);
-
-      return () => {
-        window.clearTimeout(removeLoaderTimer);
-      };
-    }, 1450);
+    const removeTimer = window.setTimeout(() => {
+      setIsVisible(false);
+    }, 3100);
 
     return () => {
-      window.clearTimeout(minimumLoaderTime);
+      window.clearTimeout(leaveTimer);
+      window.clearTimeout(removeTimer);
     };
   }, []);
 
@@ -42,78 +39,113 @@ function PageLoader() {
 
   return (
     <div
-      className={`page-loader ${
-        isLeaving ? "page-loader--leaving" : ""
+      className={`intro-loader ${
+        isLeaving ? "intro-loader--exit" : ""
       }`}
       role="status"
       aria-label="Loading Saiyed Global Exports"
     >
       <div
-        className="page-loader__glow page-loader__glow--one"
+        className="intro-loader__background"
         aria-hidden="true"
       />
 
       <div
-        className="page-loader__glow page-loader__glow--two"
+        className="intro-loader__grid"
         aria-hidden="true"
       />
 
       <div
-        className="page-loader__grid"
+        className="intro-loader__beam intro-loader__beam--one"
         aria-hidden="true"
       />
 
-      <div className="page-loader__content">
-        <div className="page-loader__logo-wrap">
+      <div
+        className="intro-loader__beam intro-loader__beam--two"
+        aria-hidden="true"
+      />
+
+      <div className="intro-loader__content">
+        <div className="intro-loader__emblem">
           <span
-            className="page-loader__orbit page-loader__orbit--one"
+            className="intro-loader__orbit intro-loader__orbit--outer"
             aria-hidden="true"
           />
 
           <span
-            className="page-loader__orbit page-loader__orbit--two"
+            className="intro-loader__orbit intro-loader__orbit--inner"
             aria-hidden="true"
           />
 
           <span
-            className="page-loader__logo-glow"
+            className="intro-loader__emblem-glow"
+            aria-hidden="true"
+          />
+
+          <span
+            className="intro-loader__sweep"
             aria-hidden="true"
           />
 
           <img
             src={logo}
             alt="Saiyed Global Exports"
-            className="page-loader__logo"
-            width="180"
-            height="180"
+            className="intro-loader__logo"
+            width="420"
+            height="420"
             decoding="async"
             draggable="false"
           />
         </div>
 
-        <div className="page-loader__brand">
-          <span className="page-loader__eyebrow">
+        <div className="intro-loader__identity">
+          <div className="intro-loader__kicker">
+            <span />
             India • Global Trade
-          </span>
+            <span />
+          </div>
 
-          <h1>
-            Saiyed
-            <span>Global Exports</span>
+          <h1 className="intro-loader__company">
+            <span className="intro-loader__saiyed">
+              Saiyed
+            </span>
+
+            <span className="intro-loader__global">
+              Global Exports
+            </span>
           </h1>
 
-          <p>
-            Connecting Indian Products With Global Markets
+          <p className="intro-loader__tagline">
+            Connecting Indian Products
+            <strong>With Global Markets</strong>
           </p>
         </div>
 
-        <div className="page-loader__progress">
-          <span className="page-loader__progress-line" />
+        <div
+          className="intro-loader__progress"
+          aria-hidden="true"
+        >
+          <span className="intro-loader__progress-fill" />
         </div>
 
-        <div className="page-loader__status">
-          <span className="page-loader__status-dot" />
-          Preparing global connections
+        <div className="intro-loader__status">
+          <span className="intro-loader__status-dot" />
+          Establishing Global Connections
         </div>
+      </div>
+
+      <div
+        className="intro-loader__particles"
+        aria-hidden="true"
+      >
+        {Array.from({ length: 12 }).map((_, index) => (
+          <span
+            key={index}
+            className={`intro-loader__particle intro-loader__particle--${
+              index + 1
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
