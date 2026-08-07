@@ -1,0 +1,118 @@
+html {
+  scroll-behavior: auto;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+html.sge-smooth-scroll,
+html.sge-smooth-scroll body {
+  height: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/*
+ * Only reusable data-driven elements receive
+ * rendering hints. Whole sections are no longer
+ * globally hidden or animated.
+ */
+[data-animate],
+[data-stagger-item],
+[data-parallax],
+[data-reveal-line] {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+[data-animate],
+[data-stagger-item],
+[data-reveal-line] {
+  will-change: transform, opacity;
+}
+
+[data-parallax] {
+  will-change: transform;
+}
+
+/*
+ * Prevent horizontal overflow caused by
+ * full-width decorative sections and 3D transforms.
+ */
+body {
+  overflow-x: clip;
+}
+
+img {
+  height: auto;
+}
+
+/*
+ * Touch devices use native-feeling movement and
+ * avoid unnecessary parallax rendering.
+ */
+@media (pointer: coarse), (max-width: 768px) {
+  [data-parallax] {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  [data-animate],
+  [data-stagger-item],
+  [data-reveal-line] {
+    will-change: auto;
+  }
+}
+
+/*
+ * Accessibility: reveal everything immediately
+ * when reduced motion is enabled.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-animate],
+  [data-stagger-item],
+  [data-parallax],
+  [data-reveal-line] {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}

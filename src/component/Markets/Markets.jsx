@@ -1,3 +1,7 @@
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import {
   ArrowUpRight,
   Building2,
@@ -24,8 +28,406 @@ import globalMarketsImage from "../../assets/markets/06-global-markets.webp";
 
 import "./Markets.css";
 
+gsap.registerPlugin(ScrollTrigger);
+
 function Markets() {
+  const sectionRef = useRef(null);
+  const visualRef = useRef(null);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const visual = visualRef.current;
+
+    if (!section) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduceMotion) {
+      gsap.set(
+        section.querySelectorAll(
+          ".markets-heading > *, .markets-visual, .market-card, .market-highlight-card, .markets-process, .markets-cta"
+        ),
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          rotateY: 0,
+        }
+      );
+
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const headingTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      headingTimeline
+        .fromTo(
+          ".markets-heading > *",
+          {
+            autoAlpha: 0,
+            y: 42,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.82,
+            stagger: 0.12,
+            ease: "power3.out",
+          }
+        )
+        .fromTo(
+          ".markets-visual",
+          {
+            autoAlpha: 0,
+            y: 60,
+            scale: 0.97,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 1,
+            ease: "power3.out",
+          },
+          0.28
+        )
+        .fromTo(
+          ".markets-visual-topbar > *, .markets-visual-content > *, .markets-visual-stats > *",
+          {
+            autoAlpha: 0,
+            y: 22,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.62,
+            stagger: 0.07,
+            ease: "power2.out",
+          },
+          0.68
+        );
+
+      if (visual) {
+        const visualImage = visual.querySelector(
+          ".markets-visual-image"
+        );
+
+        if (visualImage) {
+          gsap.fromTo(
+            visualImage,
+            {
+              scale: 1.12,
+            },
+            {
+              scale: 1,
+              duration: 1.35,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: visual,
+                start: "top 82%",
+                once: true,
+              },
+            }
+          );
+
+          gsap.fromTo(
+            visualImage,
+            {
+              yPercent: -4,
+            },
+            {
+              yPercent: 5,
+              ease: "none",
+              scrollTrigger: {
+                trigger: visual,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1.15,
+              },
+            }
+          );
+        }
+      }
+
+      const marketCards = gsap.utils.toArray(".market-card");
+
+      marketCards.forEach((card, index) => {
+        const direction = index % 2 === 0 ? -52 : 52;
+        const image = card.querySelector(".market-card-media img");
+        const cardChildren = card.querySelectorAll(
+          ".market-card-media-top > *, .market-card-media-title > *, .market-card-content > *"
+        );
+
+        const cardTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: "top 88%",
+            once: true,
+          },
+        });
+
+        cardTimeline
+          .fromTo(
+            card,
+            {
+              autoAlpha: 0,
+              x: direction,
+              y: 42,
+              scale: 0.95,
+              rotateY: direction > 0 ? -3 : 3,
+              transformPerspective: 1200,
+            },
+            {
+              autoAlpha: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              rotateY: 0,
+              duration: 0.92,
+              ease: "power3.out",
+            }
+          )
+          .fromTo(
+            image,
+            {
+              scale: 1.14,
+            },
+            {
+              scale: 1,
+              duration: 1.1,
+              ease: "power3.out",
+            },
+            0.04
+          )
+          .fromTo(
+            cardChildren,
+            {
+              autoAlpha: 0,
+              y: 16,
+            },
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.52,
+              stagger: 0.055,
+              ease: "power2.out",
+            },
+            0.32
+          );
+
+        if (image) {
+          gsap.fromTo(
+            image,
+            {
+              yPercent: -4,
+            },
+            {
+              yPercent: 4,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1,
+              },
+            }
+          );
+        }
+      });
+
+      gsap.fromTo(
+        ".market-highlight-card",
+        {
+          autoAlpha: 0,
+          y: 34,
+          scale: 0.94,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.72,
+          stagger: 0.09,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".markets-highlights",
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".markets-process",
+        {
+          autoAlpha: 0,
+          y: 52,
+          scale: 0.97,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.95,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".markets-process",
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".markets-process-card",
+        {
+          autoAlpha: 0,
+          y: 28,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.62,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".markets-process-grid",
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".markets-cta",
+        {
+          autoAlpha: 0,
+          y: 45,
+          scale: 0.97,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".markets-cta",
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.to(".markets-glow-one", {
+        x: 75,
+        y: 45,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+
+      gsap.to(".markets-glow-two", {
+        x: -70,
+        y: -40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+    }, section);
+
+    const canTilt =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      window.innerWidth > 900;
+
+    const cleanupHandlers = [];
+
+    if (canTilt) {
+      const tiltTargets = [
+        ...section.querySelectorAll(".market-card"),
+        ...section.querySelectorAll(".market-highlight-card"),
+      ];
+
+      tiltTargets.forEach((target) => {
+        const handleMove = (event) => {
+          const bounds = target.getBoundingClientRect();
+          const x =
+            (event.clientX - bounds.left) / bounds.width - 0.5;
+          const y =
+            (event.clientY - bounds.top) / bounds.height - 0.5;
+
+          gsap.to(target, {
+            rotateY: x * 4.5,
+            rotateX: y * -4,
+            transformPerspective: 1100,
+            transformOrigin: "center center",
+            duration: 0.45,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        };
+
+        const handleLeave = () => {
+          gsap.to(target, {
+            rotateX: 0,
+            rotateY: 0,
+            duration: 0.65,
+            ease: "power3.out",
+          });
+        };
+
+        target.addEventListener("pointermove", handleMove);
+        target.addEventListener("pointerleave", handleLeave);
+
+        cleanupHandlers.push(() => {
+          target.removeEventListener("pointermove", handleMove);
+          target.removeEventListener("pointerleave", handleLeave);
+        });
+      });
+    }
+
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener(
+      "sge:refresh-animations",
+      handleRefresh
+    );
+
+    return () => {
+      cleanupHandlers.forEach((cleanup) => cleanup());
+
+      window.removeEventListener(
+        "sge:refresh-animations",
+        handleRefresh
+      );
+
+      context.revert();
+    };
+  }, []);
 
   const getText = (key, fallback) => {
     const value = t(key);
@@ -206,7 +608,11 @@ function Markets() {
   };
 
   return (
-    <section className="markets-section" id="markets">
+    <section
+      ref={sectionRef}
+      className="markets-section"
+      id="markets"
+    >
       <div className="markets-background" aria-hidden="true">
         <div className="markets-glow markets-glow-one" />
         <div className="markets-glow markets-glow-two" />
@@ -215,7 +621,7 @@ function Markets() {
       </div>
 
       <div className="markets-container">
-        <div className="markets-heading" data-aos="fade-up">
+        <div className="markets-heading">
           <span className="markets-tag">
             <Globe2 size={16} aria-hidden="true" />
             {getText("markets.tag", "GLOBAL MARKETS")}
@@ -236,7 +642,7 @@ function Markets() {
           </p>
         </div>
 
-        <div className="markets-visual" data-aos="fade-up" data-aos-duration="900">
+        <div ref={visualRef} className="markets-visual">
           <div className="markets-visual-image-wrap">
             <img
               src={networkHeroImage}
@@ -245,6 +651,8 @@ function Markets() {
                 "Saiyed Global Exports international trade network"
               )}
               className="markets-visual-image"
+              width="1600"
+              height="900"
               loading="lazy"
               decoding="async"
               fetchPriority="low"
@@ -318,13 +726,13 @@ function Markets() {
               <article
                 className="market-card market-card-image"
                 key={market.code}
-                data-aos="fade-up"
-                data-aos-delay={index * 80}
               >
                 <div className="market-card-media">
                   <img
                     src={market.image}
                     alt={market.title}
+                    width="720"
+                    height="480"
                     loading="lazy"
                     decoding="async"
                     fetchPriority="low"
@@ -390,8 +798,6 @@ function Markets() {
               <article
                 className="market-highlight-card"
                 key={item.title}
-                data-aos="zoom-in"
-                data-aos-delay={index * 80}
               >
                 <div className="market-highlight-icon">
                   <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
@@ -406,7 +812,7 @@ function Markets() {
           })}
         </div>
 
-        <div className="markets-process" data-aos="fade-up">
+        <div className="markets-process">
           <div className="markets-process-heading">
             <span>
               {getText("markets.processTag", "HOW WE SUPPORT EXPORTS")}
@@ -447,8 +853,6 @@ function Markets() {
 
         <div
           className="markets-cta"
-          data-aos="fade-up"
-          data-aos-delay="100"
         >
           <div className="markets-cta-icon">
             <Globe2 size={31} aria-hidden="true" />

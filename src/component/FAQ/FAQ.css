@@ -589,3 +589,232 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   PREMIUM MOTION UPGRADE
+========================================================= */
+
+.faq-luxury__intro,
+.faq-luxury__item {
+  will-change: transform, opacity;
+}
+
+.faq-luxury__glow {
+  will-change: transform;
+  animation: faq-glow-breathe 8s ease-in-out infinite alternate;
+}
+
+.faq-luxury__glow--two {
+  animation-delay: 1.7s;
+}
+
+.faq-luxury__eyebrow svg {
+  animation: faq-eyebrow-float 3.8s ease-in-out infinite;
+}
+
+.faq-luxury__promise-icon {
+  animation: faq-promise-float 4.5s ease-in-out infinite;
+}
+
+.faq-luxury__promise,
+.faq-luxury__contact-card {
+  transition:
+    transform 0.32s ease,
+    border-color 0.32s ease,
+    box-shadow 0.32s ease;
+}
+
+.faq-luxury__promise:hover,
+.faq-luxury__contact-card:hover {
+  transform: translateY(-5px);
+}
+
+.faq-luxury__contact-card:hover {
+  border-color: rgba(226, 174, 51, 0.5);
+  box-shadow:
+    0 26px 54px rgba(0, 0, 0, 0.32),
+    0 0 24px rgba(214, 154, 28, 0.08);
+}
+
+.faq-luxury__contact-icon {
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.faq-luxury__contact-card:hover
+  .faq-luxury__contact-icon {
+  transform: rotate(-5deg) scale(1.06);
+  border-color: rgba(230, 178, 56, 0.62);
+  box-shadow: 0 0 22px rgba(230, 178, 56, 0.14);
+}
+
+.faq-luxury__contact-card button {
+  position: relative;
+  overflow: hidden;
+}
+
+.faq-luxury__contact-card button::before {
+  position: absolute;
+  top: -45%;
+  left: -60%;
+  width: 42%;
+  height: 190%;
+  content: "";
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-22deg);
+  transition:
+    left 0.65s ease,
+    opacity 0.25s ease;
+}
+
+.faq-luxury__contact-card button:hover::before {
+  left: 125%;
+  opacity: 1;
+}
+
+.faq-luxury__contact-card button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.faq-luxury__item {
+  position: relative;
+  isolation: isolate;
+}
+
+.faq-luxury__item::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 3px;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #e7b53d,
+    #ffe19a,
+    transparent
+  );
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.42s ease;
+}
+
+.faq-luxury__item--open::before {
+  transform: scaleX(1);
+}
+
+.faq-luxury__number {
+  transition:
+    transform 0.32s ease,
+    border-color 0.32s ease,
+    box-shadow 0.32s ease,
+    background-color 0.32s ease;
+}
+
+.faq-luxury__item:hover
+  .faq-luxury__number,
+.faq-luxury__item--open
+  .faq-luxury__number {
+  transform: translateY(-2px);
+  border-color: rgba(227, 176, 55, 0.6);
+  background: rgba(215, 157, 34, 0.08);
+  box-shadow: 0 0 20px rgba(227, 176, 55, 0.1);
+}
+
+.faq-luxury__question-text {
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.faq-luxury__item:hover
+  .faq-luxury__question-text {
+  transform: translateX(3px);
+}
+
+.faq-luxury__item--open
+  .faq-luxury__question-text {
+  color: #f6d77f;
+}
+
+.faq-luxury__toggle {
+  will-change: transform;
+}
+
+.faq-luxury__answer-wrap {
+  height: 0;
+  overflow: hidden;
+  transition: none;
+}
+
+.faq-luxury__item--open
+  .faq-luxury__answer-wrap {
+  grid-template-rows: none;
+}
+
+.faq-luxury__answer-line,
+.faq-luxury__answer p {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@media (hover: none) {
+  .faq-luxury__promise:hover,
+  .faq-luxury__contact-card:hover,
+  .faq-luxury__item:hover,
+  .faq-luxury__contact-card:hover
+    .faq-luxury__contact-icon,
+  .faq-luxury__item:hover
+    .faq-luxury__number,
+  .faq-luxury__item:hover
+    .faq-luxury__question-text {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-luxury__glow,
+  .faq-luxury__eyebrow svg,
+  .faq-luxury__promise-icon {
+    animation: none !important;
+  }
+
+  .faq-luxury__intro,
+  .faq-luxury__item,
+  .faq-luxury__answer-line,
+  .faq-luxury__answer p {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes faq-glow-breathe {
+  50% {
+    opacity: 0.82;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes faq-eyebrow-float {
+  50% {
+    transform: translateY(-3px) rotate(-5deg);
+  }
+}
+
+@keyframes faq-promise-float {
+  50% {
+    transform: translateY(-7px);
+  }
+}

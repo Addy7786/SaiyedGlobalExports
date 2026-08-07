@@ -1948,3 +1948,167 @@
     padding: 28px 18px;
   }
 }
+
+/* =========================================================
+   PREMIUM GSAP MOTION LAYER
+========================================================= */
+
+.about-section {
+  perspective: 1200px;
+}
+
+.about-content,
+.about-visual,
+.about-feature-card,
+.about-stat,
+.about-section-heading > *,
+.about-workflow-card,
+.about-support-item,
+.about-cta-content > *,
+.about-cta-button {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+.about-image-frame {
+  transform-style: preserve-3d;
+}
+
+.about-image-gold-border {
+  will-change: clip-path;
+}
+
+.about-image-shape {
+  transform: translateZ(0);
+}
+
+.about-image-shape::after {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.18) 47%,
+    transparent 64%
+  );
+  transform: translateX(-120%);
+  transition: opacity 0.35s ease;
+  animation: about-image-light-sweep 8s 2s ease-in-out infinite;
+}
+
+.about-image-shape:hover::after {
+  opacity: 1;
+}
+
+.about-feature-card,
+.about-workflow-card,
+.about-support-item,
+.about-cta {
+  isolation: isolate;
+}
+
+.about-feature-icon,
+.about-workflow-icon,
+.about-support-icon {
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease;
+}
+
+.about-feature-card:hover .about-feature-icon,
+.about-workflow-card:hover .about-workflow-icon,
+.about-support-item:hover .about-support-icon {
+  transform: translateY(-5px) rotate(-5deg) scale(1.06);
+  box-shadow: 0 16px 32px rgba(180, 135, 49, 0.18);
+}
+
+.about-primary-button,
+.about-secondary-button,
+.about-cta-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.about-primary-button::before,
+.about-secondary-button::before,
+.about-cta-button::before {
+  position: absolute;
+  top: -35%;
+  left: -55%;
+  width: 38%;
+  height: 170%;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.42),
+    transparent
+  );
+  transform: skewX(-22deg);
+  transition: left 0.65s ease, opacity 0.25s ease;
+}
+
+.about-primary-button:hover::before,
+.about-secondary-button:hover::before,
+.about-cta-button:hover::before {
+  left: 118%;
+  opacity: 1;
+}
+
+.about-primary-button > *,
+.about-secondary-button > *,
+.about-cta-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes about-image-light-sweep {
+  0%,
+  68% {
+    transform: translateX(-120%);
+  }
+
+  82%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@media (max-width: 1020px) {
+  .about-content,
+  .about-visual,
+  .about-feature-card,
+  .about-stat,
+  .about-workflow-card,
+  .about-support-item,
+  .about-cta-content > *,
+  .about-cta-button {
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-image-shape::after {
+    display: none;
+  }
+
+  .about-content,
+  .about-visual,
+  .about-feature-card,
+  .about-stat,
+  .about-section-heading > *,
+  .about-workflow-card,
+  .about-support-item,
+  .about-cta-content > *,
+  .about-cta-button {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -6,8 +6,6 @@ import {
   useState,
 } from "react";
 
-import AOS from "aos";
-
 import PageLoader from "./component/PageLoader/PageLoader";
 import Navbar from "./component/Navbar/Navbar";
 import Hero from "./component/Hero/Hero";
@@ -17,6 +15,7 @@ import CookieConsent from "./component/CookieConsent/CookieConsent";
 import CursorGlow from "./component/CursorGlow/CursorGlow";
 import CustomCursor from "./component/CustomCursor/CustomCursor";
 import FloatingSocial from "./component/FloatingSocial/FloatingSocial";
+import GlobalAnimations from "./component/GlobalAnimations/GlobalAnimations";
 import ScrollProgress from "./component/ScrollProgress/ScrollProgress";
 import WhatsAppButton from "./component/WhatsAppButton/WhatsAppButton";
 
@@ -58,8 +57,8 @@ const Contact = lazy(() =>
   import("./component/Contact/Contact")
 );
 
-const Newsletter = lazy(() =>
-  import("./component/Newsletter/Newsletter")
+const PremiumCTA = lazy(() =>
+  import("./component/PremiumCTA/PremiumCTA")
 );
 
 const Footer = lazy(() =>
@@ -86,8 +85,14 @@ function DeferredSection({
   rootMargin = "850px 0px",
 }) {
   const sectionRef = useRef(null);
-  const [shouldRender, setShouldRender] =
-    useState(false);
+
+  const [shouldRender, setShouldRender] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.location.hash.replace("#", "") === id;
+  });
 
   useEffect(() => {
     const checkCurrentHash = () => {
@@ -158,20 +163,27 @@ function DeferredSection({
       return undefined;
     }
 
-    const refreshTimer = window.setTimeout(() => {
-      AOS.refreshHard();
-    }, 180);
+    const contentLoadedTimer = window.setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent("sge:content-loaded", {
+          detail: {
+            sectionId: id,
+          },
+        })
+      );
+    }, 220);
 
     return () => {
-      window.clearTimeout(refreshTimer);
+      window.clearTimeout(contentLoadedTimer);
     };
-  }, [shouldRender]);
+  }, [id, shouldRender]);
 
   return (
     <div
       ref={sectionRef}
       id={shouldRender ? undefined : id}
       className="deferred-section"
+      data-deferred-section={id}
       style={{
         width: "100%",
         minHeight: shouldRender
@@ -194,21 +206,25 @@ function DeferredSection({
 
 function App() {
   useEffect(() => {
-    const refreshAnimations = () => {
-      window.setTimeout(() => {
-        AOS.refreshHard();
-      }, 120);
+    let resizeTimer;
+
+    const handleResize = () => {
+      window.clearTimeout(resizeTimer);
+
+      resizeTimer = window.setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("sge:refresh-animations")
+        );
+      }, 220);
     };
 
-    window.addEventListener(
-      "resize",
-      refreshAnimations
-    );
+    window.addEventListener("resize", handleResize);
 
     return () => {
+      window.clearTimeout(resizeTimer);
       window.removeEventListener(
         "resize",
-        refreshAnimations
+        handleResize
       );
     };
   }, []);
@@ -216,6 +232,8 @@ function App() {
   return (
     <>
       <PageLoader />
+
+      <GlobalAnimations />
 
       <CustomCursor />
       <CursorGlow />
@@ -237,7 +255,7 @@ function App() {
         <DeferredSection
           id="company-profile"
           minHeight={760}
-          rootMargin="850px 0px"
+          rootMargin="900px 0px"
         >
           <CompanyProfile />
         </DeferredSection>
@@ -245,7 +263,7 @@ function App() {
         <DeferredSection
           id="products"
           minHeight={1400}
-          rootMargin="800px 0px"
+          rootMargin="900px 0px"
         >
           <Products />
         </DeferredSection>
@@ -253,7 +271,7 @@ function App() {
         <DeferredSection
           id="markets"
           minHeight={1400}
-          rootMargin="800px 0px"
+          rootMargin="900px 0px"
         >
           <Markets />
         </DeferredSection>
@@ -261,7 +279,7 @@ function App() {
         <DeferredSection
           id="why-us"
           minHeight={900}
-          rootMargin="750px 0px"
+          rootMargin="850px 0px"
         >
           <WhyChooseUs />
         </DeferredSection>
@@ -269,7 +287,7 @@ function App() {
         <DeferredSection
           id="gallery"
           minHeight={900}
-          rootMargin="750px 0px"
+          rootMargin="850px 0px"
         >
           <Gallery />
         </DeferredSection>
@@ -277,7 +295,7 @@ function App() {
         <DeferredSection
           id="testimonials"
           minHeight={700}
-          rootMargin="700px 0px"
+          rootMargin="800px 0px"
         >
           <Testimonials />
         </DeferredSection>
@@ -285,7 +303,7 @@ function App() {
         <DeferredSection
           id="faq"
           minHeight={700}
-          rootMargin="700px 0px"
+          rootMargin="800px 0px"
         >
           <FAQ />
         </DeferredSection>
@@ -293,24 +311,24 @@ function App() {
         <DeferredSection
           id="contact"
           minHeight={850}
-          rootMargin="700px 0px"
+          rootMargin="800px 0px"
         >
           <Contact />
         </DeferredSection>
 
         <DeferredSection
-          id="newsletter"
-          minHeight={400}
-          rootMargin="650px 0px"
+          id="premium-cta"
+          minHeight={700}
+          rootMargin="750px 0px"
         >
-          <Newsletter />
+          <PremiumCTA />
         </DeferredSection>
       </main>
 
       <DeferredSection
         id="footer"
         minHeight={600}
-        rootMargin="650px 0px"
+        rootMargin="750px 0px"
       >
         <Footer />
       </DeferredSection>

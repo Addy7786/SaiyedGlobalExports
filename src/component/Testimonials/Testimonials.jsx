@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import {
   ArrowLeft,
@@ -16,9 +18,13 @@ import companyLogo from "../../assets/logo/saiyed-logo-no-tagline-transparent.we
 
 import "./Testimonials.css";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const AUTOPLAY_DELAY = 5000;
 
 function Testimonials() {
+  const sectionRef = useRef(null);
+  const sliderRef = useRef(null);
   const { t } = useLanguage();
 
   const getText = (key, fallback) => {
@@ -198,6 +204,288 @@ function Testimonials() {
   const touchStartX = useRef(null);
 
   useEffect(() => {
+    const section = sectionRef.current;
+    const slider = sliderRef.current;
+
+    if (!section || !slider) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduceMotion) {
+      gsap.set(
+        section.querySelectorAll(
+          ".testimonials-premium-heading > *, .testimonials-premium-slider-shell, .testimonials-premium-card, .testimonials-premium-navigation, .testimonials-premium-trust-item"
+        ),
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          rotateY: 0,
+        }
+      );
+
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const introTimeline = gsap.timeline({
+        defaults: {
+          ease: "power3.out",
+        },
+        scrollTrigger: {
+          trigger: section,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      introTimeline
+        .fromTo(
+          ".testimonials-premium-heading > *",
+          {
+            autoAlpha: 0,
+            y: 40,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.82,
+            stagger: 0.12,
+          }
+        )
+        .fromTo(
+          ".testimonials-premium-slider-shell",
+          {
+            autoAlpha: 0,
+            y: 55,
+            scale: 0.97,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.95,
+          },
+          0.28
+        )
+        .fromTo(
+          ".testimonials-premium-navigation",
+          {
+            autoAlpha: 0,
+            y: 18,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.58,
+          },
+          0.72
+        );
+
+      const cards = gsap.utils.toArray(
+        ".testimonials-premium-card"
+      );
+
+      cards.forEach((card, index) => {
+        const direction = index % 2 === 0 ? -38 : 38;
+        const stars = card.querySelectorAll(
+          ".testimonials-premium-rating svg"
+        );
+        const content = card.querySelectorAll(
+          ".testimonials-premium-country, .testimonials-premium-quote-icon, .testimonials-premium-message, .testimonials-premium-divider, .testimonials-premium-client"
+        );
+
+        const cardTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: slider,
+            start: "top 86%",
+            once: true,
+          },
+        });
+
+        cardTimeline
+          .fromTo(
+            card,
+            {
+              autoAlpha: 0,
+              x: direction,
+              y: 30,
+              scale: 0.95,
+              rotateY: direction > 0 ? -3 : 3,
+              transformPerspective: 1100,
+            },
+            {
+              autoAlpha: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              rotateY: 0,
+              duration: 0.78,
+              delay: index * 0.06,
+              ease: "power3.out",
+            }
+          )
+          .fromTo(
+            stars,
+            {
+              autoAlpha: 0,
+              scale: 0.4,
+              rotate: -18,
+            },
+            {
+              autoAlpha: 1,
+              scale: 1,
+              rotate: 0,
+              duration: 0.4,
+              stagger: 0.05,
+              ease: "back.out(1.8)",
+            },
+            0.32 + index * 0.06
+          )
+          .fromTo(
+            content,
+            {
+              autoAlpha: 0,
+              y: 14,
+            },
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.5,
+              stagger: 0.055,
+              ease: "power2.out",
+            },
+            0.38 + index * 0.06
+          );
+      });
+
+      gsap.fromTo(
+        ".testimonials-premium-trust-item",
+        {
+          autoAlpha: 0,
+          y: 32,
+          scale: 0.94,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.68,
+          stagger: 0.09,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".testimonials-premium-trust-bar",
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.to(".testimonials-premium-glow-one", {
+        x: 70,
+        y: 42,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.35,
+        },
+      });
+
+      gsap.to(".testimonials-premium-glow-two", {
+        x: -70,
+        y: -38,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.35,
+        },
+      });
+    }, section);
+
+    const canTilt =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      window.innerWidth > 900;
+
+    const cleanupHandlers = [];
+
+    if (canTilt) {
+      const tiltTargets = [
+        ...section.querySelectorAll(
+          ".testimonials-premium-card, .testimonials-premium-trust-item"
+        ),
+      ];
+
+      tiltTargets.forEach((target) => {
+        const handleMove = (event) => {
+          const bounds = target.getBoundingClientRect();
+          const x =
+            (event.clientX - bounds.left) / bounds.width - 0.5;
+          const y =
+            (event.clientY - bounds.top) / bounds.height - 0.5;
+
+          gsap.to(target, {
+            rotateY: x * 4,
+            rotateX: y * -3.5,
+            transformPerspective: 1100,
+            transformOrigin: "center center",
+            duration: 0.42,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        };
+
+        const handleLeave = () => {
+          gsap.to(target, {
+            rotateX: 0,
+            rotateY: 0,
+            duration: 0.62,
+            ease: "power3.out",
+          });
+        };
+
+        target.addEventListener("pointermove", handleMove);
+        target.addEventListener("pointerleave", handleLeave);
+
+        cleanupHandlers.push(() => {
+          target.removeEventListener("pointermove", handleMove);
+          target.removeEventListener("pointerleave", handleLeave);
+        });
+      });
+    }
+
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener(
+      "sge:refresh-animations",
+      handleRefresh
+    );
+
+    return () => {
+      cleanupHandlers.forEach((cleanup) => cleanup());
+
+      window.removeEventListener(
+        "sge:refresh-animations",
+        handleRefresh
+      );
+
+      context.revert();
+    };
+  }, []);
+
+
+  useEffect(() => {
     const updateCardsPerView = () => {
       if (window.innerWidth <= 700) {
         setCardsPerView(1);
@@ -286,6 +574,7 @@ function Testimonials() {
 
   return (
     <section
+      ref={sectionRef}
       className="testimonials-premium-section"
       id="testimonials"
     >
@@ -325,8 +614,8 @@ function Testimonials() {
         </div>
 
         <div
+          ref={sliderRef}
           className="testimonials-premium-slider-shell"
-          data-aos="fade-up"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onFocusCapture={() => setIsPaused(true)}
@@ -360,6 +649,8 @@ function Testimonials() {
                     className="testimonials-premium-watermark"
                     src={companyLogo}
                     alt=""
+                    width="185"
+                    height="185"
                     aria-hidden="true"
                     loading="lazy"
                     decoding="async"
@@ -477,7 +768,6 @@ function Testimonials() {
 
         <div
           className="testimonials-premium-trust-bar"
-          data-aos="fade-up"
         >
           {trustItems.map(
             ({ icon: Icon, value, label }) => (

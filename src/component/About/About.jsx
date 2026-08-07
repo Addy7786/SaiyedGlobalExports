@@ -1,3 +1,8 @@
+import { useLayoutEffect, useRef } from "react";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import {
   ArrowUpRight,
   BadgeCheck,
@@ -17,7 +22,10 @@ import { useLanguage } from "../../Context/LanguageContext";
 import aboutImage from "../../assets/about-logistics.webp";
 import "./About.css";
 
+gsap.registerPlugin(ScrollTrigger);
+
 function About() {
+  const sectionRef = useRef(null);
   const { t } = useLanguage();
 
   const getText = (key, fallback) => {
@@ -147,6 +155,206 @@ function About() {
     },
   ];
 
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+
+    if (!section) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduceMotion) {
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const reveal = (
+        targets,
+        fromVars,
+        options = {}
+      ) => {
+        const elements = gsap.utils.toArray(targets, section);
+
+        if (!elements.length) {
+          return;
+        }
+
+        gsap.fromTo(
+          elements,
+          {
+            autoAlpha: 0,
+            ...fromVars,
+          },
+          {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            duration: options.duration ?? 0.95,
+            stagger: options.stagger ?? 0,
+            ease: options.ease ?? "power3.out",
+            clearProps: "transform",
+            scrollTrigger: {
+              trigger: options.trigger ?? elements[0],
+              start: options.start ?? "top 86%",
+              once: true,
+            },
+          }
+        );
+      };
+
+      reveal(".about-kicker", { x: -45 }, { duration: 0.75 });
+      reveal(
+        ".about-content h2 > span",
+        { y: 70, rotation: 1.5 },
+        { stagger: 0.12, duration: 1.05, trigger: ".about-content" }
+      );
+
+      gsap.fromTo(
+        ".about-kicker-line, .about-title-line",
+        { scaleX: 0, transformOrigin: "left center" },
+        {
+          scaleX: 1,
+          duration: 1.1,
+          stagger: 0.15,
+          ease: "power3.inOut",
+          scrollTrigger: {
+            trigger: ".about-content",
+            start: "top 84%",
+            once: true,
+          },
+        }
+      );
+
+      reveal(
+        ".about-content > p, .about-trust-item, .about-actions",
+        { y: 38 },
+        { stagger: 0.1, trigger: ".about-content" }
+      );
+
+      reveal(".about-visual", { x: 85, scale: 0.96 }, { duration: 1.2 });
+      reveal(
+        ".about-image-top-label, .about-image-badge",
+        { y: 30, scale: 0.9 },
+        { stagger: 0.16, trigger: ".about-visual" }
+      );
+
+      gsap.fromTo(
+        ".about-image-gold-border",
+        { clipPath: "inset(0 100% 0 0)" },
+        {
+          clipPath: "inset(0 0% 0 0)",
+          duration: 1.35,
+          ease: "power3.inOut",
+          scrollTrigger: {
+            trigger: ".about-visual",
+            start: "top 82%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".about-image-shape img",
+        { scale: 1.1 },
+        {
+          scale: 1.01,
+          duration: 1.55,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".about-visual",
+            start: "top 82%",
+            once: true,
+          },
+        }
+      );
+
+      if (window.innerWidth > 1020) {
+        gsap.to(".about-image-shape img", {
+          yPercent: 6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".about-main-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        });
+      }
+
+      reveal(
+        ".about-feature-card",
+        { y: 70, scale: 0.94 },
+        { stagger: 0.13, trigger: ".about-feature-grid" }
+      );
+
+      reveal(
+        ".about-stat",
+        { y: 42, scale: 0.92 },
+        { stagger: 0.12, trigger: ".about-stats" }
+      );
+
+      const qualityValue = section.querySelector(
+        '[data-about-counter="quality"]'
+      );
+
+      if (qualityValue) {
+        const counter = { value: 0 };
+
+        gsap.to(counter, {
+          value: 100,
+          duration: 1.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".about-stats",
+            start: "top 82%",
+            once: true,
+          },
+          onUpdate: () => {
+            qualityValue.textContent = `${Math.round(counter.value)}%`;
+          },
+        });
+      }
+
+      reveal(
+        ".about-section-heading > span, .about-section-heading h3, .about-section-heading p",
+        { y: 45 },
+        { stagger: 0.12, trigger: ".about-section-heading" }
+      );
+
+      reveal(
+        ".about-workflow-card",
+        { y: 75, scale: 0.94 },
+        { stagger: 0.15, trigger: ".about-workflow-grid" }
+      );
+
+      reveal(
+        ".about-support-item",
+        { y: 35, scale: 0.96 },
+        { stagger: 0.1, trigger: ".about-support-strip" }
+      );
+
+      reveal(
+        ".about-cta-content > *, .about-cta-button",
+        { y: 42 },
+        { stagger: 0.12, trigger: ".about-cta" }
+      );
+    }, section);
+
+    const refreshTimer = window.setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+
+    return () => {
+      window.clearTimeout(refreshTimer);
+      context.revert();
+    };
+  }, []);
+
   const openWhatsApp = () => {
     const message =
       "Hello Saiyed Global Exports, I would like to know more about your products, pricing, MOQ and export services.";
@@ -159,13 +367,11 @@ function About() {
   };
 
   return (
-    <section className="about-section" id="about">
+    <section ref={sectionRef} className="about-section" id="about">
       <div className="about-container">
         <div className="about-main-grid">
           <div
             className="about-content"
-            data-aos="fade-right"
-            data-aos-duration="900"
           >
             <div className="about-kicker">
               <span className="about-kicker-line" />
@@ -257,8 +463,6 @@ function About() {
 
           <div
             className="about-visual"
-            data-aos="fade-left"
-            data-aos-duration="900"
           >
             <div className="about-image-frame">
               <div className="about-image-gold-border" />
@@ -318,8 +522,6 @@ function About() {
               <article
                 className="about-feature-card"
                 key={feature.number}
-                data-aos="fade-up"
-                data-aos-delay={index * 80}
               >
                 <div className="about-feature-top">
                   <div className="about-feature-icon">
@@ -342,9 +544,13 @@ function About() {
         </div>
 
         <div className="about-stats">
-          {stats.map((stat) => (
+          {stats.map((stat, index) => (
             <div className="about-stat" key={stat.label}>
-              <strong>{stat.value}</strong>
+              <strong
+                data-about-counter={index === 0 ? "quality" : undefined}
+              >
+                {stat.value}
+              </strong>
 
               <span>{stat.label}</span>
             </div>
@@ -354,7 +560,6 @@ function About() {
         <div className="about-workflow">
           <div
             className="about-section-heading"
-            data-aos="fade-up"
           >
             <span>
               {getText(
@@ -386,8 +591,6 @@ function About() {
                 <article
                   className="about-workflow-card"
                   key={item.step}
-                  data-aos="fade-up"
-                  data-aos-delay={index * 90}
                 >
                   <div className="about-workflow-icon">
                     <Icon size={25} />
@@ -408,7 +611,6 @@ function About() {
 
         <div
           className="about-support-strip"
-          data-aos="fade-up"
         >
           {supportItems.map((item) => {
             const Icon = item.icon;

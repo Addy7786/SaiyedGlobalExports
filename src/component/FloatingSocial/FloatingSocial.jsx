@@ -17,6 +17,37 @@ const whatsappNumber = "917867869243";
 const whatsappMessage =
   "Hello Saiyed Global Exports, I would like to enquire about your products and export services.";
 
+const socialItems = [
+  {
+    label: "Instagram",
+    className: "instagram",
+    href: instagramUrl,
+    icon: FaInstagram,
+    external: true,
+  },
+  {
+    label: "Facebook",
+    className: "facebook",
+    href: "https://facebook.com",
+    icon: FaFacebookF,
+    external: true,
+  },
+  {
+    label: "LinkedIn",
+    className: "linkedin",
+    href: "https://linkedin.com",
+    icon: FaLinkedinIn,
+    external: true,
+  },
+  {
+    label: "Email",
+    className: "email",
+    href: "mailto:info@saiyed-global-exports.com",
+    icon: MdEmail,
+    external: false,
+  },
+];
+
 function FloatingSocial() {
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     whatsappMessage
@@ -27,57 +58,53 @@ function FloatingSocial() {
       className="floating-social"
       aria-label="Social media links"
     >
-      <a
-        href={instagramUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="social-btn instagram"
-        aria-label="Follow Saiyed Global Exports on Instagram"
-        title="@saiyed_global_exports"
-      >
-        <FaInstagram size={21} />
-      </a>
+      {socialItems.map(
+        ({
+          label,
+          className,
+          href,
+          icon: Icon,
+          external,
+        }) => (
+          <a
+            key={label}
+            href={href}
+            target={external ? "_blank" : undefined}
+            rel={
+              external
+                ? "noopener noreferrer"
+                : undefined
+            }
+            className={`social-btn ${className}`}
+            aria-label={label}
+            title={label}
+          >
+            <span className="social-btn__icon">
+              <Icon aria-hidden="true" />
+            </span>
 
-      <a
-        href="https://facebook.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="social-btn facebook"
-        aria-label="Facebook"
-        title="Facebook"
-      >
-        <FaFacebookF size={20} />
-      </a>
-
-      <a
-        href="https://linkedin.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="social-btn linkedin"
-        aria-label="LinkedIn"
-        title="LinkedIn"
-      >
-        <FaLinkedinIn size={20} />
-      </a>
-
-      <a
-        href="mailto:info@saiyedglobalexports.com"
-        className="social-btn email"
-        aria-label="Email Saiyed Global Exports"
-        title="Email"
-      >
-        <MdEmail size={22} />
-      </a>
+            <span className="social-btn__label">
+              {label}
+            </span>
+          </a>
+        )
+      )}
 
       <a
         href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
         className="social-btn whatsapp"
-        aria-label="Chat with Saiyed Global Exports on WhatsApp"
+        aria-label="WhatsApp"
         title="+91 786786 9243"
       >
-        <FaWhatsapp size={21} />
+        <span className="social-btn__icon">
+          <FaWhatsapp aria-hidden="true" />
+        </span>
+
+        <span className="social-btn__label">
+          WhatsApp
+        </span>
       </a>
     </div>
   );

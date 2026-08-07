@@ -1,3 +1,7 @@
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import {
   Award,
   Building2,
@@ -12,6 +16,8 @@ import {
 
 import "./CompanyProfile.css";
 import companyProfileBook from "../../assets/company-profile/company-profile-book.webp";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const profileFeatures = [
   {
@@ -47,6 +53,288 @@ const profileFeatures = [
 ];
 
 function CompanyProfile() {
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+  const backgroundRef = useRef(null);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const container = containerRef.current;
+    const background = backgroundRef.current;
+    const content = contentRef.current;
+
+    if (!section || !container || !background || !content) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduceMotion) {
+      gsap.set(
+        section.querySelectorAll(
+          ".company-profile-animate, .company-profile-feature, .company-profile-meta > *"
+        ),
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          rotateY: 0,
+        }
+      );
+
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: "power3.out",
+        },
+        scrollTrigger: {
+          trigger: section,
+          start: "top 76%",
+          once: true,
+        },
+      });
+
+      timeline
+        .fromTo(
+          container,
+          {
+            autoAlpha: 0,
+            y: 70,
+            scale: 0.975,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.15,
+          }
+        )
+        .fromTo(
+          background,
+          {
+            scale: 1.12,
+            filter: "brightness(0.65)",
+          },
+          {
+            scale: 1,
+            filter: "brightness(1)",
+            duration: 1.5,
+          },
+          0
+        )
+        .fromTo(
+          ".company-profile-badge",
+          {
+            autoAlpha: 0,
+            y: -20,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.65,
+          },
+          0.28
+        )
+        .fromTo(
+          ".company-profile-heading-line",
+          {
+            autoAlpha: 0,
+            y: 48,
+            rotateX: -12,
+            transformOrigin: "50% 100%",
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 0.9,
+            stagger: 0.13,
+          },
+          0.36
+        )
+        .fromTo(
+          ".company-profile-title-line",
+          {
+            scaleX: 0,
+            transformOrigin: "left center",
+          },
+          {
+            scaleX: 1,
+            duration: 0.8,
+            ease: "power3.inOut",
+          },
+          0.62
+        )
+        .fromTo(
+          ".company-profile-description",
+          {
+            autoAlpha: 0,
+            y: 28,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.75,
+          },
+          0.7
+        )
+        .fromTo(
+          ".company-profile-feature",
+          {
+            autoAlpha: 0,
+            y: 32,
+            scale: 0.94,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.7,
+            stagger: 0.09,
+          },
+          0.82
+        )
+        .fromTo(
+          ".company-profile-actions > *",
+          {
+            autoAlpha: 0,
+            y: 24,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            stagger: 0.12,
+          },
+          1.14
+        )
+        .fromTo(
+          ".company-profile-meta > *",
+          {
+            autoAlpha: 0,
+            y: 14,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.07,
+          },
+          1.3
+        );
+
+      gsap.to(background, {
+        yPercent: 7,
+        scale: 1.045,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+    }, section);
+
+    const canUsePointerEffects =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      window.innerWidth > 900;
+
+    let resetTimer;
+
+    const handlePointerMove = (event) => {
+      if (!canUsePointerEffects) return;
+
+      const bounds = container.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+      const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+      gsap.to(container, {
+        rotateY: x * 2.4,
+        rotateX: y * -2,
+        transformPerspective: 1400,
+        transformOrigin: "center center",
+        duration: 0.8,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+
+      gsap.to(background, {
+        x: x * -18,
+        y: y * -12,
+        duration: 0.9,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+
+      gsap.to(content, {
+        x: x * 7,
+        y: y * 5,
+        duration: 0.9,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    };
+
+    const resetPointerEffects = () => {
+      window.clearTimeout(resetTimer);
+
+      resetTimer = window.setTimeout(() => {
+        gsap.to(container, {
+          rotateX: 0,
+          rotateY: 0,
+          duration: 0.9,
+          ease: "power3.out",
+        });
+
+        gsap.to(background, {
+          x: 0,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+        });
+
+        gsap.to(content, {
+          x: 0,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+        });
+      }, 80);
+    };
+
+    container.addEventListener("pointermove", handlePointerMove);
+    container.addEventListener("pointerleave", resetPointerEffects);
+
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("sge:refresh-animations", handleRefresh);
+
+    return () => {
+      window.clearTimeout(resetTimer);
+
+      container.removeEventListener("pointermove", handlePointerMove);
+      container.removeEventListener("pointerleave", resetPointerEffects);
+
+      window.removeEventListener(
+        "sge:refresh-animations",
+        handleRefresh
+      );
+
+      context.revert();
+    };
+  }, []);
+
   const handleDownload = () => {
     window.alert("Company Profile PDF will be available soon.");
   };
@@ -54,42 +342,81 @@ function CompanyProfile() {
   const handlePreview = () => {
     document
       .querySelector("#about")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
   };
 
   return (
-    <section id="company-profile" className="company-profile-section">
-      <div className="company-profile-container">
+    <section
+      ref={sectionRef}
+      className="company-profile-section"
+      id="company-profile"
+    >
+      <div
+        ref={containerRef}
+        className="company-profile-container"
+      >
         <img
+          ref={backgroundRef}
+          className="company-profile-background"
           src={companyProfileBook}
           alt=""
-          className="company-profile-background"
+          width="1600"
+          height="900"
+          loading="lazy"
+          decoding="async"
+          draggable="false"
           aria-hidden="true"
         />
 
-        <div className="company-profile-overlay" aria-hidden="true" />
+        <div
+          className="company-profile-overlay"
+          aria-hidden="true"
+        />
 
-        <div className="company-profile-content">
-          <div className="company-profile-badge">Company Profile</div>
+        <div
+          ref={contentRef}
+          className="company-profile-content"
+        >
+          <div className="company-profile-badge">
+            Company Profile
+          </div>
 
           <h2>
-            Our Company Profile
-            <span>Premium Export Guide</span>
+            <span className="company-profile-heading-line company-profile-heading-dark">
+              Our Company Profile
+            </span>
+
+            <span className="company-profile-heading-line">
+              Premium Export Guide
+            </span>
           </h2>
 
-          <div className="company-profile-title-line" />
+          <div
+            className="company-profile-title-line"
+            aria-hidden="true"
+          />
 
           <p className="company-profile-description">
-            Learn more about Saiyed Global Exports, our products, international
-            markets, quality-focused sourcing, export capabilities and business
-            partnerships.
+            Learn more about Saiyed Global Exports, our products,
+            international markets, quality-focused sourcing, export
+            capabilities and business partnerships.
           </p>
 
           <div className="company-profile-features">
             {profileFeatures.map(({ icon: Icon, title, text }) => (
-              <article className="company-profile-feature" key={title}>
+              <article
+                className="company-profile-feature"
+                key={title}
+              >
                 <div className="company-profile-feature-icon">
-                  <Icon size={23} strokeWidth={1.7} />
+                  <Icon
+                    size={23}
+                    strokeWidth={1.7}
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <div>
@@ -106,7 +433,12 @@ function CompanyProfile() {
               className="company-profile-download"
               onClick={handleDownload}
             >
-              <Download size={21} strokeWidth={1.9} />
+              <Download
+                size={21}
+                strokeWidth={1.9}
+                aria-hidden="true"
+              />
+
               <span>
                 <strong>Download PDF</strong>
                 <small>Company Profile</small>
@@ -118,7 +450,12 @@ function CompanyProfile() {
               className="company-profile-preview"
               onClick={handlePreview}
             >
-              <Eye size={21} strokeWidth={1.8} />
+              <Eye
+                size={21}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
+
               <span>
                 <strong>Preview Online</strong>
                 <small>View Company Profile</small>
@@ -128,15 +465,19 @@ function CompanyProfile() {
 
           <div className="company-profile-meta">
             <span>
-              <ShieldCheck size={16} strokeWidth={1.8} />
+              <ShieldCheck
+                size={16}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
               Secure PDF
             </span>
 
-            <i />
+            <i aria-hidden="true" />
 
             <span>Updated Information</span>
 
-            <i />
+            <i aria-hidden="true" />
 
             <span>Easy To Share</span>
           </div>

@@ -46,7 +46,6 @@
   user-select: none;
   pointer-events: none;
   transform: scale(1.015);
-  animation: hero-background-breathe 16s ease-in-out infinite alternate;
 }
 
 .hero-dark-overlay {
@@ -1155,21 +1154,56 @@
 }
 
 /* =========================================================
-   AOS SAFETY
+   GSAP CINEMATIC MOTION SUPPORT
 ========================================================= */
 
-.hero-section [data-aos] {
-  will-change: opacity, transform;
+.hero-picture,
+.hero-motion-layer,
+.hero-content,
+.hero-feature-panel,
+.hero-title-line {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
 }
 
-.hero-feature-panel[data-aos].aos-animate {
-  transform: translateX(-50%) !important;
+.hero-picture {
+  inset: -18px;
+  width: calc(100% + 36px);
+  height: calc(100% + 36px);
+}
+
+.hero-title-clip {
+  display: block;
+  overflow: hidden;
+  perspective: 800px;
+}
+
+.hero-title-line {
+  display: block;
+  transform-origin: left bottom;
+}
+
+.hero-feature-panel {
+  transform-origin: center bottom;
+}
+
+.hero-primary-button,
+.hero-secondary-button {
+  will-change: transform;
 }
 
 @media (max-width: 768px) {
-  .hero-feature-panel[data-aos],
-  .hero-feature-panel[data-aos].aos-animate {
+  .hero-picture {
+    inset: 0;
+    width: 100%;
+    height: 100%;
     transform: none !important;
+  }
+
+  .hero-motion-layer,
+  .hero-content {
+    transform: none;
   }
 }
 

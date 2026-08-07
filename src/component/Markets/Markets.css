@@ -846,3 +846,423 @@ html[dir="rtl"] .market-enquiry-button:hover .market-enquiry-arrow {
     transition: none;
   }
 }
+
+/* =========================================================
+   PREMIUM MOTION UPGRADE
+========================================================= */
+
+.markets-heading,
+.markets-visual,
+.market-card,
+.market-highlight-card,
+.markets-process,
+.markets-cta {
+  will-change: transform, opacity;
+}
+
+.markets-glow {
+  will-change: transform;
+}
+
+.markets-visual-image-wrap {
+  isolation: isolate;
+}
+
+.markets-visual-image-wrap::before {
+  position: absolute;
+  top: -100%;
+  left: -35%;
+  z-index: 4;
+  width: 24%;
+  height: 320%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 226, 161, 0.45),
+    transparent
+  );
+  transform: rotate(24deg);
+  animation: markets-visual-sweep 8s ease-in-out infinite;
+}
+
+.markets-visual-image {
+  will-change: transform;
+}
+
+.markets-visual-badge {
+  animation: markets-badge-float 4s ease-in-out infinite;
+}
+
+.markets-live-status span {
+  box-shadow:
+    0 0 0 4px rgba(80, 232, 163, 0.1),
+    0 0 18px rgba(80, 232, 163, 0.4);
+}
+
+.markets-visual-stats div {
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.markets-visual-stats div:hover {
+  transform: translateY(-4px);
+  border-color: rgba(224, 187, 91, 0.28);
+  background: rgba(4, 20, 38, 0.76);
+}
+
+.market-card {
+  transform-style: preserve-3d;
+}
+
+.market-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 3px;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #d7ae50,
+    #f4de9c,
+    transparent
+  );
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s ease;
+}
+
+.market-card:hover::before {
+  transform: scaleX(1);
+}
+
+.market-card-media::after {
+  position: absolute;
+  top: -80%;
+  left: -55%;
+  z-index: 3;
+  width: 34%;
+  height: 260%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.32),
+    transparent
+  );
+  transform: rotate(24deg);
+  transition:
+    left 0.85s ease,
+    opacity 0.3s ease;
+}
+
+.market-card:hover .market-card-media::after {
+  left: 130%;
+  opacity: 1;
+}
+
+.market-icon,
+.market-highlight-icon,
+.markets-process-icon,
+.markets-cta-icon {
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.market-card:hover .market-icon {
+  transform: translateY(-4px) rotate(-5deg);
+  box-shadow:
+    0 18px 34px rgba(0, 0, 0, 0.26),
+    0 0 24px rgba(229, 190, 97, 0.15);
+}
+
+.market-code {
+  animation: market-code-float 4.6s ease-in-out infinite;
+}
+
+.market-countries {
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.market-card:hover .market-countries {
+  transform: translateY(-2px);
+  border-color: rgba(224, 187, 91, 0.18);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.market-enquiry-button,
+.markets-cta-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.market-enquiry-button::before,
+.markets-cta-button::before {
+  position: absolute;
+  top: -45%;
+  left: -50%;
+  width: 38%;
+  height: 190%;
+  content: "";
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-22deg);
+  transition:
+    left 0.7s ease,
+    opacity 0.25s ease;
+}
+
+.market-enquiry-button:hover::before,
+.markets-cta-button:hover::before {
+  left: 118%;
+  opacity: 1;
+}
+
+.market-enquiry-button > *,
+.markets-cta-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.market-highlight-card {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.market-highlight-card::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 20% 20%,
+    rgba(225, 184, 84, 0.13),
+    transparent 40%
+  );
+  transition: opacity 0.35s ease;
+}
+
+.market-highlight-card:hover::after {
+  opacity: 1;
+}
+
+.market-highlight-card:hover .market-highlight-icon {
+  transform: translateY(-3px) rotate(-5deg);
+  box-shadow: 0 15px 30px rgba(178, 132, 38, 0.22);
+}
+
+.markets-process {
+  position: relative;
+  overflow: hidden;
+}
+
+.markets-process::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0.16;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 34px 34px;
+  mask-image: linear-gradient(90deg, transparent, #000);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000);
+}
+
+.markets-process > * {
+  position: relative;
+  z-index: 1;
+}
+
+.markets-process-card {
+  overflow: hidden;
+  transition:
+    transform 0.32s ease,
+    border-color 0.32s ease,
+    background-color 0.32s ease;
+}
+
+.markets-process-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    #b78125,
+    #e3bc63
+  );
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s ease;
+}
+
+.markets-process-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(224, 187, 91, 0.2);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.markets-process-card:hover::before {
+  transform: scaleX(1);
+}
+
+.markets-process-card:hover .markets-process-icon {
+  transform: translateY(-3px) rotate(-5deg);
+}
+
+.markets-cta::before {
+  position: absolute;
+  top: -130%;
+  left: -30%;
+  z-index: 0;
+  width: 24%;
+  height: 360%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 226, 161, 0.7),
+    transparent
+  );
+  transform: rotate(25deg);
+  animation: markets-cta-sweep 7s ease-in-out infinite;
+}
+
+.markets-cta-icon {
+  animation: markets-cta-icon-float 4s ease-in-out infinite;
+}
+
+@media (max-width: 900px) {
+  .market-card,
+  .market-highlight-card,
+  .markets-visual-image {
+    transform: none !important;
+  }
+}
+
+@media (hover: none) {
+  .market-card:hover,
+  .market-highlight-card:hover,
+  .markets-process-card:hover,
+  .market-enquiry-button:hover,
+  .markets-cta-button:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markets-visual-image-wrap::before,
+  .markets-visual-badge,
+  .market-code,
+  .markets-cta::before,
+  .markets-cta-icon {
+    animation: none !important;
+  }
+
+  .markets-heading,
+  .markets-visual,
+  .market-card,
+  .market-highlight-card,
+  .markets-process,
+  .markets-cta,
+  .markets-visual-image {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes markets-visual-sweep {
+  0%,
+  20% {
+    left: -35%;
+    opacity: 0;
+  }
+
+  38% {
+    opacity: 0.14;
+  }
+
+  64% {
+    left: 120%;
+    opacity: 0.04;
+  }
+
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+
+@keyframes markets-badge-float {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes market-code-float {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes markets-cta-sweep {
+  0%,
+  20% {
+    left: -30%;
+    opacity: 0;
+  }
+
+  38% {
+    opacity: 0.15;
+  }
+
+  66% {
+    left: 120%;
+    opacity: 0.04;
+  }
+
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+
+@keyframes markets-cta-icon-float {
+  50% {
+    transform: translateY(-6px) rotate(-4deg);
+  }
+}

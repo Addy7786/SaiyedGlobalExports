@@ -545,3 +545,367 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   PREMIUM MOTION UPGRADE
+========================================================= */
+
+.contact-luxury__info,
+.contact-luxury__card,
+.contact-luxury__world-card,
+.contact-luxury__form-panel,
+.contact-luxury__quick {
+  will-change: transform, opacity;
+}
+
+.contact-luxury__glow {
+  will-change: transform;
+  animation: contact-glow-breathe 8s ease-in-out infinite alternate;
+}
+
+.contact-luxury__glow--two {
+  animation-delay: 1.7s;
+}
+
+.contact-luxury__eyebrow-dot {
+  animation: contact-dot-pulse 1.8s ease-in-out infinite;
+}
+
+.contact-luxury__card,
+.contact-luxury__world-card,
+.contact-luxury__form-panel {
+  transform-style: preserve-3d;
+}
+
+.contact-luxury__card {
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-luxury__card::before,
+.contact-luxury__world-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #e9b73d,
+    #ffe09a,
+    transparent
+  );
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.42s ease;
+}
+
+.contact-luxury__card:hover::before,
+.contact-luxury__world-card:hover::before {
+  transform: scaleX(1);
+}
+
+.contact-luxury__card-icon,
+.contact-luxury__world-icon,
+.contact-luxury__quick-icon {
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.contact-luxury__card:hover
+  .contact-luxury__card-icon,
+.contact-luxury__world-card:hover
+  .contact-luxury__world-icon,
+.contact-luxury__quick:hover
+  .contact-luxury__quick-icon {
+  transform: rotate(-5deg) scale(1.06);
+  border-color: rgba(231, 179, 56, 0.62);
+  box-shadow: 0 0 22px rgba(231, 179, 56, 0.14);
+}
+
+.contact-luxury__world-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.32s ease,
+    border-color 0.32s ease,
+    box-shadow 0.32s ease;
+}
+
+.contact-luxury__world-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(239, 190, 73, 0.5);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+}
+
+.contact-luxury__form-panel::after {
+  position: absolute;
+  top: -110%;
+  left: -42%;
+  width: 24%;
+  height: 340%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 225, 150, 0.42),
+    transparent
+  );
+  transform: rotate(24deg);
+  animation: contact-form-sweep 8s ease-in-out infinite;
+}
+
+.contact-luxury__form-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-luxury__field {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.contact-luxury__field::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #efb92f,
+    transparent
+  );
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s ease;
+}
+
+.contact-luxury__field:focus-within {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.028);
+  box-shadow:
+    0 0 0 3px rgba(224, 169, 48, 0.06),
+    0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.contact-luxury__field:focus-within::after {
+  transform: scaleX(1);
+}
+
+.contact-luxury__field svg {
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+
+.contact-luxury__field:focus-within svg {
+  color: #ffd36b;
+  transform: scale(1.08);
+}
+
+.contact-luxury__submit,
+.contact-luxury__quick button {
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-luxury__submit::before,
+.contact-luxury__quick button::before {
+  position: absolute;
+  top: -45%;
+  left: -55%;
+  width: 38%;
+  height: 190%;
+  content: "";
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.62),
+    transparent
+  );
+  transform: skewX(-22deg);
+  transition:
+    left 0.7s ease,
+    opacity 0.25s ease;
+}
+
+.contact-luxury__submit:hover::before,
+.contact-luxury__quick button:hover::before {
+  left: 118%;
+  opacity: 1;
+}
+
+.contact-luxury__submit > *,
+.contact-luxury__quick button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-luxury__submit:disabled svg {
+  animation: contact-send-spin 1.1s linear infinite;
+}
+
+.contact-luxury__status {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.contact-luxury__quick {
+  overflow: hidden;
+  transition:
+    transform 0.32s ease,
+    border-color 0.32s ease,
+    box-shadow 0.32s ease;
+}
+
+.contact-luxury__quick::before {
+  position: absolute;
+  top: -120%;
+  left: -30%;
+  width: 22%;
+  height: 360%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 225, 150, 0.48),
+    transparent
+  );
+  transform: rotate(24deg);
+  animation: contact-quick-sweep 7s ease-in-out infinite;
+}
+
+.contact-luxury__quick:hover {
+  transform: translateY(-4px);
+  border-color: rgba(224, 172, 51, 0.5);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.26);
+}
+
+.contact-luxury__quick > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .contact-luxury__card,
+  .contact-luxury__world-card,
+  .contact-luxury__form-panel {
+    transform: none !important;
+  }
+}
+
+@media (hover: none) {
+  .contact-luxury__card:hover,
+  .contact-luxury__world-card:hover,
+  .contact-luxury__quick:hover,
+  .contact-luxury__card:hover
+    .contact-luxury__card-icon,
+  .contact-luxury__world-card:hover
+    .contact-luxury__world-icon,
+  .contact-luxury__quick:hover
+    .contact-luxury__quick-icon {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-luxury__glow,
+  .contact-luxury__eyebrow-dot,
+  .contact-luxury__form-panel::after,
+  .contact-luxury__quick::before,
+  .contact-luxury__submit:disabled svg {
+    animation: none !important;
+  }
+
+  .contact-luxury__info,
+  .contact-luxury__card,
+  .contact-luxury__world-card,
+  .contact-luxury__form-panel,
+  .contact-luxury__form > *,
+  .contact-luxury__quick,
+  .contact-luxury__status {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes contact-glow-breathe {
+  50% {
+    opacity: 0.82;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes contact-dot-pulse {
+  50% {
+    opacity: 0.5;
+    transform: scale(0.82);
+  }
+}
+
+@keyframes contact-form-sweep {
+  0%,
+  20% {
+    left: -42%;
+    opacity: 0;
+  }
+
+  38% {
+    opacity: 0.12;
+  }
+
+  64% {
+    left: 120%;
+    opacity: 0.04;
+  }
+
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+
+@keyframes contact-quick-sweep {
+  0%,
+  20% {
+    left: -30%;
+    opacity: 0;
+  }
+
+  38% {
+    opacity: 0.13;
+  }
+
+  66% {
+    left: 120%;
+    opacity: 0.04;
+  }
+
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+
+@keyframes contact-send-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

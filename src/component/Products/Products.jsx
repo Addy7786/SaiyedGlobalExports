@@ -1,3 +1,7 @@
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -30,8 +34,308 @@ import mineralsImage from "../../assets/products/08-minerals-ores.webp";
 
 import "./Products.css";
 
+gsap.registerPlugin(ScrollTrigger);
+
 function Products() {
+  const sectionRef = useRef(null);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const section = sectionRef.current;
+
+    if (!section) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduceMotion) {
+      gsap.set(
+        section.querySelectorAll(
+          ".products-reveal, .product-card, .products-bottom-banner"
+        ),
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          rotateY: 0,
+        }
+      );
+
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const headingTimeline = gsap.timeline({
+        defaults: {
+          ease: "power3.out",
+        },
+        scrollTrigger: {
+          trigger: section,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      headingTimeline
+        .fromTo(
+          ".products-pattern",
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 0.28,
+            duration: 1.2,
+          }
+        )
+        .fromTo(
+          ".products-heading-copy > *",
+          {
+            autoAlpha: 0,
+            y: 42,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.82,
+            stagger: 0.12,
+          },
+          0.08
+        )
+        .fromTo(
+          ".products-global-card",
+          {
+            autoAlpha: 0,
+            x: 55,
+            scale: 0.94,
+          },
+          {
+            autoAlpha: 1,
+            x: 0,
+            scale: 1,
+            duration: 0.9,
+          },
+          0.32
+        );
+
+      const cards = gsap.utils.toArray(".product-card");
+
+      cards.forEach((card, index) => {
+        const direction = index % 2 === 0 ? -48 : 48;
+        const image = card.querySelector(".product-image");
+        const badge = card.querySelector(".product-export-badge");
+        const contentChildren = card.querySelectorAll(
+          ".product-card-content > *"
+        );
+
+        const cardTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: "top 88%",
+            once: true,
+          },
+        });
+
+        cardTimeline
+          .fromTo(
+            card,
+            {
+              autoAlpha: 0,
+              x: direction,
+              y: 42,
+              scale: 0.955,
+              rotateY: direction > 0 ? -3 : 3,
+              transformPerspective: 1200,
+            },
+            {
+              autoAlpha: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              rotateY: 0,
+              duration: 0.92,
+              ease: "power3.out",
+            }
+          )
+          .fromTo(
+            image,
+            {
+              scale: 1.14,
+            },
+            {
+              scale: 1,
+              duration: 1.15,
+              ease: "power3.out",
+            },
+            0.05
+          )
+          .fromTo(
+            badge,
+            {
+              autoAlpha: 0,
+              y: -14,
+              scale: 0.82,
+            },
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.55,
+              ease: "back.out(1.7)",
+            },
+            0.35
+          )
+          .fromTo(
+            contentChildren,
+            {
+              autoAlpha: 0,
+              y: 18,
+            },
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.56,
+              stagger: 0.065,
+              ease: "power2.out",
+            },
+            0.38
+          );
+
+        gsap.fromTo(
+          image,
+          {
+            yPercent: -4,
+          },
+          {
+            yPercent: 4,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.1,
+            },
+          }
+        );
+      });
+
+      gsap.fromTo(
+        ".products-bottom-banner",
+        {
+          autoAlpha: 0,
+          y: 55,
+          scale: 0.97,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.95,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".products-bottom-banner",
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.to(".products-glow-one", {
+        x: 70,
+        y: 40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+
+      gsap.to(".products-glow-two", {
+        x: -65,
+        y: -35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+    }, section);
+
+    const canTilt =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      window.innerWidth > 900;
+
+    const cards = Array.from(
+      section.querySelectorAll(".product-card")
+    );
+
+    const cleanups = [];
+
+    if (canTilt) {
+      cards.forEach((card) => {
+        const handleMove = (event) => {
+          const bounds = card.getBoundingClientRect();
+          const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+          const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+          gsap.to(card, {
+            rotateY: x * 4.5,
+            rotateX: y * -4,
+            transformPerspective: 1100,
+            transformOrigin: "center center",
+            duration: 0.45,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        };
+
+        const handleLeave = () => {
+          gsap.to(card, {
+            rotateX: 0,
+            rotateY: 0,
+            duration: 0.65,
+            ease: "power3.out",
+          });
+        };
+
+        card.addEventListener("pointermove", handleMove);
+        card.addEventListener("pointerleave", handleLeave);
+
+        cleanups.push(() => {
+          card.removeEventListener("pointermove", handleMove);
+          card.removeEventListener("pointerleave", handleLeave);
+        });
+      });
+    }
+
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener(
+      "sge:refresh-animations",
+      handleRefresh
+    );
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+
+      window.removeEventListener(
+        "sge:refresh-animations",
+        handleRefresh
+      );
+
+      context.revert();
+    };
+  }, []);
 
   const getText = (key, fallback) => {
     const value = t(key);
@@ -174,7 +478,11 @@ function Products() {
   };
 
   return (
-    <section className="products-section" id="products">
+    <section
+      ref={sectionRef}
+      className="products-section"
+      id="products"
+    >
       <div className="products-background" aria-hidden="true">
         <div className="products-glow products-glow-one" />
         <div className="products-glow products-glow-two" />
@@ -183,7 +491,7 @@ function Products() {
 
       <div className="container">
         <div className="products-heading-row">
-          <div className="section-heading" data-aos="fade-up">
+          <div className="section-heading products-heading-copy">
             <span className="section-tag">
               <PackageCheck size={16} aria-hidden="true" />
               {getText("products.tag", "OUR EXPORT PRODUCTS")}
@@ -206,8 +514,6 @@ function Products() {
 
           <div
             className="products-global-card"
-            data-aos="fade-left"
-            data-aos-delay="150"
           >
             <div className="products-global-icon">
               <Globe2 size={27} aria-hidden="true" />
@@ -233,14 +539,14 @@ function Products() {
               <article
                 key={product.number}
                 className="product-card"
-                data-aos="fade-up"
-                data-aos-delay={(index % 4) * 80}
               >
                 <div className="product-image-wrap">
                   <img
                     className="product-image"
                     src={product.image}
                     alt={product.title}
+                    width="640"
+                    height="420"
                     loading="lazy"
                     decoding="async"
                     fetchPriority="low"
@@ -321,8 +627,6 @@ function Products() {
 
         <div
           className="products-bottom-banner"
-          data-aos="fade-up"
-          data-aos-delay="150"
         >
           <div className="products-bottom-icon">
             <Package size={30} aria-hidden="true" />

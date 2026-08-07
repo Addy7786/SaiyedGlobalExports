@@ -2,37 +2,101 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 5;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
+  z-index: 4;
+  width: 450px;
+  height: 450px;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(
-    circle,
-    rgba(0, 157, 255, 0.11) 0%,
-    rgba(0, 157, 255, 0.055) 32%,
-    transparent 70%
-  );
-  filter: blur(8px);
-  transform: translate3d(-500px, -500px, 0);
-  translate: -50% -50%;
-  transition: opacity 0.35s ease;
-  will-change: transform;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(236, 179, 54, 0.12) 0%,
+      rgba(210, 142, 24, 0.06) 34%,
+      rgba(18, 93, 145, 0.025) 52%,
+      transparent 72%
+    );
+  filter: blur(10px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  transition:
+    width 0.4s ease,
+    height 0.4s ease,
+    opacity 0.35s ease,
+    filter 0.4s ease;
 }
 
 .cursor-glow-visible {
   opacity: 1;
 }
 
+.cursor-glow-active {
+  width: 530px;
+  height: 530px;
+  opacity: 0.78;
+  filter: blur(14px);
+}
+
+/*
+ * Card spotlight.
+ * Works automatically on supported cards.
+ */
+.product-card,
+.market-card,
+.gallery-final__card,
+.testimonials-premium-card,
+.why-choose__feature,
+.company-profile-feature,
+[data-cursor-spotlight] {
+  --cursor-x: 50%;
+  --cursor-y: 50%;
+}
+
+.product-card::selection,
+.market-card::selection,
+.gallery-final__card::selection {
+  background: rgba(239, 185, 65, 0.28);
+}
+
+.cursor-spotlight-active {
+  position: relative;
+  isolation: isolate;
+}
+
+.cursor-spotlight-active::after {
+  opacity: 1 !important;
+}
+
+.cursor-spotlight-active::before {
+  opacity: 1;
+}
+
+.cursor-spotlight-active {
+  background-image:
+    radial-gradient(
+      220px circle at var(--cursor-x) var(--cursor-y),
+      rgba(244, 204, 105, 0.13),
+      rgba(244, 204, 105, 0.035) 38%,
+      transparent 68%
+    ) !important;
+}
+
 @media (hover: none), (pointer: coarse) {
   .cursor-glow {
     display: none;
+  }
+
+  .cursor-spotlight-active {
+    background-image: none !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cursor-glow {
     display: none;
+  }
+
+  .cursor-spotlight-active {
+    background-image: none !important;
   }
 }

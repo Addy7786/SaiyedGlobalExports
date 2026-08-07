@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import {
   ChevronRight,
   CircleHelp,
@@ -9,6 +12,8 @@ import {
 } from "lucide-react";
 
 import "./FAQ.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const faqItems = [
   {
@@ -50,7 +55,336 @@ const faqItems = [
 ];
 
 function FAQ() {
+  const sectionRef = useRef(null);
+  const accordionRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const accordion = accordionRef.current;
+
+    if (!section || !accordion) {
+      return undefined;
+    }
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduceMotion) {
+      gsap.set(
+        section.querySelectorAll(
+          ".faq-luxury__intro > *, .faq-luxury__item"
+        ),
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+        }
+      );
+
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const introTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      introTimeline
+        .fromTo(
+          ".faq-luxury__eyebrow",
+          {
+            autoAlpha: 0,
+            y: -18,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.62,
+            ease: "power3.out",
+          }
+        )
+        .fromTo(
+          ".faq-luxury__title > *",
+          {
+            autoAlpha: 0,
+            y: 42,
+            rotateX: -12,
+            transformOrigin: "50% 100%",
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 0.84,
+            stagger: 0.12,
+            ease: "power3.out",
+          },
+          0.12
+        )
+        .fromTo(
+          ".faq-luxury__title-line",
+          {
+            scaleX: 0,
+            transformOrigin: "left center",
+          },
+          {
+            scaleX: 1,
+            duration: 0.75,
+            ease: "power3.inOut",
+          },
+          0.44
+        )
+        .fromTo(
+          ".faq-luxury__description",
+          {
+            autoAlpha: 0,
+            y: 24,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power3.out",
+          },
+          0.5
+        )
+        .fromTo(
+          ".faq-luxury__promise",
+          {
+            autoAlpha: 0,
+            y: 28,
+            scale: 0.94,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.72,
+            ease: "power3.out",
+          },
+          0.62
+        )
+        .fromTo(
+          ".faq-luxury__contact-card",
+          {
+            autoAlpha: 0,
+            y: 30,
+            scale: 0.95,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.72,
+            ease: "power3.out",
+          },
+          0.72
+        );
+
+      gsap.fromTo(
+        ".faq-luxury__item",
+        {
+          autoAlpha: 0,
+          x: 48,
+          y: 24,
+          scale: 0.97,
+        },
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 0.72,
+          stagger: 0.09,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: accordion,
+            start: "top 86%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.to(".faq-luxury__glow--one", {
+        x: 65,
+        y: 40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.3,
+        },
+      });
+
+      gsap.to(".faq-luxury__glow--two", {
+        x: -60,
+        y: -35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.3,
+        },
+      });
+    }, section);
+
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener(
+      "sge:refresh-animations",
+      handleRefresh
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sge:refresh-animations",
+        handleRefresh
+      );
+
+      context.revert();
+    };
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+
+    if (!section) {
+      return undefined;
+    }
+
+    const items = Array.from(
+      section.querySelectorAll(".faq-luxury__item")
+    );
+
+    items.forEach((item, index) => {
+      const answerWrap = item.querySelector(
+        ".faq-luxury__answer-wrap"
+      );
+      const answer = item.querySelector(".faq-luxury__answer");
+      const line = item.querySelector(".faq-luxury__answer-line");
+      const paragraph = item.querySelector(".faq-luxury__answer p");
+      const toggle = item.querySelector(".faq-luxury__toggle");
+      const isOpen = activeIndex === index;
+
+      if (!answerWrap || !answer || !line || !paragraph || !toggle) {
+        return;
+      }
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(answerWrap, {
+          height: isOpen ? "auto" : 0,
+        });
+
+        gsap.set([line, paragraph], {
+          autoAlpha: isOpen ? 1 : 0,
+          y: 0,
+        });
+
+        return;
+      }
+
+      if (isOpen) {
+        gsap.killTweensOf([answerWrap, line, paragraph, toggle]);
+
+        gsap.set(answerWrap, {
+          height: "auto",
+        });
+
+        const targetHeight = answerWrap.offsetHeight;
+
+        gsap.fromTo(
+          answerWrap,
+          {
+            height: 0,
+          },
+          {
+            height: targetHeight,
+            duration: 0.45,
+            ease: "power3.out",
+            onComplete: () => {
+              gsap.set(answerWrap, {
+                height: "auto",
+              });
+
+              ScrollTrigger.refresh();
+            },
+          }
+        );
+
+        gsap.fromTo(
+          line,
+          {
+            autoAlpha: 0,
+            scaleX: 0,
+            transformOrigin: "left center",
+          },
+          {
+            autoAlpha: 1,
+            scaleX: 1,
+            duration: 0.42,
+            delay: 0.12,
+            ease: "power3.out",
+          }
+        );
+
+        gsap.fromTo(
+          paragraph,
+          {
+            autoAlpha: 0,
+            y: 14,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.45,
+            delay: 0.16,
+            ease: "power2.out",
+          }
+        );
+
+        gsap.to(toggle, {
+          rotation: 180,
+          duration: 0.35,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.killTweensOf([answerWrap, line, paragraph, toggle]);
+
+        gsap.to([line, paragraph], {
+          autoAlpha: 0,
+          y: -6,
+          duration: 0.18,
+          ease: "power1.out",
+        });
+
+        gsap.to(answerWrap, {
+          height: 0,
+          duration: 0.36,
+          ease: "power2.inOut",
+          onComplete: () => {
+            ScrollTrigger.refresh();
+          },
+        });
+
+        gsap.to(toggle, {
+          rotation: 0,
+          duration: 0.35,
+          ease: "power2.out",
+        });
+      }
+    });
+  }, [activeIndex]);
 
   const handleToggle = (index) => {
     setActiveIndex((currentIndex) =>
@@ -61,15 +395,23 @@ function FAQ() {
   const scrollToContact = () => {
     document
       .querySelector("#contact")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
   };
 
   return (
-    <section id="faq" className="faq-luxury">
+    <section
+      ref={sectionRef}
+      className="faq-luxury"
+      id="faq"
+    >
       <div
         className="faq-luxury__glow faq-luxury__glow--one"
         aria-hidden="true"
       />
+
       <div
         className="faq-luxury__glow faq-luxury__glow--two"
         aria-hidden="true"
@@ -78,57 +420,84 @@ function FAQ() {
       <div className="faq-luxury__container">
         <div className="faq-luxury__intro">
           <div className="faq-luxury__eyebrow">
-            <CircleHelp size={18} strokeWidth={1.8} />
+            <CircleHelp
+              size={18}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+
             <span>Frequently Asked Questions</span>
           </div>
 
           <h2 className="faq-luxury__title">
-            Everything You
+            <span>Everything You</span>
+
             <span>
               Need To <strong>Know</strong>
             </span>
           </h2>
 
-          <div className="faq-luxury__title-line" />
+          <div
+            className="faq-luxury__title-line"
+            aria-hidden="true"
+          />
 
           <p className="faq-luxury__description">
-            Find quick answers about our products, international markets,
-            sourcing process and export services.
+            Find quick answers about our products, international
+            markets, sourcing process and export services.
           </p>
 
           <div className="faq-luxury__promise">
             <div className="faq-luxury__promise-icon">
-              <Ship size={34} strokeWidth={1.45} />
+              <Ship
+                size={34}
+                strokeWidth={1.45}
+                aria-hidden="true"
+              />
             </div>
 
             <div>
               <span>Buyer-Focused Service</span>
               <strong>Clear Export Support</strong>
+
               <p>
-                Practical guidance for sourcing, product coordination and
-                international enquiries.
+                Practical guidance for sourcing, product coordination
+                and international enquiries.
               </p>
             </div>
           </div>
 
           <div className="faq-luxury__contact-card">
             <div className="faq-luxury__contact-icon">
-              <Headphones size={28} strokeWidth={1.6} />
+              <Headphones
+                size={28}
+                strokeWidth={1.6}
+                aria-hidden="true"
+              />
             </div>
 
             <div className="faq-luxury__contact-content">
               <strong>Still Have Questions?</strong>
-              <span>We are here to help with your requirement.</span>
+              <span>
+                We are here to help with your requirement.
+              </span>
             </div>
 
             <button type="button" onClick={scrollToContact}>
               Contact Us
-              <ChevronRight size={17} strokeWidth={1.9} />
+              <ChevronRight
+                size={17}
+                strokeWidth={1.9}
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
 
-        <div className="faq-luxury__accordion">
+        <div
+          ref={accordionRef}
+          className="faq-luxury__accordion"
+        >
           {faqItems.map((item, index) => {
             const isOpen = activeIndex === index;
 
@@ -156,9 +525,17 @@ function FAQ() {
 
                   <span className="faq-luxury__toggle">
                     {isOpen ? (
-                      <Minus size={19} strokeWidth={1.8} />
+                      <Minus
+                        size={19}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     ) : (
-                      <Plus size={19} strokeWidth={1.8} />
+                      <Plus
+                        size={19}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     )}
                   </span>
                 </button>
@@ -169,7 +546,11 @@ function FAQ() {
                   aria-hidden={!isOpen}
                 >
                   <div className="faq-luxury__answer">
-                    <span className="faq-luxury__answer-line" />
+                    <span
+                      className="faq-luxury__answer-line"
+                      aria-hidden="true"
+                    />
+
                     <p>{item.answer}</p>
                   </div>
                 </div>
