@@ -2112,3 +2112,76 @@
     transform: none !important;
   }
 }
+
+/* =========================================================
+   FINAL DESKTOP TEXT / IMAGE OVERLAP FIX
+   Keeps the existing design and animations unchanged.
+========================================================= */
+
+@media (min-width: 1021px) {
+  .about-main-grid {
+    grid-template-columns: minmax(0, 47%) minmax(0, 53%);
+    gap: 34px;
+    align-items: center;
+  }
+
+  .about-content {
+    z-index: 5;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding-right: 24px;
+    padding-left: 34px;
+  }
+
+  .about-content h2 {
+    max-width: 100%;
+    font-size: clamp(4.2rem, 5.25vw, 6.1rem);
+    line-height: 0.94;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .about-content > p {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .about-visual {
+    z-index: 4;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .about-image-frame {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .about-image-shape,
+  .about-image-shape img {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .about-image-badge {
+    left: 18px;
+  }
+}
+
+@media (min-width: 1021px) and (max-width: 1280px) {
+  .about-main-grid {
+    grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+    gap: 24px;
+  }
+
+  .about-content {
+    padding-right: 18px;
+    padding-left: 22px;
+  }
+
+  .about-content h2 {
+    font-size: clamp(3.8rem, 5vw, 5.25rem);
+  }
+}
