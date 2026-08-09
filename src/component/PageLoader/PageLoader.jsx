@@ -8,52 +8,9 @@ import logo from "../../assets/saiyed-logo.webp";
 
 import "./PageLoader.css";
 
-const DESKTOP_LOADER_DURATION = 1500;
-const DESKTOP_EXIT_DURATION = 380;
-
-const SESSION_KEY =
-  "sge-page-loader-shown";
-
-function shouldShowLoader() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  const reduceMotion =
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-  const mobileOrTouchDevice =
-    window.matchMedia(
-      "(max-width: 768px), (pointer: coarse)"
-    ).matches;
-
-  /*
-   * Mobile Lighthouse aur real mobile devices par
-   * loader render hi nahi hoga.
-   */
-  if (
-    reduceMotion ||
-    mobileOrTouchDevice
-  ) {
-    return false;
-  }
-
-  /*
-   * Desktop par bhi loader ek session me
-   * sirf pehli baar chalega.
-   */
-  try {
-    return (
-      sessionStorage.getItem(
-        SESSION_KEY
-      ) !== "true"
-    );
-  } catch {
-    return true;
-  }
-}
+const LOADER_DURATION = 2400;
+const EXIT_DURATION = 550;
+const COMPLETION_DELAY = 160;
 
 function PageLoader() {
   const loaderRef = useRef(null);
@@ -61,23 +18,13 @@ function PageLoader() {
   const percentageRef = useRef(null);
 
   const [isVisible, setIsVisible] =
-    useState(shouldShowLoader);
+    useState(true);
 
   const [isLeaving, setIsLeaving] =
     useState(false);
 
   useEffect(() => {
-    /*
-     * Mobile/reduced-motion/session repeat me
-     * component immediately inactive rahega.
-     */
     if (!isVisible) {
-      document.body.style.overflow =
-        "";
-
-      document.body.style.paddingRight =
-        "";
-
       return undefined;
     }
 
@@ -114,7 +61,8 @@ function PageLoader() {
     }
 
     let animationFrame = 0;
-    let removeTimer = 0;
+    let completionTimer = 0;
+    let exitTimer = 0;
     let loadedEventFrame = 0;
 
     let startTime = 0;
@@ -144,7 +92,7 @@ function PageLoader() {
       );
     };
 
-    const renderProgress = (
+    const updateProgress = (
       progress
     ) => {
       const safeProgress = Math.min(
@@ -181,18 +129,6 @@ function PageLoader() {
       );
     };
 
-    const markLoaderAsShown = () => {
-      try {
-        sessionStorage.setItem(
-          SESSION_KEY,
-          "true"
-        );
-      } catch {
-        // Storage unavailable ho to
-        // website behavior affect nahi hoga.
-      }
-    };
-
     const finishLoader = () => {
       if (
         completed ||
@@ -203,11 +139,22 @@ function PageLoader() {
 
       completed = true;
 
-      renderProgress(1);
-      markLoaderAsShown();
-      setIsLeaving(true);
+      updateProgress(1);
 
-      removeTimer =
+      loader.classList.add(
+        "gold-loader--complete"
+      );
+
+      completionTimer =
+        window.setTimeout(() => {
+          if (destroyed) {
+            return;
+          }
+
+          setIsLeaving(true);
+        }, COMPLETION_DELAY);
+
+      exitTimer =
         window.setTimeout(() => {
           if (destroyed) {
             return;
@@ -220,7 +167,7 @@ function PageLoader() {
             window.requestAnimationFrame(
               dispatchLoadedEvent
             );
-        }, DESKTOP_EXIT_DURATION);
+        }, COMPLETION_DELAY + EXIT_DURATION);
     };
 
     const animate = (time) => {
@@ -236,12 +183,12 @@ function PageLoader() {
         time - startTime;
 
       const progress = Math.min(
-        1,
         elapsed /
-          DESKTOP_LOADER_DURATION
+          LOADER_DURATION,
+        1
       );
 
-      renderProgress(progress);
+      updateProgress(progress);
 
       if (progress < 1) {
         animationFrame =
@@ -272,7 +219,11 @@ function PageLoader() {
       );
 
       window.clearTimeout(
-        removeTimer
+        completionTimer
+      );
+
+      window.clearTimeout(
+        exitTimer
       );
 
       restoreBody();
@@ -286,9 +237,9 @@ function PageLoader() {
   return (
     <div
       ref={loaderRef}
-      className={`intro-loader ${
+      className={`gold-loader ${
         isLeaving
-          ? "intro-loader--exit"
+          ? "gold-loader--exit"
           : ""
       }`}
       role="status"
@@ -296,64 +247,145 @@ function PageLoader() {
       aria-label="Loading Saiyed Global Exports 0%"
     >
       <div
-        className="intro-loader__beam intro-loader__beam--two"
+        className="gold-loader__noise"
         aria-hidden="true"
       />
 
-      <div className="intro-loader__content">
-        <div className="intro-loader__emblem">
+      <div
+        className="gold-loader__ambient gold-loader__ambient--left"
+        aria-hidden="true"
+      />
+
+      <div
+        className="gold-loader__ambient gold-loader__ambient--right"
+        aria-hidden="true"
+      />
+
+      <div
+        className="gold-loader__line gold-loader__line--top"
+        aria-hidden="true"
+      />
+
+      <div
+        className="gold-loader__line gold-loader__line--bottom"
+        aria-hidden="true"
+      />
+
+      <div
+        className="gold-loader__beam gold-loader__beam--one"
+        aria-hidden="true"
+      />
+
+      <div
+        className="gold-loader__beam gold-loader__beam--two"
+        aria-hidden="true"
+      />
+
+      <div className="gold-loader__content">
+        <div className="gold-loader__monogram">
           <span
-            className="intro-loader__orbit intro-loader__orbit--outer"
+            className="gold-loader__halo gold-loader__halo--outer"
             aria-hidden="true"
           />
 
           <span
-            className="intro-loader__orbit intro-loader__orbit--inner"
+            className="gold-loader__halo gold-loader__halo--middle"
             aria-hidden="true"
           />
 
           <span
-            className="intro-loader__emblem-glow"
+            className="gold-loader__halo gold-loader__halo--inner"
             aria-hidden="true"
           />
 
           <span
-            className="intro-loader__sweep"
+            className="gold-loader__crosshair gold-loader__crosshair--horizontal"
             aria-hidden="true"
           />
 
-          <img
-            src={logo}
-            alt="Saiyed Global Exports"
-            className="intro-loader__logo"
-            width="420"
-            height="420"
-            decoding="async"
-            fetchPriority="high"
-            draggable="false"
+          <span
+            className="gold-loader__crosshair gold-loader__crosshair--vertical"
+            aria-hidden="true"
+          />
+
+          <div className="gold-loader__logo-frame">
+            <span
+              className="gold-loader__logo-light"
+              aria-hidden="true"
+            />
+
+            <span
+              className="gold-loader__logo-sweep"
+              aria-hidden="true"
+            />
+
+            <span
+              className="gold-loader__logo-sweep gold-loader__logo-sweep--second"
+              aria-hidden="true"
+            />
+
+            <img
+              src={logo}
+              alt="Saiyed Global Exports"
+              className="gold-loader__logo"
+              width="420"
+              height="420"
+              decoding="async"
+              fetchPriority="high"
+              draggable="false"
+            />
+          </div>
+
+          <span
+            className="gold-loader__spark gold-loader__spark--one"
+            aria-hidden="true"
+          />
+
+          <span
+            className="gold-loader__spark gold-loader__spark--two"
+            aria-hidden="true"
+          />
+
+          <span
+            className="gold-loader__spark gold-loader__spark--three"
+            aria-hidden="true"
+          />
+
+          <span
+            className="gold-loader__spark gold-loader__spark--four"
+            aria-hidden="true"
           />
         </div>
 
-        <div className="intro-loader__identity">
-          <div className="intro-loader__kicker">
+        <div className="gold-loader__identity">
+          <div className="gold-loader__eyebrow">
             <span />
 
-            India • Global Trade
+            INDIA • GLOBAL TRADE • 2026
 
             <span />
           </div>
 
-          <h1 className="intro-loader__company">
-            <span className="intro-loader__saiyed">
+          <h1 className="gold-loader__title">
+            <span className="gold-loader__title-saiyed">
               Saiyed
             </span>
 
-            <span className="intro-loader__global">
+            <span className="gold-loader__title-global">
               Global Exports
             </span>
           </h1>
 
-          <p className="intro-loader__tagline">
+          <div
+            className="gold-loader__divider"
+            aria-hidden="true"
+          >
+            <span />
+            <i />
+            <span />
+          </div>
+
+          <p className="gold-loader__tagline">
             Connecting Indian Products
 
             <strong>
@@ -362,47 +394,53 @@ function PageLoader() {
           </p>
         </div>
 
-        <div className="intro-loader__loading-row">
-          <div
-            className="intro-loader__progress"
-            aria-hidden="true"
-          >
+        <div className="gold-loader__loading">
+          <div className="gold-loader__loading-head">
+            <span>
+              Global Trade Network
+            </span>
+
+            <strong
+              ref={percentageRef}
+            >
+              00%
+            </strong>
+          </div>
+
+          <div className="gold-loader__track">
             <span
               ref={progressRef}
-              className="intro-loader__progress-fill"
+              className="gold-loader__progress"
+            />
+
+            <span
+              className="gold-loader__track-glow"
+              aria-hidden="true"
+            />
+
+            <span
+              className="gold-loader__tracking-dot"
+              aria-hidden="true"
             />
           </div>
 
-          <span
-            ref={percentageRef}
-            className="intro-loader__percentage"
-          >
-            00%
-          </span>
-        </div>
+          <div className="gold-loader__loading-footer">
+            <span className="gold-loader__live-dot" />
 
-        <div className="intro-loader__status">
-          <span className="intro-loader__status-dot" />
-
-          Establishing Global Connections
+            Establishing Secure Connection
+          </div>
         </div>
       </div>
 
       <div
-        className="intro-loader__particles"
+        className="gold-loader__final-flash"
         aria-hidden="true"
-      >
-        {Array.from({
-          length: 8,
-        }).map((_, index) => (
-          <span
-            key={index}
-            className={`intro-loader__particle intro-loader__particle--${
-              index + 1
-            }`}
-          />
-        ))}
-      </div>
+      />
+
+      <div
+        className="gold-loader__final-ring"
+        aria-hidden="true"
+      />
     </div>
   );
 }
