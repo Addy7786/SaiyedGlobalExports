@@ -909,3 +909,137 @@
     transform: rotate(360deg);
   }
 }
+
+/* =========================================================
+   RFQ MODAL INTEGRATION
+   Existing Contact design remains unchanged.
+========================================================= */
+
+.contact-luxury__quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.contact-luxury__quick-actions button {
+  position: relative;
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  padding: 0 18px;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.contact-luxury__quick-actions button::before {
+  position: absolute;
+  top: -45%;
+  left: -55%;
+  width: 38%;
+  height: 190%;
+  content: "";
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.62),
+    transparent
+  );
+  transform: skewX(-22deg);
+  transition:
+    left 0.7s ease,
+    opacity 0.25s ease;
+}
+
+.contact-luxury__quick-actions button:hover::before {
+  left: 118%;
+  opacity: 1;
+}
+
+.contact-luxury__quick-actions button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-luxury__rfq-button {
+  color: #171107;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: linear-gradient(
+    135deg,
+    #f5d16c,
+    #bd7a13
+  );
+  box-shadow: 0 14px 28px rgba(215, 147, 27, 0.18);
+}
+
+.contact-luxury__rfq-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 38px rgba(215, 147, 27, 0.28);
+}
+
+.contact-luxury__whatsapp-button {
+  color: #ffffff;
+  border: 1px solid rgba(59, 210, 109, 0.42);
+  background: linear-gradient(
+    145deg,
+    #28d66b,
+    #168f45
+  );
+  box-shadow: 0 14px 28px rgba(37, 211, 102, 0.16);
+}
+
+.contact-luxury__whatsapp-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 38px rgba(37, 211, 102, 0.26);
+}
+
+@media (max-width: 900px) {
+  .contact-luxury__quick-actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+
+  .contact-luxury__quick-actions button {
+    flex: 1 1 220px;
+  }
+}
+
+@media (max-width: 680px) {
+  .contact-luxury__quick-actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .contact-luxury__quick-actions button {
+    width: 100%;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .contact-luxury__rfq-button:hover,
+  .contact-luxury__whatsapp-button:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-luxury__quick-actions button {
+    transition: none !important;
+  }
+}

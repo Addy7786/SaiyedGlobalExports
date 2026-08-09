@@ -99,6 +99,7 @@ function CompanyProfile() {
           trigger: section,
           start: "top 76%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -240,6 +241,7 @@ function CompanyProfile() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.2,
+          invalidateOnRefresh: false,
         },
       });
     }, section);
@@ -249,87 +251,205 @@ function CompanyProfile() {
       window.innerWidth > 900;
 
     let resetTimer;
+    let bounds = null;
+    let pointerFrame = 0;
+    let latestPointerEvent = null;
 
-    const handlePointerMove = (event) => {
-      if (!canUsePointerEffects) return;
+    gsap.set(container, {
+      transformPerspective: 1400,
+      transformOrigin: "center center",
+    });
 
-      const bounds = container.getBoundingClientRect();
-      const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-      const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-
-      gsap.to(container, {
-        rotateY: x * 2.4,
-        rotateX: y * -2,
-        transformPerspective: 1400,
-        transformOrigin: "center center",
+    const containerRotateX = gsap.quickTo(
+      container,
+      "rotateX",
+      {
         duration: 0.8,
         ease: "power3.out",
-        overwrite: "auto",
-      });
+      }
+    );
 
-      gsap.to(background, {
-        x: x * -18,
-        y: y * -12,
+    const containerRotateY = gsap.quickTo(
+      container,
+      "rotateY",
+      {
+        duration: 0.8,
+        ease: "power3.out",
+      }
+    );
+
+    const backgroundX = gsap.quickTo(
+      background,
+      "x",
+      {
         duration: 0.9,
         ease: "power3.out",
-        overwrite: "auto",
-      });
+      }
+    );
 
-      gsap.to(content, {
-        x: x * 7,
-        y: y * 5,
+    const backgroundY = gsap.quickTo(
+      background,
+      "y",
+      {
         duration: 0.9,
         ease: "power3.out",
-        overwrite: "auto",
-      });
+      }
+    );
+
+    const contentX = gsap.quickTo(
+      content,
+      "x",
+      {
+        duration: 0.9,
+        ease: "power3.out",
+      }
+    );
+
+    const contentY = gsap.quickTo(
+      content,
+      "y",
+      {
+        duration: 0.9,
+        ease: "power3.out",
+      }
+    );
+
+    const updateBounds = () => {
+      if (!canUsePointerEffects) {
+        return;
+      }
+
+      bounds = container.getBoundingClientRect();
+    };
+
+    const renderPointerEffects = () => {
+      pointerFrame = 0;
+
+      if (
+        !canUsePointerEffects ||
+        !latestPointerEvent ||
+        !bounds
+      ) {
+        return;
+      }
+
+      const x =
+        (latestPointerEvent.clientX -
+          bounds.left) /
+          bounds.width -
+        0.5;
+
+      const y =
+        (latestPointerEvent.clientY -
+          bounds.top) /
+          bounds.height -
+        0.5;
+
+      containerRotateY(x * 2.4);
+      containerRotateX(y * -2);
+
+      backgroundX(x * -18);
+      backgroundY(y * -12);
+
+      contentX(x * 7);
+      contentY(y * 5);
+    };
+
+    const handlePointerEnter = () => {
+      window.clearTimeout(resetTimer);
+      updateBounds();
+    };
+
+    const handlePointerMove = (event) => {
+      if (!canUsePointerEffects) {
+        return;
+      }
+
+      latestPointerEvent = event;
+
+      if (!bounds) {
+        updateBounds();
+      }
+
+      if (pointerFrame) {
+        return;
+      }
+
+      pointerFrame =
+        window.requestAnimationFrame(
+          renderPointerEffects
+        );
     };
 
     const resetPointerEffects = () => {
+      if (!canUsePointerEffects) {
+        return;
+      }
+
+      window.cancelAnimationFrame(
+        pointerFrame
+      );
+
+      pointerFrame = 0;
+      latestPointerEvent = null;
+      bounds = null;
+
       window.clearTimeout(resetTimer);
 
       resetTimer = window.setTimeout(() => {
-        gsap.to(container, {
-          rotateX: 0,
-          rotateY: 0,
-          duration: 0.9,
-          ease: "power3.out",
-        });
+        containerRotateX(0);
+        containerRotateY(0);
 
-        gsap.to(background, {
-          x: 0,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
-        });
+        backgroundX(0);
+        backgroundY(0);
 
-        gsap.to(content, {
-          x: 0,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
-        });
+        contentX(0);
+        contentY(0);
       }, 80);
     };
 
-    container.addEventListener("pointermove", handlePointerMove);
-    container.addEventListener("pointerleave", resetPointerEffects);
+    container.addEventListener(
+      "pointerenter",
+      handlePointerEnter
+    );
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
+    container.addEventListener(
+      "pointermove",
+      handlePointerMove,
+      {
+        passive: true,
+      }
+    );
 
-    window.addEventListener("sge:refresh-animations", handleRefresh);
+    container.addEventListener(
+      "pointerleave",
+      resetPointerEffects
+    );
 
     return () => {
       window.clearTimeout(resetTimer);
-
-      container.removeEventListener("pointermove", handlePointerMove);
-      container.removeEventListener("pointerleave", resetPointerEffects);
-
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
+      window.cancelAnimationFrame(
+        pointerFrame
       );
+
+      container.removeEventListener(
+        "pointerenter",
+        handlePointerEnter
+      );
+
+      container.removeEventListener(
+        "pointermove",
+        handlePointerMove
+      );
+
+      container.removeEventListener(
+        "pointerleave",
+        resetPointerEffects
+      );
+
+      gsap.killTweensOf(container);
+      gsap.killTweensOf(background);
+      gsap.killTweensOf(content);
 
       context.revert();
     };

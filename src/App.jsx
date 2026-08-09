@@ -86,13 +86,16 @@ function DeferredSection({
 }) {
   const sectionRef = useRef(null);
 
-  const [shouldRender, setShouldRender] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
+  const [shouldRender, setShouldRender] =
+    useState(() => {
+      if (typeof window === "undefined") {
+        return false;
+      }
 
-    return window.location.hash.replace("#", "") === id;
-  });
+      return (
+        window.location.hash.replace("#", "") === id
+      );
+    });
 
   useEffect(() => {
     const checkCurrentHash = () => {
@@ -163,15 +166,16 @@ function DeferredSection({
       return undefined;
     }
 
-    const contentLoadedTimer = window.setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent("sge:content-loaded", {
-          detail: {
-            sectionId: id,
-          },
-        })
-      );
-    }, 220);
+    const contentLoadedTimer =
+      window.setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("sge:content-loaded", {
+            detail: {
+              sectionId: id,
+            },
+          })
+        );
+      }, 220);
 
     return () => {
       window.clearTimeout(contentLoadedTimer);
@@ -194,7 +198,9 @@ function DeferredSection({
       {shouldRender ? (
         <Suspense
           fallback={
-            <SectionFallback minHeight={minHeight} />
+            <SectionFallback
+              minHeight={minHeight}
+            />
           }
         >
           {children}
@@ -205,30 +211,6 @@ function DeferredSection({
 }
 
 function App() {
-  useEffect(() => {
-    let resizeTimer;
-
-    const handleResize = () => {
-      window.clearTimeout(resizeTimer);
-
-      resizeTimer = window.setTimeout(() => {
-        window.dispatchEvent(
-          new CustomEvent("sge:refresh-animations")
-        );
-      }, 220);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.clearTimeout(resizeTimer);
-      window.removeEventListener(
-        "resize",
-        handleResize
-      );
-    };
-  }, []);
-
   return (
     <>
       <PageLoader />

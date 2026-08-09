@@ -202,6 +202,7 @@ function About() {
               trigger: options.trigger ?? elements[0],
               start: options.start ?? "top 86%",
               once: true,
+              invalidateOnRefresh: false,
             },
           }
         );
@@ -215,7 +216,9 @@ function About() {
       );
 
       gsap.fromTo(
-        ".about-kicker-line, .about-title-line",
+        section.querySelectorAll(
+          ".about-kicker-line, .about-title-line"
+        ),
         { scaleX: 0, transformOrigin: "left center" },
         {
           scaleX: 1,
@@ -223,9 +226,12 @@ function About() {
           stagger: 0.15,
           ease: "power3.inOut",
           scrollTrigger: {
-            trigger: ".about-content",
+            trigger: section.querySelector(
+              ".about-content"
+            ),
             start: "top 84%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
@@ -243,30 +249,41 @@ function About() {
         { stagger: 0.16, trigger: ".about-visual" }
       );
 
+      const aboutVisual = section.querySelector(
+        ".about-visual"
+      );
+
+      const aboutImageElement = section.querySelector(
+        ".about-image-shape img"
+      );
+
       gsap.fromTo(
-        ".about-image-gold-border",
+        section.querySelector(
+          ".about-image-gold-border"
+        ),
         { clipPath: "inset(0 100% 0 0)" },
         {
           clipPath: "inset(0 0% 0 0)",
           duration: 1.35,
           ease: "power3.inOut",
           scrollTrigger: {
-            trigger: ".about-visual",
+            trigger: aboutVisual,
             start: "top 82%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
 
       gsap.fromTo(
-        ".about-image-shape img",
+        aboutImageElement,
         { scale: 1.1 },
         {
           scale: 1.01,
           duration: 1.55,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: ".about-visual",
+            trigger: aboutVisual,
             start: "top 82%",
             once: true,
           },
@@ -274,14 +291,17 @@ function About() {
       );
 
       if (window.innerWidth > 1020) {
-        gsap.to(".about-image-shape img", {
+        gsap.to(aboutImageElement, {
           yPercent: 6,
           ease: "none",
           scrollTrigger: {
-            trigger: ".about-main-grid",
+            trigger: section.querySelector(
+              ".about-main-grid"
+            ),
             start: "top bottom",
             end: "bottom top",
             scrub: 1.2,
+            invalidateOnRefresh: false,
           },
         });
       }
@@ -310,7 +330,9 @@ function About() {
           duration: 1.6,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: ".about-stats",
+            trigger: section.querySelector(
+              ".about-stats"
+            ),
             start: "top 82%",
             once: true,
           },
@@ -345,12 +367,7 @@ function About() {
       );
     }, section);
 
-    const refreshTimer = window.setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 250);
-
     return () => {
-      window.clearTimeout(refreshTimer);
       context.revert();
     };
   }, []);

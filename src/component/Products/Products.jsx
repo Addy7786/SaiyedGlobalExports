@@ -78,6 +78,7 @@ function Products() {
           trigger: section,
           start: "top 78%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -122,7 +123,10 @@ function Products() {
           0.32
         );
 
-      const cards = gsap.utils.toArray(".product-card");
+      const cards = gsap.utils.toArray(
+        ".product-card",
+        section
+      );
 
       cards.forEach((card, index) => {
         const direction = index % 2 === 0 ? -48 : 48;
@@ -137,6 +141,7 @@ function Products() {
             trigger: card,
             start: "top 88%",
             once: true,
+            invalidateOnRefresh: false,
           },
         });
 
@@ -218,13 +223,18 @@ function Products() {
               start: "top bottom",
               end: "bottom top",
               scrub: 1.1,
+              invalidateOnRefresh: false,
             },
           }
         );
       });
 
+      const bottomBanner = section.querySelector(
+        ".products-bottom-banner"
+      );
+
       gsap.fromTo(
-        ".products-bottom-banner",
+        bottomBanner,
         {
           autoAlpha: 0,
           y: 55,
@@ -237,14 +247,19 @@ function Products() {
           duration: 0.95,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: ".products-bottom-banner",
+            trigger: bottomBanner,
             start: "top 88%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
 
-      gsap.to(".products-glow-one", {
+      gsap.to(
+        section.querySelector(
+          ".products-glow-one"
+        ),
+        {
         x: 70,
         y: 40,
         ease: "none",
@@ -253,10 +268,16 @@ function Products() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.4,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".products-glow-two", {
+      gsap.to(
+        section.querySelector(
+          ".products-glow-two"
+        ),
+        {
         x: -65,
         y: -35,
         ease: "none",
@@ -265,8 +286,10 @@ function Products() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.4,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
     }, section);
 
     const canTilt =
@@ -281,57 +304,144 @@ function Products() {
 
     if (canTilt) {
       cards.forEach((card) => {
-        const handleMove = (event) => {
-          const bounds = card.getBoundingClientRect();
-          const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-          const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+        let bounds = null;
+        let pointerFrame = 0;
+        let latestPointerEvent = null;
 
-          gsap.to(card, {
-            rotateY: x * 4.5,
-            rotateX: y * -4,
-            transformPerspective: 1100,
-            transformOrigin: "center center",
+        gsap.set(card, {
+          transformPerspective: 1100,
+          transformOrigin: "center center",
+        });
+
+        const rotateXTo = gsap.quickTo(
+          card,
+          "rotateX",
+          {
             duration: 0.45,
             ease: "power2.out",
-            overwrite: "auto",
-          });
+          }
+        );
+
+        const rotateYTo = gsap.quickTo(
+          card,
+          "rotateY",
+          {
+            duration: 0.45,
+            ease: "power2.out",
+          }
+        );
+
+        const updateBounds = () => {
+          bounds = card.getBoundingClientRect();
+        };
+
+        const renderMove = () => {
+          pointerFrame = 0;
+
+          if (!latestPointerEvent || !bounds) {
+            return;
+          }
+
+          const x =
+            (latestPointerEvent.clientX -
+              bounds.left) /
+              bounds.width -
+            0.5;
+
+          const y =
+            (latestPointerEvent.clientY -
+              bounds.top) /
+              bounds.height -
+            0.5;
+
+          rotateYTo(x * 4.5);
+          rotateXTo(y * -4);
+        };
+
+        const handleEnter = () => {
+          updateBounds();
+        };
+
+        const handleMove = (event) => {
+          latestPointerEvent = event;
+
+          if (!bounds) {
+            updateBounds();
+          }
+
+          if (pointerFrame) {
+            return;
+          }
+
+          pointerFrame =
+            window.requestAnimationFrame(
+              renderMove
+            );
         };
 
         const handleLeave = () => {
+          window.cancelAnimationFrame(
+            pointerFrame
+          );
+
+          pointerFrame = 0;
+          latestPointerEvent = null;
+          bounds = null;
+
           gsap.to(card, {
             rotateX: 0,
             rotateY: 0,
             duration: 0.65,
             ease: "power3.out",
+            overwrite: "auto",
           });
         };
 
-        card.addEventListener("pointermove", handleMove);
-        card.addEventListener("pointerleave", handleLeave);
+        card.addEventListener(
+          "pointerenter",
+          handleEnter
+        );
+
+        card.addEventListener(
+          "pointermove",
+          handleMove,
+          {
+            passive: true,
+          }
+        );
+
+        card.addEventListener(
+          "pointerleave",
+          handleLeave
+        );
 
         cleanups.push(() => {
-          card.removeEventListener("pointermove", handleMove);
-          card.removeEventListener("pointerleave", handleLeave);
+          window.cancelAnimationFrame(
+            pointerFrame
+          );
+
+          card.removeEventListener(
+            "pointerenter",
+            handleEnter
+          );
+
+          card.removeEventListener(
+            "pointermove",
+            handleMove
+          );
+
+          card.removeEventListener(
+            "pointerleave",
+            handleLeave
+          );
+
+          gsap.killTweensOf(card);
         });
       });
     }
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
       cleanups.forEach((cleanup) => cleanup());
-
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
 
       context.revert();
     };

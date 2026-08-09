@@ -10,22 +10,112 @@ gsap.registerPlugin(ScrollTrigger);
 function GlobalAnimations() {
   useEffect(() => {
     const root = document.documentElement;
-    const reduceMotionQuery = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
-    const coarsePointerQuery = window.matchMedia(
-      "(pointer: coarse)"
-    );
 
-    const reduceMotion = reduceMotionQuery.matches;
-    const isTouchDevice = coarsePointerQuery.matches;
+    const reduceMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+    const isTouchDevice =
+      window.matchMedia(
+        "(pointer: coarse)"
+      ).matches;
+
+    let destroyed = false;
+
+    let lenis = null;
+    let refreshTimer = 0;
+    let refreshFrame = 0;
+    let resizeTimer = 0;
+    let scrollUpdateFrame = 0;
+    let initialHashTimer = 0;
+    let initialRefreshTimer = 0;
+
+    const cancelRefresh = () => {
+      window.clearTimeout(refreshTimer);
+      window.cancelAnimationFrame(
+        refreshFrame
+      );
+
+      refreshTimer = 0;
+      refreshFrame = 0;
+    };
+
+    const performRefresh = () => {
+      if (destroyed) {
+        return;
+      }
+
+      lenis?.resize();
+
+      ScrollTrigger.refresh();
+    };
+
+    const requestScrollRefresh = (
+      delay = 160
+    ) => {
+      if (destroyed) {
+        return;
+      }
+
+      cancelRefresh();
+
+      refreshTimer =
+        window.setTimeout(() => {
+          refreshTimer = 0;
+
+          if (destroyed) {
+            return;
+          }
+
+          refreshFrame =
+            window.requestAnimationFrame(
+              () => {
+                refreshFrame = 0;
+                performRefresh();
+              }
+            );
+        }, delay);
+    };
+
+    const requestScrollTriggerUpdate =
+      () => {
+        if (
+          scrollUpdateFrame ||
+          destroyed
+        ) {
+          return;
+        }
+
+        scrollUpdateFrame =
+          window.requestAnimationFrame(
+            () => {
+              scrollUpdateFrame = 0;
+
+              if (!destroyed) {
+                ScrollTrigger.update();
+              }
+            }
+          );
+      };
+
+    /*
+     * Mobile browser resize events caused by URL bar
+     * should not trigger repeated full refreshes.
+     */
+    ScrollTrigger.config({
+      ignoreMobileResize: true,
+    });
 
     if (reduceMotion) {
-      root.classList.add("reduce-motion");
+      root.classList.add(
+        "reduce-motion"
+      );
 
-      const refreshWithoutMotion = () => {
-        ScrollTrigger.refresh();
-      };
+      const refreshWithoutMotion =
+        () => {
+          requestScrollRefresh(200);
+        };
 
       window.addEventListener(
         "sge:refresh-animations",
@@ -38,7 +128,13 @@ function GlobalAnimations() {
       );
 
       return () => {
-        root.classList.remove("reduce-motion");
+        destroyed = true;
+
+        cancelRefresh();
+
+        root.classList.remove(
+          "reduce-motion"
+        );
 
         window.removeEventListener(
           "sge:refresh-animations",
@@ -52,120 +148,208 @@ function GlobalAnimations() {
       };
     }
 
-    root.classList.add("sge-smooth-scroll");
+    root.classList.add(
+      "sge-smooth-scroll"
+    );
 
     /*
-     * Lenis handles scrolling only.
-     * All section reveal animations are controlled
-     * inside their own components.
+     * Desktop:
+     * Preserve existing premium Lenis smoothing.
+     *
+     * Touch devices:
+     * Native scrolling is used because smoothTouch and
+     * smoothWheel were already disabled there. This removes
+     * the permanent Lenis + GSAP ticker workload from mobile.
      */
-    const lenis = new Lenis({
-      duration: isTouchDevice ? 0.9 : 1.08,
-      smoothWheel: true,
-      smoothTouch: false,
-      wheelMultiplier: isTouchDevice ? 1 : 0.92,
-      touchMultiplier: 1.05,
-      syncTouch: false,
-      infinite: false,
-    });
+    if (!isTouchDevice) {
+      lenis = new Lenis({
+        duration: 1.08,
+        smoothWheel: true,
+        smoothTouch: false,
+        wheelMultiplier: 0.92,
+        touchMultiplier: 1.05,
+        syncTouch: false,
+        infinite: false,
+      });
 
-    const updateScrollTrigger = () => {
-      ScrollTrigger.update();
-    };
-
-    lenis.on("scroll", updateScrollTrigger);
+      lenis.on(
+        "scroll",
+        requestScrollTriggerUpdate
+      );
+    }
 
     const runLenis = (time) => {
-      lenis.raf(time * 1000);
+      lenis?.raf(time * 1000);
     };
 
-    gsap.ticker.add(runLenis);
-    gsap.ticker.lagSmoothing(0);
+    if (lenis) {
+      gsap.ticker.add(runLenis);
 
-    /*
-     * Keep native and programmatic anchor navigation
-     * synchronized with Lenis.
-     */
-    const handleAnchorClick = (event) => {
-      const anchor = event.target.closest('a[href^="#"]');
+      gsap.ticker.lagSmoothing(
+        500,
+        33
+      );
+    }
+
+    const scrollToElement = (
+      destination,
+      {
+        immediate = false,
+        onComplete,
+      } = {}
+    ) => {
+      if (lenis) {
+        lenis.scrollTo(destination, {
+          offset: -88,
+          duration: immediate
+            ? 0
+            : 1.05,
+          immediate,
+          lock: false,
+          force: true,
+          onComplete,
+        });
+
+        return;
+      }
+
+      const destinationTop =
+        destination.getBoundingClientRect()
+          .top +
+        window.scrollY -
+        88;
+
+      window.scrollTo({
+        top: destinationTop,
+        behavior: immediate
+          ? "auto"
+          : "smooth",
+      });
+
+      if (onComplete) {
+        window.setTimeout(
+          onComplete,
+          immediate ? 0 : 500
+        );
+      }
+    };
+
+    const handleAnchorClick = (
+      event
+    ) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const anchor = target.closest(
+        'a[href^="#"]'
+      );
 
       if (!anchor) {
         return;
       }
 
-      const href = anchor.getAttribute("href");
+      const href =
+        anchor.getAttribute("href");
 
       if (!href || href === "#") {
         return;
       }
 
-      const target = document.querySelector(href);
+      let destination = null;
 
-      if (!target) {
+      try {
+        destination =
+          document.querySelector(href);
+      } catch {
+        return;
+      }
+
+      if (!destination) {
         return;
       }
 
       event.preventDefault();
 
-      lenis.scrollTo(target, {
-        offset: -88,
-        duration: 1.05,
-        lock: false,
-        force: true,
+      scrollToElement(destination, {
         onComplete: () => {
-          window.history.replaceState(null, "", href);
-          ScrollTrigger.refresh();
+          window.history.replaceState(
+            null,
+            "",
+            href
+          );
+
+          requestScrollRefresh(140);
         },
       });
     };
 
-    document.addEventListener("click", handleAnchorClick);
+    document.addEventListener(
+      "click",
+      handleAnchorClick
+    );
 
     /*
-     * Refresh after lazy sections, fonts, images,
-     * resize and orientation changes.
+     * Lazy-loaded sections can dispatch multiple events.
+     * All nearby events are merged into one refresh.
      */
-    let refreshTimer;
-    let resizeTimer;
-
     const refreshAnimations = () => {
-      window.clearTimeout(refreshTimer);
-
-      refreshTimer = window.setTimeout(() => {
-        lenis.resize();
-        ScrollTrigger.refresh();
-      }, 90);
+      requestScrollRefresh(200);
     };
 
     const handleResize = () => {
-      window.clearTimeout(resizeTimer);
+      window.clearTimeout(
+        resizeTimer
+      );
 
-      resizeTimer = window.setTimeout(() => {
-        lenis.resize();
-        ScrollTrigger.refresh();
-      }, 180);
+      resizeTimer =
+        window.setTimeout(() => {
+          requestScrollRefresh(140);
+        }, 260);
     };
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        lenis.stop();
-      } else {
-        lenis.start();
-        refreshAnimations();
+    const handleVisibilityChange =
+      () => {
+        if (document.hidden) {
+          lenis?.stop();
+          return;
+        }
+
+        lenis?.start();
+
+        requestScrollRefresh(200);
+      };
+
+    const handlePageShow = (
+      event
+    ) => {
+      if (!event.persisted) {
+        return;
       }
+
+      requestScrollRefresh(120);
     };
 
-    const handlePageShow = (event) => {
-      if (event.persisted) {
-        lenis.resize();
-        ScrollTrigger.refresh();
+    window.addEventListener(
+      "resize",
+      handleResize,
+      {
+        passive: true,
       }
-    };
+    );
 
-    window.addEventListener("load", refreshAnimations);
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleResize);
-    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener(
+      "orientationchange",
+      handleResize
+    );
+
+    window.addEventListener(
+      "pageshow",
+      handlePageShow
+    );
+
     document.addEventListener(
       "visibilitychange",
       handleVisibilityChange
@@ -181,58 +365,89 @@ function GlobalAnimations() {
       refreshAnimations
     );
 
-    document.fonts?.ready.then(refreshAnimations);
+    /*
+     * One controlled initial refresh.
+     */
+    initialRefreshTimer =
+      window.setTimeout(() => {
+        requestScrollRefresh(80);
+      }, 650);
 
     /*
-     * Handle direct URLs such as /#products after
-     * lazy-loaded content enters the DOM.
+     * Refresh once when fonts settle.
      */
-    const scrollToCurrentHash = () => {
-      const hash = window.location.hash;
+    if (document.fonts?.ready) {
+      document.fonts.ready
+        .then(() => {
+          if (!destroyed) {
+            requestScrollRefresh(220);
+          }
+        })
+        .catch(() => {
+          // Keep page functional if font readiness fails.
+        });
+    }
 
-      if (!hash) {
-        return;
-      }
+    const scrollToCurrentHash =
+      () => {
+        const hash =
+          window.location.hash;
 
-      const target = document.querySelector(hash);
+        if (!hash) {
+          return;
+        }
 
-      if (!target) {
-        return;
-      }
+        let destination = null;
 
-      lenis.scrollTo(target, {
-        offset: -88,
-        immediate: true,
-        force: true,
-      });
+        try {
+          destination =
+            document.querySelector(hash);
+        } catch {
+          return;
+        }
 
-      ScrollTrigger.refresh();
-    };
+        if (!destination) {
+          return;
+        }
 
-    const initialHashTimer = window.setTimeout(
-      scrollToCurrentHash,
-      650
-    );
+        scrollToElement(destination, {
+          immediate: true,
+          onComplete: () => {
+            requestScrollRefresh(140);
+          },
+        });
+      };
 
-    const initialRefreshTimer = window.setTimeout(
-      refreshAnimations,
-      350
-    );
+    initialHashTimer =
+      window.setTimeout(
+        scrollToCurrentHash,
+        750
+      );
 
     return () => {
-      window.clearTimeout(refreshTimer);
-      window.clearTimeout(resizeTimer);
-      window.clearTimeout(initialHashTimer);
-      window.clearTimeout(initialRefreshTimer);
+      destroyed = true;
+
+      cancelRefresh();
+
+      window.clearTimeout(
+        resizeTimer
+      );
+
+      window.clearTimeout(
+        initialHashTimer
+      );
+
+      window.clearTimeout(
+        initialRefreshTimer
+      );
+
+      window.cancelAnimationFrame(
+        scrollUpdateFrame
+      );
 
       document.removeEventListener(
         "click",
         handleAnchorClick
-      );
-
-      window.removeEventListener(
-        "load",
-        refreshAnimations
       );
 
       window.removeEventListener(
@@ -265,15 +480,22 @@ function GlobalAnimations() {
         refreshAnimations
       );
 
-      lenis.off("scroll", updateScrollTrigger);
-      gsap.ticker.remove(runLenis);
-      lenis.destroy();
+      if (lenis) {
+        lenis.off(
+          "scroll",
+          requestScrollTriggerUpdate
+        );
 
-      /*
-       * Do not call ScrollTrigger.getAll().kill().
-       * Every component owns and cleans its own triggers.
-       */
-      root.classList.remove("sge-smooth-scroll");
+        gsap.ticker.remove(
+          runLenis
+        );
+
+        lenis.destroy();
+      }
+
+      root.classList.remove(
+        "sge-smooth-scroll"
+      );
     };
   }, []);
 

@@ -58,6 +58,22 @@ function FAQ() {
   const sectionRef = useRef(null);
   const accordionRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const refreshFrameRef = useRef(0);
+
+  const requestAnimationRefresh = () => {
+    window.cancelAnimationFrame(
+      refreshFrameRef.current
+    );
+
+    refreshFrameRef.current =
+      window.requestAnimationFrame(() => {
+        window.dispatchEvent(
+          new CustomEvent(
+            "sge:refresh-animations"
+          )
+        );
+      });
+  };
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -93,6 +109,7 @@ function FAQ() {
           trigger: section,
           start: "top 78%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -208,11 +225,16 @@ function FAQ() {
             trigger: accordion,
             start: "top 86%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
 
-      gsap.to(".faq-luxury__glow--one", {
+      gsap.to(
+        section.querySelector(
+          ".faq-luxury__glow--one"
+        ),
+        {
         x: 65,
         y: 40,
         ease: "none",
@@ -221,10 +243,16 @@ function FAQ() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.3,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".faq-luxury__glow--two", {
+      gsap.to(
+        section.querySelector(
+          ".faq-luxury__glow--two"
+        ),
+        {
         x: -60,
         y: -35,
         ease: "none",
@@ -234,24 +262,11 @@ function FAQ() {
           end: "bottom top",
           scrub: 1.3,
         },
-      });
+      }
+      );
     }, section);
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
-
       context.revert();
     };
   }, []);
@@ -317,7 +332,7 @@ function FAQ() {
                 height: "auto",
               });
 
-              ScrollTrigger.refresh();
+              requestAnimationRefresh();
             },
           }
         );
@@ -373,7 +388,7 @@ function FAQ() {
           duration: 0.36,
           ease: "power2.inOut",
           onComplete: () => {
-            ScrollTrigger.refresh();
+            requestAnimationRefresh();
           },
         });
 
@@ -385,6 +400,14 @@ function FAQ() {
       }
     });
   }, [activeIndex]);
+
+  useEffect(() => {
+    return () => {
+      window.cancelAnimationFrame(
+        refreshFrameRef.current
+      );
+    };
+  }, []);
 
   const handleToggle = (index) => {
     setActiveIndex((currentIndex) =>

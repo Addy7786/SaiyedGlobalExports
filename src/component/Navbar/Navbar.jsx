@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
-import { ArrowRight, Menu, X } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import {
+  ArrowRight,
+  Menu,
+  X,
+} from "lucide-react";
 
 import { useLanguage } from "../../Context/LanguageContext.jsx";
 
-// ✅ GOLD LOGO
 import logo from "../../assets/saiyed-logo.webp";
 
 import "./Navbar.css";
@@ -38,77 +46,238 @@ const navigationLinks = [
 function Navbar() {
   const { t } = useLanguage();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const [isMenuOpen, setIsMenuOpen] =
+    useState(false);
+
+  const [isScrolled, setIsScrolled] =
+    useState(false);
+
+  const [activeSection, setActiveSection] =
+    useState("home");
+
+  const scrollFrameRef = useRef(0);
+  const sectionPositionsRef = useRef([]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 24);
+    let resizeTimer = 0;
+    let refreshTimer = 0;
 
-      const sections = navigationLinks
-        .map((link) => document.getElementById(link.id))
-        .filter(Boolean);
+    const cacheSectionPositions = () => {
+      sectionPositionsRef.current =
+        navigationLinks
+          .map((link) => {
+            const element =
+              document.getElementById(link.id);
 
-      const currentSection = [...sections]
-        .reverse()
-        .find((section) => {
-          const sectionTop = section.offsetTop - 160;
-          return window.scrollY >= sectionTop;
-        });
+            if (!element) {
+              return null;
+            }
 
-      setActiveSection(currentSection?.id ?? "home");
+            return {
+              id: link.id,
+              top: element.offsetTop,
+            };
+          })
+          .filter(Boolean);
     };
 
-    handleScroll();
+    const updateNavbarState = () => {
+      scrollFrameRef.current = 0;
 
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
+      const scrollY = window.scrollY;
+      const nextScrolled = scrollY > 24;
+
+      setIsScrolled((current) =>
+        current === nextScrolled
+          ? current
+          : nextScrolled
+      );
+
+      const positions =
+        sectionPositionsRef.current;
+
+      let nextSection = "home";
+
+      for (
+        let index = positions.length - 1;
+        index >= 0;
+        index -= 1
+      ) {
+        if (
+          scrollY >=
+          positions[index].top - 160
+        ) {
+          nextSection = positions[index].id;
+          break;
+        }
+      }
+
+      setActiveSection((current) =>
+        current === nextSection
+          ? current
+          : nextSection
+      );
+    };
+
+    const requestNavbarUpdate = () => {
+      if (scrollFrameRef.current) {
+        return;
+      }
+
+      scrollFrameRef.current =
+        window.requestAnimationFrame(
+          updateNavbarState
+        );
+    };
+
+    const refreshPositions = () => {
+      window.clearTimeout(refreshTimer);
+
+      refreshTimer = window.setTimeout(() => {
+        cacheSectionPositions();
+        requestNavbarUpdate();
+      }, 80);
+    };
+
+    const handleResize = () => {
+      window.clearTimeout(resizeTimer);
+
+      resizeTimer = window.setTimeout(() => {
+        cacheSectionPositions();
+        requestNavbarUpdate();
+      }, 160);
+    };
+
+    cacheSectionPositions();
+    updateNavbarState();
+
+    window.addEventListener(
+      "scroll",
+      requestNavbarUpdate,
+      {
+        passive: true,
+      }
+    );
+
+    window.addEventListener(
+      "resize",
+      handleResize,
+      {
+        passive: true,
+      }
+    );
+
+    window.addEventListener(
+      "orientationchange",
+      handleResize
+    );
+
+    window.addEventListener(
+      "sge:content-loaded",
+      refreshPositions
+    );
+
+    window.addEventListener(
+      "sge:refresh-animations",
+      refreshPositions
+    );
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.clearTimeout(resizeTimer);
+      window.clearTimeout(refreshTimer);
+
+      window.cancelAnimationFrame(
+        scrollFrameRef.current
+      );
+
+      window.removeEventListener(
+        "scroll",
+        requestNavbarUpdate
+      );
+
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+
+      window.removeEventListener(
+        "orientationchange",
+        handleResize
+      );
+
+      window.removeEventListener(
+        "sge:content-loaded",
+        refreshPositions
+      );
+
+      window.removeEventListener(
+        "sge:refresh-animations",
+        refreshPositions
+      );
     };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    const previousOverflow =
+      document.body.style.overflow;
+
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    }
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow =
+        previousOverflow;
     };
   }, [isMenuOpen]);
 
   useEffect(() => {
+    if (!isMenuOpen) {
+      return undefined;
+    }
+
     const handleEscape = (event) => {
       if (event.key === "Escape") {
         setIsMenuOpen(false);
       }
     };
 
-    window.addEventListener("keydown", handleEscape);
+    window.addEventListener(
+      "keydown",
+      handleEscape
+    );
 
     return () => {
-      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener(
+        "keydown",
+        handleEscape
+      );
     };
-  }, []);
+  }, [isMenuOpen]);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
   return (
-    <header className={`navbar ${isScrolled ? "navbar-scrolled" : ""}`}>
+    <header
+      className={`navbar ${
+        isScrolled ? "navbar-scrolled" : ""
+      }`}
+    >
       <div className="navbar-shell">
         <div className="navbar-container">
           <a
             href="#home"
             className="navbar-logo"
             onClick={closeMenu}
-            aria-label="Saiyed Global Exports Home"
+            aria-label="Saiyed Global Exports home"
           >
             <span className="navbar-logo-image-wrap">
-              <span className="navbar-logo-glow" aria-hidden="true" />
+              <span
+                className="navbar-logo-glow"
+                aria-hidden="true"
+              />
 
               <img
                 src={logo}
@@ -127,14 +296,18 @@ function Navbar() {
           <nav
             id="main-navigation"
             className={`navbar-menu ${
-              isMenuOpen ? "navbar-menu-open" : ""
+              isMenuOpen
+                ? "navbar-menu-open"
+                : ""
             }`}
             aria-label="Main navigation"
           >
             <div className="navbar-mobile-header">
               <div>
                 <strong>Menu</strong>
-                <span>Explore Saiyed Global Exports</span>
+                <span>
+                  Explore Saiyed Global Exports
+                </span>
               </div>
 
               <button
@@ -143,7 +316,10 @@ function Navbar() {
                 onClick={closeMenu}
                 aria-label="Close navigation menu"
               >
-                <X size={21} strokeWidth={2} />
+                <X
+                  size={21}
+                  strokeWidth={2}
+                />
               </button>
             </div>
 
@@ -159,37 +335,63 @@ function Navbar() {
                   }
                   onClick={closeMenu}
                 >
-                  <span>{t(link.translationKey)}</span>
+                  <span>
+                    {t(link.translationKey)}
+                  </span>
                 </a>
               ))}
             </div>
 
             <div className="navbar-mobile-footer">
-              <p>Connecting markets, delivering trust.</p>
+              <p>
+                Connecting markets, delivering
+                trust.
+              </p>
 
               <a
                 href="#contact"
                 className="navbar-mobile-cta"
                 onClick={closeMenu}
               >
-                <span>{t("navbar.getInTouch")}</span>
-                <ArrowRight size={18} strokeWidth={2.2} />
+                <span>
+                  {t("navbar.getInTouch")}
+                </span>
+
+                <ArrowRight
+                  size={18}
+                  strokeWidth={2.2}
+                />
               </a>
             </div>
           </nav>
 
           <div className="navbar-actions">
-            <a href="#contact" className="navbar-cta">
-              <span>{t("navbar.getInTouch")}</span>
-              <ArrowRight size={18} strokeWidth={2.2} />
+            <a
+              href="#contact"
+              className="navbar-cta"
+            >
+              <span>
+                {t("navbar.getInTouch")}
+              </span>
+
+              <ArrowRight
+                size={18}
+                strokeWidth={2.2}
+              />
             </a>
 
             <button
               type="button"
               className={`navbar-toggle ${
-                isMenuOpen ? "navbar-toggle-active" : ""
+                isMenuOpen
+                  ? "navbar-toggle-active"
+                  : ""
               }`}
-              onClick={() => setIsMenuOpen((current) => !current)}
+              onClick={() =>
+                setIsMenuOpen(
+                  (current) => !current
+                )
+              }
               aria-label={
                 isMenuOpen
                   ? "Close navigation menu"
@@ -199,9 +401,15 @@ function Navbar() {
               aria-controls="main-navigation"
             >
               {isMenuOpen ? (
-                <X size={23} strokeWidth={2} />
+                <X
+                  size={23}
+                  strokeWidth={2}
+                />
               ) : (
-                <Menu size={23} strokeWidth={2} />
+                <Menu
+                  size={23}
+                  strokeWidth={2}
+                />
               )}
             </button>
           </div>
@@ -211,7 +419,9 @@ function Navbar() {
       <button
         type="button"
         className={`navbar-backdrop ${
-          isMenuOpen ? "navbar-backdrop-visible" : ""
+          isMenuOpen
+            ? "navbar-backdrop-visible"
+            : ""
         }`}
         onClick={closeMenu}
         aria-label="Close navigation menu"

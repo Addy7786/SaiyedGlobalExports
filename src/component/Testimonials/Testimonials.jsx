@@ -242,6 +242,7 @@ function Testimonials() {
           trigger: section,
           start: "top 78%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -289,8 +290,18 @@ function Testimonials() {
         );
 
       const cards = gsap.utils.toArray(
-        ".testimonials-premium-card"
+        ".testimonials-premium-card",
+        section
       );
+
+      const cardsTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: slider,
+          start: "top 86%",
+          once: true,
+          invalidateOnRefresh: false,
+        },
+      });
 
       cards.forEach((card, index) => {
         const direction = index % 2 === 0 ? -38 : 38;
@@ -300,16 +311,9 @@ function Testimonials() {
         const content = card.querySelectorAll(
           ".testimonials-premium-country, .testimonials-premium-quote-icon, .testimonials-premium-message, .testimonials-premium-divider, .testimonials-premium-client"
         );
+        const startAt = index * 0.06;
 
-        const cardTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: slider,
-            start: "top 86%",
-            once: true,
-          },
-        });
-
-        cardTimeline
+        cardsTimeline
           .fromTo(
             card,
             {
@@ -327,9 +331,9 @@ function Testimonials() {
               scale: 1,
               rotateY: 0,
               duration: 0.78,
-              delay: index * 0.06,
               ease: "power3.out",
-            }
+            },
+            startAt
           )
           .fromTo(
             stars,
@@ -346,7 +350,7 @@ function Testimonials() {
               stagger: 0.05,
               ease: "back.out(1.8)",
             },
-            0.32 + index * 0.06
+            0.32 + startAt
           )
           .fromTo(
             content,
@@ -361,12 +365,14 @@ function Testimonials() {
               stagger: 0.055,
               ease: "power2.out",
             },
-            0.38 + index * 0.06
+            0.38 + startAt
           );
       });
 
       gsap.fromTo(
-        ".testimonials-premium-trust-item",
+        section.querySelectorAll(
+          ".testimonials-premium-trust-item"
+        ),
         {
           autoAlpha: 0,
           y: 32,
@@ -380,14 +386,21 @@ function Testimonials() {
           stagger: 0.09,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: ".testimonials-premium-trust-bar",
+            trigger: section.querySelector(
+              ".testimonials-premium-trust-bar"
+            ),
             start: "top 88%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
 
-      gsap.to(".testimonials-premium-glow-one", {
+      gsap.to(
+        section.querySelector(
+          ".testimonials-premium-glow-one"
+        ),
+        {
         x: 70,
         y: 42,
         ease: "none",
@@ -396,10 +409,16 @@ function Testimonials() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.35,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".testimonials-premium-glow-two", {
+      gsap.to(
+        section.querySelector(
+          ".testimonials-premium-glow-two"
+        ),
+        {
         x: -70,
         y: -38,
         ease: "none",
@@ -408,8 +427,10 @@ function Testimonials() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.35,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
     }, section);
 
     const canTilt =
@@ -426,59 +447,128 @@ function Testimonials() {
       ];
 
       tiltTargets.forEach((target) => {
-        const handleMove = (event) => {
-          const bounds = target.getBoundingClientRect();
-          const x =
-            (event.clientX - bounds.left) / bounds.width - 0.5;
-          const y =
-            (event.clientY - bounds.top) / bounds.height - 0.5;
+        let bounds = null;
+        let pointerFrame = 0;
+        let latestPointerEvent = null;
 
-          gsap.to(target, {
-            rotateY: x * 4,
-            rotateX: y * -3.5,
-            transformPerspective: 1100,
-            transformOrigin: "center center",
-            duration: 0.42,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
+        gsap.set(target, {
+          transformPerspective: 1100,
+          transformOrigin: "center center",
+        });
+
+        const rotateXTo = gsap.quickTo(target, "rotateX", {
+          duration: 0.42,
+          ease: "power2.out",
+        });
+
+        const rotateYTo = gsap.quickTo(target, "rotateY", {
+          duration: 0.42,
+          ease: "power2.out",
+        });
+
+        const updateBounds = () => {
+          bounds = target.getBoundingClientRect();
+        };
+
+        const renderMove = () => {
+          pointerFrame = 0;
+
+          if (!latestPointerEvent || !bounds) {
+            return;
+          }
+
+          const x =
+            (latestPointerEvent.clientX - bounds.left) /
+              bounds.width -
+            0.5;
+
+          const y =
+            (latestPointerEvent.clientY - bounds.top) /
+              bounds.height -
+            0.5;
+
+          rotateYTo(x * 4);
+          rotateXTo(y * -3.5);
+        };
+
+        const handleEnter = () => {
+          updateBounds();
+        };
+
+        const handleMove = (event) => {
+          latestPointerEvent = event;
+
+          if (!bounds) {
+            updateBounds();
+          }
+
+          if (pointerFrame) {
+            return;
+          }
+
+          pointerFrame =
+            window.requestAnimationFrame(renderMove);
         };
 
         const handleLeave = () => {
+          window.cancelAnimationFrame(pointerFrame);
+
+          pointerFrame = 0;
+          latestPointerEvent = null;
+          bounds = null;
+
           gsap.to(target, {
             rotateX: 0,
             rotateY: 0,
             duration: 0.62,
             ease: "power3.out",
+            overwrite: "auto",
           });
         };
 
-        target.addEventListener("pointermove", handleMove);
-        target.addEventListener("pointerleave", handleLeave);
+        target.addEventListener(
+          "pointerenter",
+          handleEnter
+        );
+
+        target.addEventListener(
+          "pointermove",
+          handleMove,
+          {
+            passive: true,
+          }
+        );
+
+        target.addEventListener(
+          "pointerleave",
+          handleLeave
+        );
 
         cleanupHandlers.push(() => {
-          target.removeEventListener("pointermove", handleMove);
-          target.removeEventListener("pointerleave", handleLeave);
+          window.cancelAnimationFrame(pointerFrame);
+
+          target.removeEventListener(
+            "pointerenter",
+            handleEnter
+          );
+
+          target.removeEventListener(
+            "pointermove",
+            handleMove
+          );
+
+          target.removeEventListener(
+            "pointerleave",
+            handleLeave
+          );
+
+          gsap.killTweensOf(target);
         });
       });
     }
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
       cleanupHandlers.forEach((cleanup) => cleanup());
-
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
 
       context.revert();
     };
@@ -498,10 +588,32 @@ function Testimonials() {
 
     updateCardsPerView();
 
-    window.addEventListener("resize", updateCardsPerView);
+    let resizeTimer = 0;
+
+    const handleResize = () => {
+      window.clearTimeout(resizeTimer);
+
+      resizeTimer = window.setTimeout(
+        updateCardsPerView,
+        140
+      );
+    };
+
+    window.addEventListener(
+      "resize",
+      handleResize,
+      {
+        passive: true,
+      }
+    );
 
     return () => {
-      window.removeEventListener("resize", updateCardsPerView);
+      window.clearTimeout(resizeTimer);
+
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
     };
   }, []);
 

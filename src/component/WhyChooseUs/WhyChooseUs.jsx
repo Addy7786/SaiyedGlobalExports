@@ -148,6 +148,7 @@ function WhyChooseUs() {
           trigger: section,
           start: "top 78%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -288,6 +289,7 @@ function WhyChooseUs() {
               trigger: mapPanel,
               start: "top 84%",
               once: true,
+              invalidateOnRefresh: false,
             },
           }
         );
@@ -305,21 +307,38 @@ function WhyChooseUs() {
               start: "top bottom",
               end: "bottom top",
               scrub: 1.15,
+              invalidateOnRefresh: false,
             },
           }
         );
       }
 
-      const featureCards = gsap.utils.toArray(
-        ".why-choose__feature"
+      const featuresSection = section.querySelector(
+        ".why-choose__features"
       );
+
+      const featureCards = gsap.utils.toArray(
+        ".why-choose__feature",
+        section
+      );
+
+      const featuresTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: featuresSection,
+          start: "top 86%",
+          once: true,
+          invalidateOnRefresh: false,
+        },
+      });
 
       featureCards.forEach((card, index) => {
         const center = (featureCards.length - 1) / 2;
         const distanceFromCenter = index - center;
         const xOffset = distanceFromCenter * 24;
+        const delay =
+          Math.abs(distanceFromCenter) * 0.035;
 
-        gsap.fromTo(
+        featuresTimeline.fromTo(
           card,
           {
             autoAlpha: 0,
@@ -336,19 +355,18 @@ function WhyChooseUs() {
             scale: 1,
             rotateY: 0,
             duration: 0.82,
-            delay: Math.abs(distanceFromCenter) * 0.035,
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: ".why-choose__features",
-              start: "top 86%",
-              once: true,
-            },
-          }
+          },
+          delay
         );
       });
 
+      const trustBar = section.querySelector(
+        ".why-choose__trust-bar"
+      );
+
       gsap.fromTo(
-        ".why-choose__trust-bar",
+        trustBar,
         {
           autoAlpha: 0,
           y: 48,
@@ -361,15 +379,18 @@ function WhyChooseUs() {
           duration: 0.92,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: ".why-choose__trust-bar",
+            trigger: trustBar,
             start: "top 90%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
 
       gsap.fromTo(
-        ".why-choose__trust-item",
+        section.querySelectorAll(
+          ".why-choose__trust-item"
+        ),
         {
           autoAlpha: 0,
           y: 24,
@@ -381,14 +402,19 @@ function WhyChooseUs() {
           stagger: 0.09,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: ".why-choose__trust-bar",
+            trigger: trustBar,
             start: "top 88%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
 
-      gsap.to(".why-choose__glow--one", {
+      gsap.to(
+        section.querySelector(
+          ".why-choose__glow--one"
+        ),
+        {
         x: -70,
         y: 45,
         ease: "none",
@@ -397,10 +423,16 @@ function WhyChooseUs() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.3,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".why-choose__glow--two", {
+      gsap.to(
+        section.querySelector(
+          ".why-choose__glow--two"
+        ),
+        {
         x: 65,
         y: -35,
         ease: "none",
@@ -409,8 +441,10 @@ function WhyChooseUs() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.3,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
     }, section);
 
     const canTilt =
@@ -426,59 +460,144 @@ function WhyChooseUs() {
       ];
 
       tiltTargets.forEach((target) => {
-        const handleMove = (event) => {
-          const bounds = target.getBoundingClientRect();
-          const x =
-            (event.clientX - bounds.left) / bounds.width - 0.5;
-          const y =
-            (event.clientY - bounds.top) / bounds.height - 0.5;
+        let bounds = null;
+        let pointerFrame = 0;
+        let latestPointerEvent = null;
 
-          gsap.to(target, {
-            rotateY: x * 4,
-            rotateX: y * -3.5,
-            transformPerspective: 1200,
-            transformOrigin: "center center",
+        gsap.set(target, {
+          transformPerspective: 1200,
+          transformOrigin: "center center",
+        });
+
+        const rotateXTo = gsap.quickTo(
+          target,
+          "rotateX",
+          {
             duration: 0.45,
             ease: "power2.out",
-            overwrite: "auto",
-          });
+          }
+        );
+
+        const rotateYTo = gsap.quickTo(
+          target,
+          "rotateY",
+          {
+            duration: 0.45,
+            ease: "power2.out",
+          }
+        );
+
+        const updateBounds = () => {
+          bounds = target.getBoundingClientRect();
+        };
+
+        const renderMove = () => {
+          pointerFrame = 0;
+
+          if (!latestPointerEvent || !bounds) {
+            return;
+          }
+
+          const x =
+            (latestPointerEvent.clientX -
+              bounds.left) /
+              bounds.width -
+            0.5;
+
+          const y =
+            (latestPointerEvent.clientY -
+              bounds.top) /
+              bounds.height -
+            0.5;
+
+          rotateYTo(x * 4);
+          rotateXTo(y * -3.5);
+        };
+
+        const handleEnter = () => {
+          updateBounds();
+        };
+
+        const handleMove = (event) => {
+          latestPointerEvent = event;
+
+          if (!bounds) {
+            updateBounds();
+          }
+
+          if (pointerFrame) {
+            return;
+          }
+
+          pointerFrame =
+            window.requestAnimationFrame(
+              renderMove
+            );
         };
 
         const handleLeave = () => {
+          window.cancelAnimationFrame(
+            pointerFrame
+          );
+
+          pointerFrame = 0;
+          latestPointerEvent = null;
+          bounds = null;
+
           gsap.to(target, {
             rotateX: 0,
             rotateY: 0,
             duration: 0.65,
             ease: "power3.out",
+            overwrite: "auto",
           });
         };
 
-        target.addEventListener("pointermove", handleMove);
-        target.addEventListener("pointerleave", handleLeave);
+        target.addEventListener(
+          "pointerenter",
+          handleEnter
+        );
+
+        target.addEventListener(
+          "pointermove",
+          handleMove,
+          {
+            passive: true,
+          }
+        );
+
+        target.addEventListener(
+          "pointerleave",
+          handleLeave
+        );
 
         cleanupHandlers.push(() => {
-          target.removeEventListener("pointermove", handleMove);
-          target.removeEventListener("pointerleave", handleLeave);
+          window.cancelAnimationFrame(
+            pointerFrame
+          );
+
+          target.removeEventListener(
+            "pointerenter",
+            handleEnter
+          );
+
+          target.removeEventListener(
+            "pointermove",
+            handleMove
+          );
+
+          target.removeEventListener(
+            "pointerleave",
+            handleLeave
+          );
+
+          gsap.killTweensOf(target);
         });
       });
     }
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
       cleanupHandlers.forEach((cleanup) => cleanup());
-
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
 
       context.revert();
     };

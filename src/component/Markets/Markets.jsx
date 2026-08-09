@@ -57,8 +57,8 @@ function Markets() {
           x: 0,
           y: 0,
           scale: 1,
-          rotateX: 0,
-          rotateY: 0,
+          rotationX: 0,
+          rotationY: 0,
         }
       );
 
@@ -71,6 +71,7 @@ function Markets() {
           trigger: section,
           start: "top 78%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -140,6 +141,7 @@ function Markets() {
                 trigger: visual,
                 start: "top 82%",
                 once: true,
+                invalidateOnRefresh: false,
               },
             }
           );
@@ -157,13 +159,17 @@ function Markets() {
                 start: "top bottom",
                 end: "bottom top",
                 scrub: 1.15,
+                invalidateOnRefresh: false,
               },
             }
           );
         }
       }
 
-      const marketCards = gsap.utils.toArray(".market-card");
+      const marketCards = gsap.utils.toArray(
+        ".market-card",
+        section
+      );
 
       marketCards.forEach((card, index) => {
         const direction = index % 2 === 0 ? -52 : 52;
@@ -177,6 +183,7 @@ function Markets() {
             trigger: card,
             start: "top 88%",
             once: true,
+            invalidateOnRefresh: false,
           },
         });
 
@@ -188,7 +195,7 @@ function Markets() {
               x: direction,
               y: 42,
               scale: 0.95,
-              rotateY: direction > 0 ? -3 : 3,
+              rotationY: direction > 0 ? -3 : 3,
               transformPerspective: 1200,
             },
             {
@@ -196,7 +203,7 @@ function Markets() {
               x: 0,
               y: 0,
               scale: 1,
-              rotateY: 0,
+              rotationY: 0,
               duration: 0.92,
               ease: "power3.out",
             }
@@ -243,6 +250,7 @@ function Markets() {
                 start: "top bottom",
                 end: "bottom top",
                 scrub: 1,
+                invalidateOnRefresh: false,
               },
             }
           );
@@ -371,59 +379,110 @@ function Markets() {
       ];
 
       tiltTargets.forEach((target) => {
-        const handleMove = (event) => {
-          const bounds = target.getBoundingClientRect();
-          const x =
-            (event.clientX - bounds.left) / bounds.width - 0.5;
-          const y =
-            (event.clientY - bounds.top) / bounds.height - 0.5;
+        let bounds = null;
+        let pointerFrame = 0;
+        let latestPointerEvent = null;
 
-          gsap.to(target, {
-            rotateY: x * 4.5,
-            rotateX: y * -4,
-            transformPerspective: 1100,
-            transformOrigin: "center center",
+        gsap.set(target, {
+          transformPerspective: 1100,
+          transformOrigin: "center center",
+        });
+
+        const rotateXTo = gsap.quickTo(
+          target,
+          "rotationX",
+          {
             duration: 0.45,
             ease: "power2.out",
+          }
+        );
+
+        const rotateYTo = gsap.quickTo(
+          target,
+          "rotationY",
+          {
+            duration: 0.45,
+            ease: "power2.out",
+          }
+        );
+
+        const updateBounds = () => {
+          bounds = target.getBoundingClientRect();
+        };
+
+        const renderMove = () => {
+          pointerFrame = 0;
+
+          if (!latestPointerEvent || !bounds) {
+            return;
+          }
+
+          const x =
+            (latestPointerEvent.clientX - bounds.left) /
+              bounds.width -
+            0.5;
+
+          const y =
+            (latestPointerEvent.clientY - bounds.top) /
+              bounds.height -
+            0.5;
+
+          rotateYTo(x * 4.5);
+          rotateXTo(y * -4);
+        };
+
+        const handleEnter = () => {
+          updateBounds();
+        };
+
+        const handleMove = (event) => {
+          latestPointerEvent = event;
+
+          if (!bounds) {
+            updateBounds();
+          }
+
+          if (pointerFrame) {
+            return;
+          }
+
+          pointerFrame = window.requestAnimationFrame(renderMove);
+        };
+
+        const handleLeave = () => {
+          window.cancelAnimationFrame(pointerFrame);
+
+          pointerFrame = 0;
+          latestPointerEvent = null;
+          bounds = null;
+
+          gsap.to(target, {
+            rotationX: 0,
+            rotationY: 0,
+            duration: 0.65,
+            ease: "power3.out",
             overwrite: "auto",
           });
         };
 
-        const handleLeave = () => {
-          gsap.to(target, {
-            rotateX: 0,
-            rotateY: 0,
-            duration: 0.65,
-            ease: "power3.out",
-          });
-        };
-
-        target.addEventListener("pointermove", handleMove);
+        target.addEventListener("pointerenter", handleEnter);
+        target.addEventListener("pointermove", handleMove, {
+          passive: true,
+        });
         target.addEventListener("pointerleave", handleLeave);
 
         cleanupHandlers.push(() => {
+          window.cancelAnimationFrame(pointerFrame);
+          target.removeEventListener("pointerenter", handleEnter);
           target.removeEventListener("pointermove", handleMove);
           target.removeEventListener("pointerleave", handleLeave);
+          gsap.killTweensOf(target);
         });
       });
     }
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
       cleanupHandlers.forEach((cleanup) => cleanup());
-
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
 
       context.revert();
     };

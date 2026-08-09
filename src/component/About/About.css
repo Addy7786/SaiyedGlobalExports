@@ -2185,3 +2185,22 @@
     font-size: clamp(3.8rem, 5vw, 5.25rem);
   }
 }
+/* FEATURE CARDS POSITION FIX */
+
+@media (min-width: 1021px) {
+  .about-feature-grid {
+    margin-top: -18px;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1020px) {
+  .about-feature-grid {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  .about-feature-grid {
+    margin-top: 28px;
+  }
+}

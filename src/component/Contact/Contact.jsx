@@ -5,6 +5,7 @@ import emailjs from "@emailjs/browser";
 
 import {
   ChevronRight,
+  ClipboardList,
   Globe2,
   Headphones,
   Instagram,
@@ -16,6 +17,8 @@ import {
   Send,
   UserRound,
 } from "lucide-react";
+
+import RFQModal from "../RFQModal/RFQModal";
 
 import "./Contact.css";
 
@@ -49,6 +52,9 @@ function Contact() {
   });
 
   const [isSending, setIsSending] =
+    useState(false);
+
+  const [isRFQOpen, setIsRFQOpen] =
     useState(false);
 
   useEffect(() => {
@@ -90,6 +96,7 @@ function Contact() {
           trigger: section,
           start: "top 78%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -168,6 +175,7 @@ function Contact() {
             trigger: ".contact-luxury__cards",
             start: "top 88%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
@@ -189,6 +197,7 @@ function Contact() {
             trigger: ".contact-luxury__world-card",
             start: "top 90%",
             once: true,
+            invalidateOnRefresh: false,
           },
         }
       );
@@ -287,7 +296,11 @@ function Contact() {
         }
       );
 
-      gsap.to(".contact-luxury__glow--one", {
+      gsap.to(
+        section.querySelector(
+          ".contact-luxury__glow--one"
+        ),
+        {
         x: 65,
         y: 40,
         ease: "none",
@@ -296,10 +309,16 @@ function Contact() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.3,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".contact-luxury__glow--two", {
+      gsap.to(
+        section.querySelector(
+          ".contact-luxury__glow--two"
+        ),
+        {
         x: -60,
         y: -35,
         ease: "none",
@@ -309,7 +328,8 @@ function Contact() {
           end: "bottom top",
           scrub: 1.3,
         },
-      });
+      }
+      );
     }, section);
 
     const canTilt =
@@ -326,59 +346,142 @@ function Contact() {
       ].filter(Boolean);
 
       tiltTargets.forEach((target) => {
-        const handleMove = (event) => {
-          const bounds = target.getBoundingClientRect();
-          const x =
-            (event.clientX - bounds.left) / bounds.width - 0.5;
-          const y =
-            (event.clientY - bounds.top) / bounds.height - 0.5;
+        let bounds = null;
+        let pointerFrame = 0;
+        let latestPointerEvent = null;
 
-          gsap.to(target, {
-            rotateY: x * 3.8,
-            rotateX: y * -3.2,
-            transformPerspective: 1100,
-            transformOrigin: "center center",
+        gsap.set(target, {
+          transformPerspective: 1100,
+          transformOrigin: "center center",
+        });
+
+        const rotateXTo = gsap.quickTo(
+          target,
+          "rotateX",
+          {
             duration: 0.42,
             ease: "power2.out",
-            overwrite: "auto",
-          });
+          }
+        );
+
+        const rotateYTo = gsap.quickTo(
+          target,
+          "rotateY",
+          {
+            duration: 0.42,
+            ease: "power2.out",
+          }
+        );
+
+        const updateBounds = () => {
+          bounds = target.getBoundingClientRect();
+        };
+
+        const renderMove = () => {
+          pointerFrame = 0;
+
+          if (!latestPointerEvent || !bounds) {
+            return;
+          }
+
+          const x =
+            (latestPointerEvent.clientX -
+              bounds.left) /
+              bounds.width -
+            0.5;
+
+          const y =
+            (latestPointerEvent.clientY -
+              bounds.top) /
+              bounds.height -
+            0.5;
+
+          rotateYTo(x * 3.8);
+          rotateXTo(y * -3.2);
+        };
+
+        const handleEnter = () => {
+          updateBounds();
+        };
+
+        const handleMove = (event) => {
+          latestPointerEvent = event;
+
+          if (!bounds) {
+            updateBounds();
+          }
+
+          if (pointerFrame) {
+            return;
+          }
+
+          pointerFrame =
+            window.requestAnimationFrame(
+              renderMove
+            );
         };
 
         const handleLeave = () => {
+          window.cancelAnimationFrame(
+            pointerFrame
+          );
+
+          pointerFrame = 0;
+          latestPointerEvent = null;
+          bounds = null;
+
           gsap.to(target, {
             rotateX: 0,
             rotateY: 0,
             duration: 0.62,
             ease: "power3.out",
+            overwrite: "auto",
           });
         };
 
-        target.addEventListener("pointermove", handleMove);
-        target.addEventListener("pointerleave", handleLeave);
+        target.addEventListener(
+          "pointerenter",
+          handleEnter
+        );
+
+        target.addEventListener(
+          "pointermove",
+          handleMove,
+          { passive: true }
+        );
+
+        target.addEventListener(
+          "pointerleave",
+          handleLeave
+        );
 
         cleanupHandlers.push(() => {
-          target.removeEventListener("pointermove", handleMove);
-          target.removeEventListener("pointerleave", handleLeave);
+          window.cancelAnimationFrame(
+            pointerFrame
+          );
+
+          target.removeEventListener(
+            "pointerenter",
+            handleEnter
+          );
+
+          target.removeEventListener(
+            "pointermove",
+            handleMove
+          );
+
+          target.removeEventListener(
+            "pointerleave",
+            handleLeave
+          );
+
+          gsap.killTweensOf(target);
         });
       });
     }
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
       cleanupHandlers.forEach((cleanup) => cleanup());
-
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
 
       context.revert();
     };
@@ -494,6 +597,14 @@ function Contact() {
     }
   };
 
+  const openRFQModal = () => {
+    setIsRFQOpen(true);
+  };
+
+  const closeRFQModal = () => {
+    setIsRFQOpen(false);
+  };
+
   const openWhatsApp = () => {
     const message = encodeURIComponent(
       "Hello Saiyed Global Exports, I would like to discuss a product requirement."
@@ -507,7 +618,8 @@ function Contact() {
   };
 
   return (
-    <section
+    <>
+      <section
       ref={sectionRef}
       id="contact"
       className="contact-luxury"
@@ -585,8 +697,8 @@ function Contact() {
               <div>
                 <span>Email</span>
 
-                <a href="mailto:info@saiyed-global-exports.com">
-                  info@saiyed-global-exports.com
+                <a href="mailto:saiyedglobalexport@gmail.com">
+                  saiyedglobalexport@gmail.com
                 </a>
 
                 <small>
@@ -884,19 +996,41 @@ function Contact() {
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={openWhatsApp}
-        >
-          <MessageCircle
-            size={19}
-            strokeWidth={1.8}
-          />
+        <div className="contact-luxury__quick-actions">
+          <button
+            type="button"
+            className="contact-luxury__rfq-button"
+            onClick={openRFQModal}
+          >
+            <ClipboardList
+              size={19}
+              strokeWidth={1.8}
+            />
 
-          Chat On WhatsApp
-        </button>
+            Request A Quote
+          </button>
+
+          <button
+            type="button"
+            className="contact-luxury__whatsapp-button"
+            onClick={openWhatsApp}
+          >
+            <MessageCircle
+              size={19}
+              strokeWidth={1.8}
+            />
+
+            Chat On WhatsApp
+          </button>
+        </div>
       </div>
-    </section>
+      </section>
+
+      <RFQModal
+        isOpen={isRFQOpen}
+        onClose={closeRFQModal}
+      />
+    </>
   );
 }
 

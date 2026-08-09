@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
 
 import "./CursorGlow.css";
 
@@ -11,6 +10,18 @@ const SPOTLIGHT_SELECTOR = [
   ".why-choose__feature",
   ".company-profile-feature",
   "[data-cursor-spotlight]",
+].join(", ");
+
+const INTERACTIVE_SELECTOR = [
+  "a",
+  "button",
+  "input",
+  "textarea",
+  "select",
+  "[role='button']",
+  ".product-card",
+  ".market-card",
+  ".gallery-final__card",
 ].join(", ");
 
 function CursorGlow() {
@@ -35,22 +46,13 @@ function CursorGlow() {
       return undefined;
     }
 
-    gsap.set(glow, {
-      xPercent: -50,
-      yPercent: -50,
-    });
-
-    const moveX = gsap.quickTo(glow, "x", {
-      duration: 0.72,
-      ease: "power3.out",
-    });
-
-    const moveY = gsap.quickTo(glow, "y", {
-      duration: 0.72,
-      ease: "power3.out",
-    });
-
+    let pointerFrame = 0;
+    let latestX = window.innerWidth / 2;
+    let latestY = window.innerHeight / 2;
     let activeSpotlightElement = null;
+    let cachedBounds = null;
+    let glowVisible = false;
+    let glowActive = false;
 
     const clearSpotlight = () => {
       if (!activeSpotlightElement) {
@@ -70,64 +72,124 @@ function CursorGlow() {
       );
 
       activeSpotlightElement = null;
+      cachedBounds = null;
     };
 
-    const handlePointerMove = (event) => {
-      moveX(event.clientX);
-      moveY(event.clientY);
-
-      glow.classList.add("cursor-glow-visible");
-
-      const target = event.target;
-
-      if (!(target instanceof Element)) {
+    const setGlowVisible = (visible) => {
+      if (glowVisible === visible) {
         return;
       }
 
-      const spotlightElement = target.closest(
-        SPOTLIGHT_SELECTOR
-      );
+      glowVisible = visible;
 
-      if (!spotlightElement) {
-        clearSpotlight();
+      glow.classList.toggle(
+        "cursor-glow-visible",
+        visible
+      );
+    };
+
+    const setGlowActive = (active) => {
+      if (glowActive === active) {
         return;
+      }
+
+      glowActive = active;
+
+      glow.classList.toggle(
+        "cursor-glow-active",
+        active
+      );
+    };
+
+    const renderPointerMove = () => {
+      pointerFrame = 0;
+
+      glow.style.transform =
+        `translate3d(${latestX}px, ${latestY}px, 0) translate3d(-50%, -50%, 0)`;
+
+      setGlowVisible(true);
+
+      if (!activeSpotlightElement) {
+        return;
+      }
+
+      if (!cachedBounds) {
+        cachedBounds =
+          activeSpotlightElement.getBoundingClientRect();
       }
 
       if (
-        activeSpotlightElement &&
-        activeSpotlightElement !== spotlightElement
+        !cachedBounds.width ||
+        !cachedBounds.height
       ) {
-        clearSpotlight();
+        return;
       }
 
-      activeSpotlightElement = spotlightElement;
-
-      const bounds =
-        spotlightElement.getBoundingClientRect();
-
       const x =
-        ((event.clientX - bounds.left) /
-          bounds.width) *
+        ((latestX - cachedBounds.left) /
+          cachedBounds.width) *
         100;
 
       const y =
-        ((event.clientY - bounds.top) /
-          bounds.height) *
+        ((latestY - cachedBounds.top) /
+          cachedBounds.height) *
         100;
 
-      spotlightElement.style.setProperty(
+      activeSpotlightElement.style.setProperty(
         "--cursor-x",
         `${x}%`
       );
 
-      spotlightElement.style.setProperty(
+      activeSpotlightElement.style.setProperty(
         "--cursor-y",
         `${y}%`
       );
+    };
 
-      spotlightElement.classList.add(
-        "cursor-spotlight-active"
-      );
+    const requestRender = () => {
+      if (pointerFrame) {
+        return;
+      }
+
+      pointerFrame =
+        window.requestAnimationFrame(
+          renderPointerMove
+        );
+    };
+
+    const handlePointerMove = (event) => {
+      latestX = event.clientX;
+      latestY = event.clientY;
+
+      const target = event.target;
+
+      if (target instanceof Element) {
+        const nextSpotlight =
+          target.closest(
+            SPOTLIGHT_SELECTOR
+          );
+
+        if (
+          nextSpotlight !==
+          activeSpotlightElement
+        ) {
+          clearSpotlight();
+
+          activeSpotlightElement =
+            nextSpotlight;
+
+          if (activeSpotlightElement) {
+            cachedBounds =
+              activeSpotlightElement.getBoundingClientRect();
+
+            activeSpotlightElement.classList.add(
+              "cursor-spotlight-active"
+            );
+          }
+        }
+      }
+
+      requestRender();
     };
 
     const handlePointerOver = (event) => {
@@ -137,47 +199,81 @@ function CursorGlow() {
         return;
       }
 
-      const interactive = target.closest(
-        "a, button, input, textarea, select, [role='button'], .product-card, .market-card, .gallery-final__card"
+      setGlowActive(
+        Boolean(
+          target.closest(
+            INTERACTIVE_SELECTOR
+          )
+        )
       );
+    };
 
-      glow.classList.toggle(
-        "cursor-glow-active",
-        Boolean(interactive)
-      );
+    const invalidateBounds = () => {
+      cachedBounds = null;
     };
 
     const hideGlow = () => {
-      glow.classList.remove(
-        "cursor-glow-visible",
-        "cursor-glow-active"
-      );
-
+      setGlowVisible(false);
+      setGlowActive(false);
       clearSpotlight();
     };
 
-    window.addEventListener(
+    document.addEventListener(
       "pointermove",
       handlePointerMove,
+      {
+        passive: true,
+        capture: true,
+      }
+    );
+
+    document.addEventListener(
+      "pointerover",
+      handlePointerOver,
+      {
+        passive: true,
+      }
+    );
+
+    window.addEventListener(
+      "scroll",
+      invalidateBounds,
+      {
+        passive: true,
+      }
+    );
+
+    window.addEventListener(
+      "resize",
+      invalidateBounds,
       {
         passive: true,
       }
     );
 
     document.addEventListener(
-      "pointerover",
-      handlePointerOver
+      "mouseleave",
+      hideGlow
     );
 
-    document.addEventListener("mouseleave", hideGlow);
-    window.addEventListener("blur", hideGlow);
+    window.addEventListener(
+      "blur",
+      hideGlow
+    );
 
     return () => {
+      window.cancelAnimationFrame(
+        pointerFrame
+      );
+
       clearSpotlight();
 
-      window.removeEventListener(
+      document.removeEventListener(
         "pointermove",
-        handlePointerMove
+        handlePointerMove,
+        {
+          capture: true,
+        }
       );
 
       document.removeEventListener(
@@ -185,14 +281,25 @@ function CursorGlow() {
         handlePointerOver
       );
 
+      window.removeEventListener(
+        "scroll",
+        invalidateBounds
+      );
+
+      window.removeEventListener(
+        "resize",
+        invalidateBounds
+      );
+
       document.removeEventListener(
         "mouseleave",
         hideGlow
       );
 
-      window.removeEventListener("blur", hideGlow);
-
-      gsap.killTweensOf(glow);
+      window.removeEventListener(
+        "blur",
+        hideGlow
+      );
     };
   }, []);
 

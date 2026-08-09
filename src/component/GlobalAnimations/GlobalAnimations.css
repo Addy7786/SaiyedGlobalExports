@@ -10,10 +10,7 @@ body {
 }
 
 html.sge-smooth-scroll,
-html.sge-smooth-scroll body {
-  height: auto;
-}
-
+html.sge-smooth-scroll body,
 html.lenis,
 html.lenis body {
   height: auto;
@@ -35,33 +32,6 @@ html.lenis body {
   pointer-events: none;
 }
 
-/*
- * Only reusable data-driven elements receive
- * rendering hints. Whole sections are no longer
- * globally hidden or animated.
- */
-[data-animate],
-[data-stagger-item],
-[data-parallax],
-[data-reveal-line] {
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-}
-
-[data-animate],
-[data-stagger-item],
-[data-reveal-line] {
-  will-change: transform, opacity;
-}
-
-[data-parallax] {
-  will-change: transform;
-}
-
-/*
- * Prevent horizontal overflow caused by
- * full-width decorative sections and 3D transforms.
- */
 body {
   overflow-x: clip;
 }
@@ -71,26 +41,58 @@ img {
 }
 
 /*
- * Touch devices use native-feeling movement and
- * avoid unnecessary parallax rendering.
+ * Elements ko GPU-friendly rakhta hai,
+ * lekin permanent preserve-3d sab par nahi lagata.
  */
+[data-animate],
+[data-stagger-item],
+[data-parallax],
+[data-reveal-line] {
+  backface-visibility: hidden;
+}
+
+/*
+ * Permanent global will-change browser ko unnecessary
+ * layers banane par majboor karta tha.
+ *
+ * Will-change sirf active animation state par apply hoga.
+ */
+[data-animate].is-animating,
+[data-stagger-item].is-animating,
+[data-reveal-line].is-animating,
+[data-parallax].is-animating,
+[data-animate][data-aos].aos-animate,
+[data-stagger-item][data-aos].aos-animate,
+[data-reveal-line][data-aos].aos-animate {
+  will-change: transform, opacity;
+}
+
+[data-parallax] {
+  transform: translateZ(0);
+}
+
+/*
+ * Animation complete hone ke baad browser layers release kar sake.
+ */
+[data-animate]:not(.is-animating),
+[data-stagger-item]:not(.is-animating),
+[data-reveal-line]:not(.is-animating) {
+  will-change: auto;
+}
+
 @media (pointer: coarse), (max-width: 768px) {
   [data-parallax] {
     transform: none !important;
-    will-change: auto;
+    will-change: auto !important;
   }
 
   [data-animate],
   [data-stagger-item],
   [data-reveal-line] {
-    will-change: auto;
+    will-change: auto !important;
   }
 }
 
-/*
- * Accessibility: reveal everything immediately
- * when reduced motion is enabled.
- */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;

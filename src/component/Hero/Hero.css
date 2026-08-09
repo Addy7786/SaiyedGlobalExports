@@ -1336,3 +1336,408 @@
     top: 110%;
   }
 }
+
+/* =========================================================
+   PERFORMANCE OPTIMIZATION — VISUAL DESIGN PRESERVED
+========================================================= */
+
+.hero-section {
+  contain: layout paint style;
+}
+
+.hero-picture,
+.hero-motion-layer,
+.hero-content,
+.hero-feature-panel,
+.hero-title-line {
+  will-change: auto;
+}
+
+.hero-is-animating .hero-picture,
+.hero-is-animating .hero-motion-layer,
+.hero-is-animating .hero-content,
+.hero-is-animating .hero-feature-panel,
+.hero-is-animating .hero-title-line,
+.hero-primary-button:hover,
+.hero-secondary-button:hover {
+  will-change: transform, opacity;
+}
+
+.hero-background-image {
+  content-visibility: auto;
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  .hero-top-glow,
+  .hero-bottom-glow {
+    filter: blur(72px);
+  }
+
+  .hero-orb,
+  .hero-badge,
+  .hero-country-flag-item,
+  .hero-feature-panel,
+  .hero-secondary-button {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .hero-picture,
+  .hero-motion-layer,
+  .hero-content,
+  .hero-feature-panel,
+  .hero-title-line,
+  .hero-primary-button,
+  .hero-secondary-button {
+    will-change: auto !important;
+  }
+}
+
+/* =========================================================
+   MOBILE PERFORMANCE MODE — VISUAL LAYOUT PRESERVED
+   Keeps above-the-fold content immediately paintable and removes
+   GPU-heavy decorative work on touch/mobile devices.
+========================================================= */
+@media (max-width: 768px), (pointer: coarse) {
+  .hero-section {
+    contain: layout paint style;
+  }
+
+  .hero-picture,
+  .hero-background-image,
+  .hero-content,
+  .hero-feature-panel,
+  .hero-title-line {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .hero-motion-layer,
+  .hero-top-glow,
+  .hero-bottom-glow,
+  .hero-grid-overlay {
+    pointer-events: none;
+  }
+
+  .hero-light-ray,
+  .hero-orb,
+  .hero-particle,
+  .hero-route-line,
+  .hero-route-dot {
+    display: none !important;
+  }
+
+  .hero-top-glow,
+  .hero-bottom-glow {
+    animation: none !important;
+    filter: blur(48px);
+    opacity: 0.65;
+  }
+
+  .hero-badge-dot,
+  .hero-feature-panel::before,
+  .hero-scroll-indicator i::after {
+    animation: none !important;
+  }
+
+  .hero-title-gold {
+    animation: none !important;
+    background-position: 50% center;
+  }
+
+  .hero-badge,
+  .hero-country-flag-item,
+  .hero-feature-panel,
+  .hero-secondary-button {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .hero-primary-button,
+  .hero-secondary-button,
+  .hero-country-flag-item,
+  .hero-more-countries,
+  .hero-feature-panel-item,
+  .hero-feature-panel-icon {
+    transition-duration: 0.18s;
+  }
+}
+
+/* =========================================================
+   MOBILE PERFORMANCE OVERRIDES
+   Desktop design/animations remain unchanged.
+========================================================= */
+
+@media (max-width: 768px), (pointer: coarse) {
+  /* Decorative animated layer is not visually essential on touch screens.
+     Removing it avoids continuous paint/composite work during Lighthouse. */
+  .hero-motion-layer,
+  .hero-top-glow,
+  .hero-bottom-glow,
+  .hero-grid-overlay,
+  .hero-scroll-indicator {
+    display: none !important;
+  }
+
+  /* Release permanent compositor layers on mobile. */
+  .hero-picture,
+  .hero-background-image,
+  .hero-content,
+  .hero-feature-panel,
+  .hero-title-line,
+  .hero-primary-button,
+  .hero-secondary-button {
+    transform-style: flat !important;
+    backface-visibility: visible;
+    will-change: auto !important;
+  }
+
+  .hero-picture {
+    contain: layout paint;
+  }
+
+  .hero-background-image {
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Keep the same premium look without expensive live backdrop filtering. */
+  .hero-badge,
+  .hero-secondary-button,
+  .hero-country-flag-item,
+  .hero-feature-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .hero-badge {
+    background: rgba(6, 19, 33, 0.92);
+  }
+
+  .hero-secondary-button {
+    background: rgba(5, 19, 33, 0.94);
+  }
+
+  .hero-country-flag-item {
+    background: rgba(12, 29, 45, 0.94);
+  }
+
+  .hero-feature-panel {
+    background: linear-gradient(
+      135deg,
+      rgba(10, 31, 50, 0.98),
+      rgba(3, 15, 27, 0.98)
+    );
+  }
+
+  /* Animated shimmer/pulses are replaced by the same static visual state. */
+  .hero-title-gold {
+    background-position: 50% 50%;
+    animation: none !important;
+  }
+
+  .hero-badge-dot,
+  .hero-feature-panel::before {
+    animation: none !important;
+  }
+
+  .hero-feature-panel::before {
+    left: 35%;
+  }
+
+  /* Mobile has no hover, so transition bookkeeping is unnecessary. */
+  .hero-primary-button,
+  .hero-secondary-button,
+  .hero-country-flag-item,
+  .hero-country-flag-item img,
+  .hero-more-countries,
+  .hero-feature-panel-item,
+  .hero-feature-panel-icon {
+    transition: none !important;
+  }
+}
+
+/* Only keep compositor hints while the desktop entrance animation is active. */
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  .hero-is-animating .hero-picture,
+  .hero-is-animating .hero-motion-layer,
+  .hero-is-animating .hero-content,
+  .hero-is-animating .hero-feature-panel,
+  .hero-is-animating .hero-title-line,
+  .hero-primary-button:hover,
+  .hero-secondary-button:hover {
+    will-change: transform, opacity;
+  }
+
+  .hero-section:not(.hero-is-animating) .hero-picture,
+  .hero-section:not(.hero-is-animating) .hero-motion-layer,
+  .hero-section:not(.hero-is-animating) .hero-content,
+  .hero-section:not(.hero-is-animating) .hero-feature-panel,
+  .hero-section:not(.hero-is-animating) .hero-title-line {
+    will-change: auto;
+  }
+}
+/* =========================================================
+   PERFORMANCE V2 — LCP SAFE / MOBILE LIGHTWEIGHT
+   Final overrides. Keep this section at the end of Hero.css.
+========================================================= */
+
+/* Lighthouse identifies this paragraph as the LCP element.
+   It must remain paintable from the first frame and must not
+   receive any transform, opacity or compositor reservation. */
+.hero-description {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+/* content-visibility is not useful on the above-the-fold hero image
+   and can create additional eligibility/paint bookkeeping. */
+.hero-background-image {
+  content-visibility: visible;
+}
+
+/* Preserve desktop visuals while releasing unnecessary permanent layers. */
+.hero-picture,
+.hero-motion-layer,
+.hero-content,
+.hero-feature-panel,
+.hero-title-line,
+.hero-primary-button,
+.hero-secondary-button {
+  will-change: auto;
+}
+
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  .hero-title-line,
+  .hero-feature-panel {
+    backface-visibility: hidden;
+  }
+
+  .hero-title-line {
+    transform-origin: left bottom;
+  }
+}
+
+/* =========================================================
+   MOBILE / TOUCH PERFORMANCE MODE
+   Layout, text, buttons, flags and feature cards are preserved.
+   Only continuous decorative paint/composite work is removed.
+========================================================= */
+
+@media (max-width: 768px), (pointer: coarse) {
+  .hero-section {
+    contain: layout paint style;
+  }
+
+  .hero-picture,
+  .hero-background-image,
+  .hero-container,
+  .hero-content,
+  .hero-title,
+  .hero-title-line,
+  .hero-description,
+  .hero-actions,
+  .hero-trusted-block,
+  .hero-country-flags,
+  .hero-feature-panel {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  /* Decorative layers are not required for the mobile composition. */
+  .hero-motion-layer,
+  .hero-top-glow,
+  .hero-bottom-glow,
+  .hero-grid-overlay,
+  .hero-scroll-indicator {
+    display: none !important;
+  }
+
+  /* Replace live backdrop blur with opaque equivalents. */
+  .hero-badge,
+  .hero-secondary-button,
+  .hero-country-flag-item,
+  .hero-feature-panel,
+  .hero-orb {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .hero-badge {
+    background: rgba(6, 19, 33, 0.94);
+  }
+
+  .hero-secondary-button {
+    background: rgba(5, 19, 33, 0.96);
+  }
+
+  .hero-country-flag-item {
+    background: rgba(12, 29, 45, 0.96);
+  }
+
+  .hero-feature-panel {
+    background: linear-gradient(
+      135deg,
+      rgba(10, 31, 50, 0.99),
+      rgba(3, 15, 27, 0.99)
+    );
+    box-shadow:
+      0 18px 44px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Remove infinite paint work while preserving static appearance. */
+  .hero-title-gold,
+  .hero-badge-dot,
+  .hero-feature-panel::before,
+  .hero-scroll-indicator i::after,
+  .hero-light-ray,
+  .hero-orb,
+  .hero-particle,
+  .hero-route-dot {
+    animation: none !important;
+  }
+
+  .hero-title-gold {
+    background-position: 50% center;
+    filter: none;
+  }
+
+  /* Mobile has no hover interaction; transitions only add bookkeeping. */
+  .hero-primary-button,
+  .hero-secondary-button,
+  .hero-primary-button::before,
+  .hero-secondary-button::before,
+  .hero-country-flag-item,
+  .hero-country-flag-item img,
+  .hero-more-countries,
+  .hero-feature-panel-item,
+  .hero-feature-panel-icon,
+  .hero-primary-button svg,
+  .hero-secondary-button svg {
+    transition: none !important;
+  }
+
+  .hero-title,
+  .hero-description {
+    text-rendering: auto;
+  }
+
+  .hero-description {
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.36);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-description {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+}

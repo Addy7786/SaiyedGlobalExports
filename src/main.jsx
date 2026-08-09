@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import AOS from "aos";
@@ -16,15 +15,28 @@ if (!rootElement) {
   throw new Error("Root element not found.");
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <LanguageProvider>
-      <App />
-    </LanguageProvider>
-  </StrictMode>
+const root = createRoot(rootElement);
+
+root.render(
+  <LanguageProvider>
+    <App />
+  </LanguageProvider>
 );
 
+/* =========================================================
+   AOS
+   Existing animation appearance/timing preserved.
+========================================================= */
+
+let aosInitialized = false;
+
 const initializeAnimations = () => {
+  if (aosInitialized) {
+    return;
+  }
+
+  aosInitialized = true;
+
   AOS.init({
     duration: 760,
     easing: "ease-out-cubic",
@@ -36,15 +48,25 @@ const initializeAnimations = () => {
     disable: false,
   });
 
-  window.requestAnimationFrame(() => {
-    AOS.refreshHard();
-  });
+  /*
+   * IMPORTANT:
+   * Do NOT call AOS.refreshHard() here.
+   *
+   * AOS.init() already performs its initial setup.
+   * refreshHard() immediately afterwards causes another
+   * full AOS element scan and unnecessary style/layout work.
+   */
 };
 
 if (document.readyState === "complete") {
-  window.setTimeout(initializeAnimations, 0);
+  initializeAnimations();
 } else {
-  window.addEventListener("load", initializeAnimations, {
-    once: true,
-  });
+  window.addEventListener(
+    "load",
+    initializeAnimations,
+    {
+      once: true,
+      passive: true,
+    }
+  );
 }

@@ -98,6 +98,7 @@ function Footer() {
           trigger: footer,
           start: "top 84%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -189,7 +190,11 @@ function Footer() {
           0.82
         );
 
-      gsap.to(".footer-luxury__glow--one", {
+      gsap.to(
+        footer.querySelector(
+          ".footer-luxury__glow--one"
+        ),
+        {
         x: 55,
         y: 34,
         ease: "none",
@@ -198,10 +203,16 @@ function Footer() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.2,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".footer-luxury__glow--two", {
+      gsap.to(
+        footer.querySelector(
+          ".footer-luxury__glow--two"
+        ),
+        {
         x: -50,
         y: -30,
         ease: "none",
@@ -210,25 +221,13 @@ function Footer() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.2,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
     }, footer);
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener(
-      "sge:refresh-animations",
-      handleRefresh
-    );
-
     return () => {
-      window.removeEventListener(
-        "sge:refresh-animations",
-        handleRefresh
-      );
-
       context.revert();
     };
   }, []);
@@ -431,14 +430,14 @@ function Footer() {
             </li>
 
             <li>
-              <a href="mailto:info@saiyed-global-exports.com">
+              <a href="mailto:saiyedglobalexport@gmail.com">
                 <Mail
                   size={17}
                   strokeWidth={1.7}
                   aria-hidden="true"
                 />
 
-                <span>info@saiyed-global-exports.com</span>
+                <span>saiyedglobalexport@gmail.com</span>
               </a>
             </li>
 

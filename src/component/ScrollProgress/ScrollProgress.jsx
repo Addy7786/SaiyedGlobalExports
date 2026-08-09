@@ -7,107 +7,132 @@ function ScrollProgress() {
 
   useEffect(() => {
     const progressElement = progressRef.current;
+    const documentElement =
+      document.documentElement;
 
     if (!progressElement) {
       return undefined;
     }
 
-    let animationFrame;
+    let animationFrame = 0;
+    let previousValue = -1;
 
-    const updateProgress = () => {
-      window.cancelAnimationFrame(animationFrame);
+    const renderProgress = () => {
+      animationFrame = 0;
 
-      animationFrame = window.requestAnimationFrame(() => {
-        const scrollTop =
-          window.scrollY ||
-          document.documentElement.scrollTop ||
-          0;
+      const scrollTop =
+        window.scrollY ||
+        documentElement.scrollTop ||
+        0;
 
-        const scrollHeight =
-          document.documentElement.scrollHeight -
-          window.innerHeight;
+      const scrollHeight =
+        documentElement.scrollHeight -
+        window.innerHeight;
 
-        const percentage =
-          scrollHeight > 0
-            ? Math.min(
-                100,
-                Math.max(0, (scrollTop / scrollHeight) * 100)
+      const progress =
+        scrollHeight > 0
+          ? Math.min(
+              1,
+              Math.max(
+                0,
+                scrollTop / scrollHeight
               )
-            : 0;
+            )
+          : 0;
 
-        progressElement.style.transform = `scaleX(${
-          percentage / 100
-        })`;
+      progressElement.style.transform =
+        `scaleX(${progress})`;
+
+      const roundedValue = Math.round(
+        progress * 100
+      );
+
+      if (roundedValue !== previousValue) {
+        previousValue = roundedValue;
 
         progressElement.setAttribute(
           "aria-valuenow",
-          String(Math.round(percentage))
+          String(roundedValue)
         );
-      });
+      }
     };
 
-    updateProgress();
+    const requestProgressUpdate = () => {
+      if (animationFrame) {
+        return;
+      }
 
-    window.addEventListener("scroll", updateProgress, {
-      passive: true,
-    });
+      animationFrame =
+        window.requestAnimationFrame(
+          renderProgress
+        );
+    };
 
-    window.addEventListener("resize", updateProgress);
+    requestProgressUpdate();
+
+    window.addEventListener(
+      "scroll",
+      requestProgressUpdate,
+      {
+        passive: true,
+      }
+    );
+
+    window.addEventListener(
+      "resize",
+      requestProgressUpdate,
+      {
+        passive: true,
+      }
+    );
 
     window.addEventListener(
       "sge:content-loaded",
-      updateProgress
+      requestProgressUpdate
     );
 
     window.addEventListener(
       "sge:refresh-animations",
-      updateProgress
+      requestProgressUpdate
     );
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      window.cancelAnimationFrame(
+        animationFrame
+      );
 
       window.removeEventListener(
         "scroll",
-        updateProgress
+        requestProgressUpdate
       );
 
       window.removeEventListener(
         "resize",
-        updateProgress
+        requestProgressUpdate
       );
 
       window.removeEventListener(
         "sge:content-loaded",
-        updateProgress
+        requestProgressUpdate
       );
 
       window.removeEventListener(
         "sge:refresh-animations",
-        updateProgress
+        requestProgressUpdate
       );
     };
   }, []);
 
   return (
     <div
-      className="scroll-progress-shell"
+      ref={progressRef}
+      className="scroll-progress"
       role="progressbar"
       aria-label="Page scroll progress"
       aria-valuemin="0"
       aria-valuemax="100"
       aria-valuenow="0"
-    >
-      <div
-        ref={progressRef}
-        className="scroll-progress"
-      >
-        <span
-          className="scroll-progress__light"
-          aria-hidden="true"
-        />
-      </div>
-    </div>
+    />
   );
 }
 

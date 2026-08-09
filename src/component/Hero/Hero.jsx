@@ -1,8 +1,6 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import {
   ArrowRight,
   Award,
@@ -29,7 +27,6 @@ import southAfricaFlag from "../../assets/flags-optimized/south-africa.webp";
 
 import "./Hero.css";
 
-gsap.registerPlugin(ScrollTrigger);
 
 const countryFlags = [
   { name: "India", image: indiaFlag },
@@ -76,264 +73,442 @@ function Hero() {
   const contentRef = useRef(null);
   const featurePanelRef = useRef(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const hero = heroRef.current;
+    const picture = pictureRef.current;
+    const background = backgroundRef.current;
+    const motionLayer = motionLayerRef.current;
+    const content = contentRef.current;
+    const featurePanel = featurePanelRef.current;
 
-    if (!hero) {
+    if (
+      !hero ||
+      !picture ||
+      !background ||
+      !motionLayer ||
+      !content ||
+      !featurePanel
+    ) {
       return undefined;
     }
 
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+    const isMobilePerformanceMode = window.matchMedia(
+      "(max-width: 768px), (pointer: coarse)"
+    ).matches;
 
-    if (prefersReducedMotion) {
+    // Mobile/touch and reduced-motion: keep the first render fully static.
+    // No GSAP mutation runs on the critical mobile paint path.
+    if (prefersReducedMotion || isMobilePerformanceMode) {
       return undefined;
     }
 
-    const context = gsap.context(() => {
-      const entranceTimeline = gsap.timeline({
-        defaults: {
-          ease: "power3.out",
-        },
-        delay: 0.18,
-      });
+    let entranceStarted = false;
+    let entranceFallbackTimer = 0;
+    let scrollFrame = 0;
+    let pointerFrame = 0;
+    let latestPointerEvent = null;
+    let heroBounds = null;
+    let cleanupRuntime = () => {};
 
-      entranceTimeline
-        .fromTo(
-          ".hero-dark-overlay",
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 1.15 },
-          0
-        )
-        .fromTo(
-          backgroundRef.current,
-          { autoAlpha: 0, scale: 1.09 },
-          { autoAlpha: 1, scale: 1.015, duration: 1.75, ease: "power2.out" },
-          0
-        )
-        .fromTo(
-          ".hero-badge",
-          { autoAlpha: 0, y: -22, scale: 0.94 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.72 },
-          0.28
-        )
-        .fromTo(
-          ".hero-gold-line",
-          { scaleX: 0, transformOrigin: "left center" },
-          { scaleX: 1, duration: 0.75, ease: "power3.inOut" },
-          0.4
-        )
-        .fromTo(
-          ".hero-title-line",
-          { autoAlpha: 0, yPercent: 115, rotateX: -12 },
-          {
-            autoAlpha: 1,
-            yPercent: 0,
-            rotateX: 0,
-            duration: 0.92,
-            stagger: 0.12,
+    const context = gsap.context(() => {
+      const startEntrance = () => {
+        if (entranceStarted) {
+          return;
+        }
+
+        entranceStarted = true;
+
+        const entranceTimeline = gsap.timeline({
+          defaults: {
+            ease: "power3.out",
           },
-          0.48
-        )
-        .fromTo(
-          ".hero-description",
-          { autoAlpha: 0, y: 30 },
-          { autoAlpha: 1, y: 0, duration: 0.85 },
-          0.82
-        )
-        .fromTo(
-          ".hero-actions > *",
-          { autoAlpha: 0, y: 26, scale: 0.96 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.72,
-            stagger: 0.12,
+          onComplete: () => {
+            hero.classList.remove("hero-is-animating");
           },
-          0.98
-        )
-        .fromTo(
-          ".hero-trusted-block",
-          { autoAlpha: 0, x: -28 },
-          { autoAlpha: 1, x: 0, duration: 0.72 },
-          1.12
-        )
-        .fromTo(
-          ".hero-country-flag-item, .hero-more-countries",
-          { autoAlpha: 0, y: 25, scale: 0.62, rotate: -8 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            rotate: 0,
-            duration: 0.62,
-            stagger: 0.065,
-            ease: "back.out(1.7)",
-          },
-          1.2
-        )
-        .fromTo(
-          featurePanelRef.current,
-          { autoAlpha: 0, y: 48, scale: 0.985 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.9 },
-          1.12
-        )
-        .fromTo(
-          ".hero-feature-panel-item",
-          { autoAlpha: 0, y: 22 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.62,
-            stagger: 0.09,
-          },
-          1.3
-        )
-        .fromTo(
-          ".hero-scroll-indicator",
-          { autoAlpha: 0, y: -18 },
-          { autoAlpha: 0.65, y: 0, duration: 0.75 },
-          1.45
+        });
+
+        entranceTimeline
+          .fromTo(
+            ".hero-dark-overlay",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 1.15 },
+            0
+          )
+          .fromTo(
+            background,
+            { autoAlpha: 0, scale: 1.09 },
+            {
+              autoAlpha: 1,
+              scale: 1.015,
+              duration: 1.75,
+              ease: "power2.out",
+            },
+            0
+          )
+          .fromTo(
+            ".hero-badge",
+            { autoAlpha: 0, y: -22, scale: 0.94 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.72 },
+            0.28
+          )
+          .fromTo(
+            ".hero-gold-line",
+            { scaleX: 0, transformOrigin: "left center" },
+            { scaleX: 1, duration: 0.75, ease: "power3.inOut" },
+            0.4
+          )
+          .fromTo(
+            ".hero-title-line",
+            { autoAlpha: 0, yPercent: 115, rotateX: -12 },
+            {
+              autoAlpha: 1,
+              yPercent: 0,
+              rotateX: 0,
+              duration: 0.92,
+              stagger: 0.12,
+            },
+            0.48
+          )
+          .fromTo(
+            ".hero-actions > *",
+            { autoAlpha: 0, y: 26, scale: 0.96 },
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.72,
+              stagger: 0.12,
+            },
+            0.98
+          )
+          .fromTo(
+            ".hero-trusted-block",
+            { autoAlpha: 0, x: -28 },
+            { autoAlpha: 1, x: 0, duration: 0.72 },
+            1.12
+          )
+          .fromTo(
+            ".hero-country-flag-item, .hero-more-countries",
+            { autoAlpha: 0, y: 25, scale: 0.62, rotate: -8 },
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              rotate: 0,
+              duration: 0.62,
+              stagger: 0.065,
+              ease: "back.out(1.7)",
+            },
+            1.2
+          )
+          .fromTo(
+            featurePanel,
+            { autoAlpha: 0, y: 48, scale: 0.985 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.9 },
+            1.12
+          )
+          .fromTo(
+            ".hero-feature-panel-item",
+            { autoAlpha: 0, y: 22 },
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.62,
+              stagger: 0.09,
+            },
+            1.3
+          )
+          .fromTo(
+            ".hero-scroll-indicator",
+            { autoAlpha: 0, y: -18 },
+            { autoAlpha: 0.65, y: 0, duration: 0.75 },
+            1.45
+          );
+      };
+
+      // Start on the next paint instead of waiting up to 3.1s for a custom
+      // loader event. The background is already eager/high-priority loaded.
+      entranceFallbackTimer = window.setTimeout(() => {
+        window.requestAnimationFrame(startEntrance);
+      }, 0);
+
+      const isDesktopPointer = window.matchMedia(
+        "(min-width: 769px) and (hover: hover) and (pointer: fine)"
+      ).matches;
+
+      const setPictureY = gsap.quickSetter(picture, "yPercent");
+      const setContentY = gsap.quickSetter(content, "yPercent");
+      const setContentOpacity = gsap.quickSetter(content, "opacity");
+      const setMotionY = gsap.quickSetter(motionLayer, "yPercent");
+
+      const updateScrollMotion = () => {
+        scrollFrame = 0;
+
+        const rect = hero.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || 1;
+
+        if (rect.bottom <= 0 || rect.top >= viewportHeight) {
+          return;
+        }
+
+        const progress = Math.min(
+          1,
+          Math.max(0, -rect.top / Math.max(rect.height, 1))
         );
 
-      gsap.to(pictureRef.current, {
-        yPercent: 7,
-        ease: "none",
-        scrollTrigger: {
-          trigger: hero,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.2,
-        },
+        setPictureY(progress * 7);
+        setContentY(progress * 12);
+        setContentOpacity(1 - progress * 0.58);
+        setMotionY(progress * 10);
+      };
+
+      const handleScroll = () => {
+        if (scrollFrame) {
+          return;
+        }
+
+        scrollFrame = window.requestAnimationFrame(
+          updateScrollMotion
+        );
+      };
+
+      window.addEventListener("scroll", handleScroll, {
+        passive: true,
       });
 
-      gsap.to(contentRef.current, {
-        yPercent: 12,
-        autoAlpha: 0.42,
-        ease: "none",
-        scrollTrigger: {
-          trigger: hero,
-          start: "top top",
-          end: "78% top",
-          scrub: 1,
-        },
-      });
+      let removePointerEffects = () => {};
 
-      gsap.to(motionLayerRef.current, {
-        yPercent: 10,
-        ease: "none",
-        scrollTrigger: {
-          trigger: hero,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
+      if (isDesktopPointer) {
+        const movePictureX = gsap.quickTo(picture, "x", {
+          duration: 1.15,
+          ease: "power3.out",
+        });
+        const movePictureY = gsap.quickTo(picture, "y", {
+          duration: 1.15,
+          ease: "power3.out",
+        });
+        const moveMotionX = gsap.quickTo(motionLayer, "x", {
+          duration: 0.85,
+          ease: "power3.out",
+        });
+        const moveMotionY = gsap.quickTo(motionLayer, "y", {
+          duration: 0.85,
+          ease: "power3.out",
+        });
+
+        const updateHeroBounds = () => {
+          heroBounds = hero.getBoundingClientRect();
+        };
+
+        const renderHeroPointer = () => {
+          pointerFrame = 0;
+
+          if (!latestPointerEvent || !heroBounds) {
+            return;
+          }
+
+          const normalizedX =
+            (latestPointerEvent.clientX - heroBounds.left) /
+              heroBounds.width -
+            0.5;
+
+          const normalizedY =
+            (latestPointerEvent.clientY - heroBounds.top) /
+              heroBounds.height -
+            0.5;
+
+          movePictureX(normalizedX * -18);
+          movePictureY(normalizedY * -12);
+          moveMotionX(normalizedX * 28);
+          moveMotionY(normalizedY * 20);
+        };
+
+        const handlePointerEnter = () => {
+          updateHeroBounds();
+        };
+
+        const handlePointerMove = (event) => {
+          latestPointerEvent = event;
+
+          if (!heroBounds) {
+            updateHeroBounds();
+          }
+
+          if (pointerFrame) {
+            return;
+          }
+
+          pointerFrame = window.requestAnimationFrame(
+            renderHeroPointer
+          );
+        };
+
+        const resetPointerPosition = () => {
+          window.cancelAnimationFrame(pointerFrame);
+          pointerFrame = 0;
+          latestPointerEvent = null;
+          heroBounds = null;
+
+          movePictureX(0);
+          movePictureY(0);
+          moveMotionX(0);
+          moveMotionY(0);
+        };
+
+        const magneticElements = hero.querySelectorAll(
+          ".hero-primary-button, .hero-secondary-button"
+        );
+
+        const magneticCleanup = [];
+
+        magneticElements.forEach((element) => {
+          const moveX = gsap.quickTo(element, "x", {
+            duration: 0.35,
+            ease: "power3.out",
+          });
+          const moveY = gsap.quickTo(element, "y", {
+            duration: 0.35,
+            ease: "power3.out",
+          });
+
+          let bounds = null;
+          let magneticFrame = 0;
+          let latestMagneticEvent = null;
+
+          const updateMagneticBounds = () => {
+            bounds = element.getBoundingClientRect();
+          };
+
+          const renderMagnetic = () => {
+            magneticFrame = 0;
+
+            if (!latestMagneticEvent || !bounds) {
+              return;
+            }
+
+            const x =
+              latestMagneticEvent.clientX -
+              (bounds.left + bounds.width / 2);
+
+            const y =
+              latestMagneticEvent.clientY -
+              (bounds.top + bounds.height / 2);
+
+            moveX(x * 0.16);
+            moveY(y * 0.2);
+          };
+
+          const handleMagneticEnter = () => {
+            updateMagneticBounds();
+          };
+
+          const handleMagneticMove = (event) => {
+            latestMagneticEvent = event;
+
+            if (!bounds) {
+              updateMagneticBounds();
+            }
+
+            if (magneticFrame) {
+              return;
+            }
+
+            magneticFrame = window.requestAnimationFrame(
+              renderMagnetic
+            );
+          };
+
+          const resetMagnetic = () => {
+            window.cancelAnimationFrame(magneticFrame);
+            magneticFrame = 0;
+            latestMagneticEvent = null;
+            bounds = null;
+
+            moveX(0);
+            moveY(0);
+          };
+
+          element.addEventListener(
+            "pointerenter",
+            handleMagneticEnter
+          );
+          element.addEventListener(
+            "pointermove",
+            handleMagneticMove,
+            { passive: true }
+          );
+          element.addEventListener(
+            "pointerleave",
+            resetMagnetic
+          );
+
+          magneticCleanup.push(() => {
+            window.cancelAnimationFrame(magneticFrame);
+            element.removeEventListener(
+              "pointerenter",
+              handleMagneticEnter
+            );
+            element.removeEventListener(
+              "pointermove",
+              handleMagneticMove
+            );
+            element.removeEventListener(
+              "pointerleave",
+              resetMagnetic
+            );
+            gsap.killTweensOf(element);
+          });
+        });
+
+        hero.addEventListener(
+          "pointerenter",
+          handlePointerEnter
+        );
+        hero.addEventListener(
+          "pointermove",
+          handlePointerMove,
+          { passive: true }
+        );
+        hero.addEventListener(
+          "pointerleave",
+          resetPointerPosition
+        );
+
+        removePointerEffects = () => {
+          window.cancelAnimationFrame(pointerFrame);
+          hero.removeEventListener(
+            "pointerenter",
+            handlePointerEnter
+          );
+          hero.removeEventListener(
+            "pointermove",
+            handlePointerMove
+          );
+          hero.removeEventListener(
+            "pointerleave",
+            resetPointerPosition
+          );
+          magneticCleanup.forEach((cleanup) => cleanup());
+          gsap.killTweensOf(picture);
+          gsap.killTweensOf(motionLayer);
+        };
+      }
+
+      cleanupRuntime = () => {
+        window.clearTimeout(entranceFallbackTimer);
+        window.cancelAnimationFrame(scrollFrame);
+        window.removeEventListener("scroll", handleScroll);
+        removePointerEffects();
+      };
     }, hero);
 
-    const isDesktopPointer = window.matchMedia(
-      "(min-width: 769px) and (hover: hover) and (pointer: fine)"
-    ).matches;
-
-    let removePointerEffects = () => {};
-
-    if (isDesktopPointer) {
-      const movePictureX = gsap.quickTo(pictureRef.current, "x", {
-        duration: 1.15,
-        ease: "power3.out",
-      });
-      const movePictureY = gsap.quickTo(pictureRef.current, "y", {
-        duration: 1.15,
-        ease: "power3.out",
-      });
-      const moveMotionX = gsap.quickTo(motionLayerRef.current, "x", {
-        duration: 0.85,
-        ease: "power3.out",
-      });
-      const moveMotionY = gsap.quickTo(motionLayerRef.current, "y", {
-        duration: 0.85,
-        ease: "power3.out",
-      });
-
-      const handlePointerMove = (event) => {
-        const bounds = hero.getBoundingClientRect();
-        const normalizedX =
-          (event.clientX - bounds.left) / bounds.width - 0.5;
-        const normalizedY =
-          (event.clientY - bounds.top) / bounds.height - 0.5;
-
-        movePictureX(normalizedX * -18);
-        movePictureY(normalizedY * -12);
-        moveMotionX(normalizedX * 28);
-        moveMotionY(normalizedY * 20);
-      };
-
-      const resetPointerPosition = () => {
-        movePictureX(0);
-        movePictureY(0);
-        moveMotionX(0);
-        moveMotionY(0);
-      };
-
-      const magneticElements = hero.querySelectorAll(
-        ".hero-primary-button, .hero-secondary-button"
-      );
-
-      const magneticCleanup = [];
-
-      magneticElements.forEach((element) => {
-        const moveX = gsap.quickTo(element, "x", {
-          duration: 0.35,
-          ease: "power3.out",
-        });
-        const moveY = gsap.quickTo(element, "y", {
-          duration: 0.35,
-          ease: "power3.out",
-        });
-
-        const handleMagneticMove = (event) => {
-          const bounds = element.getBoundingClientRect();
-          const x = event.clientX - (bounds.left + bounds.width / 2);
-          const y = event.clientY - (bounds.top + bounds.height / 2);
-
-          moveX(x * 0.16);
-          moveY(y * 0.2);
-        };
-
-        const resetMagnetic = () => {
-          moveX(0);
-          moveY(0);
-        };
-
-        element.addEventListener("pointermove", handleMagneticMove);
-        element.addEventListener("pointerleave", resetMagnetic);
-
-        magneticCleanup.push(() => {
-          element.removeEventListener("pointermove", handleMagneticMove);
-          element.removeEventListener("pointerleave", resetMagnetic);
-        });
-      });
-
-      hero.addEventListener("pointermove", handlePointerMove);
-      hero.addEventListener("pointerleave", resetPointerPosition);
-
-      removePointerEffects = () => {
-        hero.removeEventListener("pointermove", handlePointerMove);
-        hero.removeEventListener("pointerleave", resetPointerPosition);
-        magneticCleanup.forEach((cleanup) => cleanup());
-      };
-    }
-
-    const refreshTimer = window.setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 350);
-
     return () => {
-      window.clearTimeout(refreshTimer);
-      removePointerEffects();
+      cleanupRuntime();
       context.revert();
+      hero.classList.remove("hero-is-animating");
     };
   }, []);
 

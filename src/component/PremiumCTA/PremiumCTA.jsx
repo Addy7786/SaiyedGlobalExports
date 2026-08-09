@@ -72,6 +72,7 @@ function PremiumCTA() {
           trigger: section,
           start: "top 82%",
           once: true,
+          invalidateOnRefresh: false,
         },
       });
 
@@ -170,7 +171,11 @@ function PremiumCTA() {
           0.9
         );
 
-      gsap.to(".premium-cta__globe", {
+      gsap.to(
+        section.querySelector(
+          ".premium-cta__globe"
+        ),
+        {
         y: 20,
         rotate: 6,
         ease: "none",
@@ -179,10 +184,16 @@ function PremiumCTA() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.2,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".premium-cta__glow--one", {
+      gsap.to(
+        section.querySelector(
+          ".premium-cta__glow--one"
+        ),
+        {
         x: 70,
         y: 40,
         ease: "none",
@@ -191,10 +202,16 @@ function PremiumCTA() {
           start: "top bottom",
           end: "bottom top",
           scrub: 1.3,
+          invalidateOnRefresh: false,
         },
-      });
+      }
+      );
 
-      gsap.to(".premium-cta__glow--two", {
+      gsap.to(
+        section.querySelector(
+          ".premium-cta__glow--two"
+        ),
+        {
         x: -65,
         y: -35,
         ease: "none",
@@ -204,48 +221,162 @@ function PremiumCTA() {
           end: "bottom top",
           scrub: 1.3,
         },
-      });
+      }
+      );
     }, section);
 
     const canTilt =
       window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
       window.innerWidth > 900;
 
-    const handleMove = (event) => {
-      if (!canTilt) return;
+    let bounds = null;
+    let pointerFrame = 0;
+    let latestPointerEvent = null;
 
-      const bounds = panel.getBoundingClientRect();
-      const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-      const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    gsap.set(panel, {
+      transformPerspective: 1400,
+      transformOrigin: "center center",
+    });
 
-      gsap.to(panel, {
-        rotateY: x * 2.5,
-        rotateX: y * -2,
-        transformPerspective: 1400,
-        transformOrigin: "center center",
+    const rotateXTo = gsap.quickTo(
+      panel,
+      "rotateX",
+      {
         duration: 0.5,
         ease: "power2.out",
-        overwrite: "auto",
-      });
+      }
+    );
+
+    const rotateYTo = gsap.quickTo(
+      panel,
+      "rotateY",
+      {
+        duration: 0.5,
+        ease: "power2.out",
+      }
+    );
+
+    const updateBounds = () => {
+      if (!canTilt) {
+        return;
+      }
+
+      bounds = panel.getBoundingClientRect();
+    };
+
+    const renderMove = () => {
+      pointerFrame = 0;
+
+      if (
+        !canTilt ||
+        !latestPointerEvent ||
+        !bounds
+      ) {
+        return;
+      }
+
+      const x =
+        (latestPointerEvent.clientX -
+          bounds.left) /
+          bounds.width -
+        0.5;
+
+      const y =
+        (latestPointerEvent.clientY -
+          bounds.top) /
+          bounds.height -
+        0.5;
+
+      rotateYTo(x * 2.5);
+      rotateXTo(y * -2);
+    };
+
+    const handleEnter = () => {
+      updateBounds();
+    };
+
+    const handleMove = (event) => {
+      if (!canTilt) {
+        return;
+      }
+
+      latestPointerEvent = event;
+
+      if (!bounds) {
+        updateBounds();
+      }
+
+      if (pointerFrame) {
+        return;
+      }
+
+      pointerFrame =
+        window.requestAnimationFrame(
+          renderMove
+        );
     };
 
     const handleLeave = () => {
-      if (!canTilt) return;
+      if (!canTilt) {
+        return;
+      }
+
+      window.cancelAnimationFrame(
+        pointerFrame
+      );
+
+      pointerFrame = 0;
+      latestPointerEvent = null;
+      bounds = null;
 
       gsap.to(panel, {
         rotateX: 0,
         rotateY: 0,
         duration: 0.7,
         ease: "power3.out",
+        overwrite: "auto",
       });
     };
 
-    panel.addEventListener("pointermove", handleMove);
-    panel.addEventListener("pointerleave", handleLeave);
+    panel.addEventListener(
+      "pointerenter",
+      handleEnter
+    );
+
+    panel.addEventListener(
+      "pointermove",
+      handleMove,
+      {
+        passive: true,
+      }
+    );
+
+    panel.addEventListener(
+      "pointerleave",
+      handleLeave
+    );
 
     return () => {
-      panel.removeEventListener("pointermove", handleMove);
-      panel.removeEventListener("pointerleave", handleLeave);
+      window.cancelAnimationFrame(
+        pointerFrame
+      );
+
+      panel.removeEventListener(
+        "pointerenter",
+        handleEnter
+      );
+
+      panel.removeEventListener(
+        "pointermove",
+        handleMove
+      );
+
+      panel.removeEventListener(
+        "pointerleave",
+        handleLeave
+      );
+
+      gsap.killTweensOf(panel);
       context.revert();
     };
   }, []);

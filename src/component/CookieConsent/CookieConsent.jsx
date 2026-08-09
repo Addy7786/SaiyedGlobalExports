@@ -1,5 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { gsap } from "gsap";
+
 import {
   Cookie,
   ShieldCheck,
@@ -15,15 +21,22 @@ const EXIT_DURATION = 320;
 function CookieConsent() {
   const overlayRef = useRef(null);
   const cardRef = useRef(null);
+  const exitTimerRef = useRef(0);
 
-  const [isVisible, setIsVisible] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
+  const [isVisible, setIsVisible] =
+    useState(false);
+
+  const [isLeaving, setIsLeaving] =
+    useState(false);
 
   useEffect(() => {
     let cookieChoice = null;
 
     try {
-      cookieChoice = window.localStorage.getItem(STORAGE_KEY);
+      cookieChoice =
+        window.localStorage.getItem(
+          STORAGE_KEY
+        );
     } catch (error) {
       console.warn(
         "Cookie consent preference could not be read:",
@@ -35,12 +48,15 @@ function CookieConsent() {
       return undefined;
     }
 
-    const timer = window.setTimeout(() => {
-      setIsVisible(true);
-    }, SHOW_DELAY);
+    const showTimer = window.setTimeout(
+      () => {
+        setIsVisible(true);
+      },
+      SHOW_DELAY
+    );
 
     return () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(showTimer);
     };
   }, []);
 
@@ -52,9 +68,10 @@ function CookieConsent() {
       return undefined;
     }
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const reduceMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
 
     if (reduceMotion) {
       gsap.set([overlay, card], {
@@ -65,6 +82,11 @@ function CookieConsent() {
 
       return undefined;
     }
+
+    const contentItems =
+      card.querySelectorAll(
+        ".cookie-card__content > *"
+      );
 
     const context = gsap.context(() => {
       gsap.fromTo(
@@ -96,7 +118,7 @@ function CookieConsent() {
       );
 
       gsap.fromTo(
-        ".cookie-card__content > *",
+        contentItems,
         {
           autoAlpha: 0,
           y: 16,
@@ -128,16 +150,33 @@ function CookieConsent() {
       }
     };
 
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
     };
-  }, [isVisible]);
+  }, [isVisible, isLeaving]);
+
+  useEffect(() => {
+    return () => {
+      window.clearTimeout(
+        exitTimerRef.current
+      );
+    };
+  }, []);
 
   const saveChoice = (choice) => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, choice);
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        choice
+      );
     } catch (error) {
       console.warn(
         "Cookie consent preference could not be saved:",
@@ -147,6 +186,10 @@ function CookieConsent() {
   };
 
   const closeBanner = (choice) => {
+    if (isLeaving) {
+      return;
+    }
+
     const overlay = overlayRef.current;
     const card = cardRef.current;
 
@@ -161,9 +204,10 @@ function CookieConsent() {
 
     setIsLeaving(true);
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const reduceMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
 
     if (reduceMotion) {
       setIsVisible(false);
@@ -171,24 +215,33 @@ function CookieConsent() {
       return;
     }
 
+    window.clearTimeout(
+      exitTimerRef.current
+    );
+
+    gsap.killTweensOf([overlay, card]);
+
     gsap.to(card, {
       autoAlpha: 0,
       y: 36,
       scale: 0.97,
       duration: 0.26,
       ease: "power2.in",
+      overwrite: "auto",
     });
 
     gsap.to(overlay, {
       autoAlpha: 0,
       duration: 0.3,
       ease: "power2.in",
+      overwrite: "auto",
     });
 
-    window.setTimeout(() => {
-      setIsVisible(false);
-      setIsLeaving(false);
-    }, EXIT_DURATION);
+    exitTimerRef.current =
+      window.setTimeout(() => {
+        setIsVisible(false);
+        setIsLeaving(false);
+      }, EXIT_DURATION);
   };
 
   const handleAccept = () => {
@@ -207,7 +260,9 @@ function CookieConsent() {
     <div
       ref={overlayRef}
       className={`cookie-overlay ${
-        isLeaving ? "cookie-overlay--leaving" : ""
+        isLeaving
+          ? "cookie-overlay--leaving"
+          : ""
       }`}
       role="presentation"
     >
@@ -224,10 +279,11 @@ function CookieConsent() {
           className="cookie-close"
           onClick={() => closeBanner()}
           aria-label="Close cookie notice"
+          disabled={isLeaving}
         >
           <X
-            size={19}
-            strokeWidth={1.9}
+            size={20}
+            strokeWidth={2}
             aria-hidden="true"
           />
         </button>
@@ -261,9 +317,10 @@ function CookieConsent() {
           </h2>
 
           <p id="cookie-description">
-            Saiyed Global Exports uses essential cookies to improve
-            website performance, remember your preferences and
-            provide a better browsing experience.
+            Saiyed Global Exports uses essential
+            cookies to improve website performance,
+            remember your preferences and provide a
+            better browsing experience.
           </p>
 
           <div className="cookie-actions">
@@ -271,6 +328,7 @@ function CookieConsent() {
               type="button"
               className="cookie-accept-btn"
               onClick={handleAccept}
+              disabled={isLeaving}
             >
               Accept Cookies
             </button>
@@ -279,6 +337,7 @@ function CookieConsent() {
               type="button"
               className="cookie-reject-btn"
               onClick={handleReject}
+              disabled={isLeaving}
             >
               Reject Optional
             </button>

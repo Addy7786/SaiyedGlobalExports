@@ -42,7 +42,7 @@ const socialItems = [
   {
     label: "Email",
     className: "email",
-    href: "mailto:info@saiyed-global-exports.com",
+    href: "mailto:saiyedglobalexport@gmail.com",
     icon: MdEmail,
     external: false,
   },
